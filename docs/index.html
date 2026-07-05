@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>半導体テーマトラッカー</title>
+<meta name="theme-color" content="#0B0E15">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0B0E15;--panel:#141A26;--panel2:#1B2231;--line:rgba(38,48,65,.6);
+    --text:#F0F3F9;--dim:#B4BDD0;--faint:#8B94A8;--up:#F0593C;--down:#3FA7D6;--us:#9D7CF0;--jp:#E8B04B;
+    --dot:"DotGothic16","Hiragino Sans",sans-serif}
+  /* ドット絵風ユーティリティ(やりすぎない程度に見出し等へ) */
+  .pixel{font-family:var(--dot);letter-spacing:.5px}
+  .pixel-en{font-family:"Press Start 2P",monospace}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--ink);color:var(--text);
+    font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
+    padding-bottom:max(32px,env(safe-area-inset-bottom))}
+  .num{font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+  .rainbow{height:3px;background:linear-gradient(90deg,#6EE7F0,#9D7CF0 35%,#E8B04B 70%,#F0593C)}
+  .wrap{max-width:820px;margin:0 auto;padding:0 14px}
+  header{padding:20px 0 10px}
+  .eyebrow{font-size:8px;letter-spacing:1px;color:var(--dim);font-family:"Press Start 2P",monospace;line-height:1.6}
+  h1{margin:7px 0 5px;font-size:21px;line-height:1.3;font-family:var(--dot);letter-spacing:1px}
+  .titleheart{color:var(--up);display:inline-block;margin-right:6px;animation:titlebeat 2.6s ease-in-out infinite;text-shadow:0 0 6px rgba(240,89,60,.6)}
+  @keyframes titlebeat{0%,100%{opacity:1}50%{opacity:.4}}
+  .tt-hot{color:#6EE7F0;text-shadow:0 0 8px rgba(110,231,240,.45)}
+  .tt-star{color:var(--jp);margin-left:2px;display:inline-block;animation:titletwinkle 3s ease-in-out infinite}
+  @keyframes titletwinkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.3)}}
+  .tt-wafer{font-size:18px;margin-right:5px;display:inline-block;animation:titlebeat 2.6s ease-in-out infinite;vertical-align:-1px}
+  .tt-hbm{vertical-align:-4px;margin-left:5px;animation:titletwinkle 3s ease-in-out infinite;
+    filter:drop-shadow(0 0 4px rgba(91,217,138,.55))}
+  .sub{margin:0;color:var(--dim);font-size:12.5px;line-height:1.5}
+  .ctrl-label{font-size:11px;color:var(--dim);letter-spacing:1px;margin:12px 0 6px;font-family:var(--dot)}
+  .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+  .chips-wrap{flex-wrap:wrap;overflow-x:visible}
+  /* フロー図 */
+  .fstage{border:2px solid;border-radius:14px;overflow:hidden;margin-bottom:2px;background:var(--panel)}
+  .fstage-h{display:flex;align-items:center;gap:9px;padding:12px 14px}
+  .fstage-icon{font-size:22px}
+  .fstage-name{font-size:14px;font-weight:800;font-family:var(--dot);letter-spacing:.5px}
+  .fstage-desc{font-size:11.5px;color:var(--dim);line-height:1.6;padding:0 14px 10px}
+  .fviz{margin:0 12px 12px;padding:11px;background:var(--panel2);border-radius:10px;font-size:11.5px;color:var(--text);text-align:center;line-height:1.7}
+  /* 3層構造ビジュアル(ドット絵風) */
+  .fpkg3,.fcpo{padding:12px 10px}
+  .p3-label{font-size:10.5px;color:var(--dim);margin-bottom:8px;letter-spacing:.5px;font-family:var(--dot)}
+  .p3layer{display:flex;align-items:center;gap:5px;justify-content:center;flex-wrap:wrap;
+    padding:9px 7px;margin:4px 0;border:2px solid var(--ink);position:relative}
+  .p3top{background:rgba(157,124,240,.3)}
+  .p3mid{background:rgba(224,164,88,.35)}
+  .p3bot{background:rgba(63,167,214,.3)}
+  .p3mb{background:rgba(91,146,121,.35)}
+  .p3mb .p3tag{background:#5B9279}
+  /* アンダーテール風・氷山ビジュアル */
+  .fice{background:#070A12;border:3px solid #FFF;outline:2px solid #070A12;box-shadow:0 0 0 4px #FFF3;border-radius:0;padding:8px 8px 4px;image-rendering:pixelated}
+  .ice-talk{margin:8px 2px 6px;padding:8px 10px;border:2px solid #FFF;color:#FFF;font-size:12px;text-align:left;letter-spacing:1px;line-height:1.6;background:#000}
+  .ice-heart{color:#F0593C;margin-right:6px;animation:iceblink 1s steps(2,start) infinite}
+  @keyframes iceblink{to{visibility:hidden}}
+  .p3chip{background:var(--ink);padding:4px 9px;font-size:11.5px;font-weight:700;border:1px solid rgba(255,255,255,.15);font-family:var(--dot)}
+  .p3full{font-size:12.5px;font-weight:700;letter-spacing:1px;font-family:var(--dot)}
+  .p3tag{position:absolute;right:5px;top:-9px;font-size:9px;background:var(--up);color:#fff;padding:2px 6px;border-radius:3px;font-family:var(--dot)}
+  .p3mid .p3tag{background:var(--up)}
+  .p3top .p3tag{background:var(--us)}
+  .p3bot .p3tag{background:var(--down)}
+  .p3note{font-size:10.5px;color:var(--dim);margin-top:8px;line-height:1.5;font-family:var(--dot)}
+  .pkglayer{padding:7px 6px;border-radius:6px;margin:3px 0;font-size:11px;font-weight:600}
+  .pkglayer.l1,.pkglayer.c1{background:rgba(157,124,240,.28)}
+  .pkglayer.l2,.pkglayer.c2{background:rgba(240,89,60,.24)}
+  .pkglayer.l3,.pkglayer.c3{background:rgba(63,167,214,.24)}
+  .fsteps{padding:0 10px 12px;display:flex;flex-direction:column;gap:7px}
+  .fstep{background:var(--panel2);border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  .fstep.open{border-color:var(--dim)}
+  .fstep-h{display:flex;align-items:center;gap:10px;padding:11px 12px;width:100%;background:none;border:none;color:var(--text);font:inherit;text-align:left;cursor:pointer}
+  .fstep-icon{font-size:19px;flex-shrink:0}
+  .fstep-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+  .fstep-name{font-size:12.5px;font-weight:700;font-family:var(--dot)}
+  .fstep-desc{font-size:10.5px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fstep-cnt{font-size:10.5px;color:var(--dim);flex-shrink:0;font-weight:600}
+  .fstep-body{padding:4px 12px 12px}
+  .frole{margin-top:8px}
+  .frole-label{font-size:10.5px;color:var(--faint);font-weight:700;letter-spacing:.5px}
+  .fchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+  .fchip{display:inline-flex;align-items:center;gap:5px;background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 9px;cursor:pointer;color:var(--text);font:inherit}
+  .fchip:active{background:var(--panel)}
+  .fchip-nm{font-size:11px;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .farrow{text-align:center;color:var(--faint);font-size:15px;margin:1px 0 3px}
+  .farrow:last-child{display:none}
+  .navfooter{position:fixed;bottom:0;left:0;right:0;z-index:60;display:flex;gap:1px;
+    background:var(--line);border-top:1px solid var(--line);
+    padding-bottom:env(safe-area-inset-bottom,0)}
+  .navfbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+    background:var(--ink);border:none;color:var(--dim);padding:10px 4px 11px;
+    font-size:11px;font-family:inherit;cursor:pointer}
+  .navfbtn:active{background:var(--panel2)}
+  .navfbtn.home{color:var(--jp)}
+  .navficon{font-size:18px}
+  .searchbox{position:relative;margin:4px 0 10px}
+  .searchrow{display:flex;gap:6px;flex-wrap:wrap}
+  .searchrow input{flex:1;min-width:150px}
+  .searchrow .searchresults{flex-basis:100%}
+  .stag{display:block;font-size:9.5px;color:var(--dim);font-family:var(--dot);margin-top:1px}
+  .tagchip{display:inline-block;margin:3px 4px 0 0;padding:4px 9px;background:transparent;color:#6EE7F0;
+    border:1px solid rgba(110,231,240,.4);border-radius:6px;font-size:10.5px;font-family:var(--dot);cursor:pointer}
+  .tagchip:active{background:rgba(110,231,240,.15)}
+  .searchbox input{width:100%;box-sizing:border-box;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;padding:11px 13px;color:var(--text);font-size:13.5px;font-family:inherit}
+  .searchbox input:focus{outline:none;border-color:var(--jp)}
+  .searchresults{position:absolute;top:100%;left:0;right:0;z-index:30;margin-top:4px;
+    background:var(--ink);border:1px solid var(--line);border-radius:10px;overflow:hidden;
+    max-height:340px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .searchresults:empty{display:none}
+  .sresult{display:flex;align-items:center;gap:8px;padding:11px 13px;cursor:pointer;
+    border-bottom:1px solid var(--line);background:none;border-left:none;border-right:none;border-top:none;
+    width:100%;text-align:left;color:var(--text);font:inherit}
+  .sresult:active{background:var(--panel2)}
+  .sresult .scode{font-weight:700;width:48px;flex-shrink:0}
+  .sresult .snm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sresult .snm .stag{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sresult .schg{flex-shrink:0}
+  .sresult .snm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px}
+  .sresult .schg{font-size:12px;font-weight:700}
+  .chip{background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:8px;font-family:var(--dot);
+    padding:8px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .chip.on{background:var(--text);color:var(--ink);border-color:var(--text)}
+  /* 表示メニュー(テーマ/銘柄分析/前日比・出来高/フロー図/連動)は大きく・選択でボタン固有色 */
+  #viewChips .chip{font-size:15px;font-weight:700;padding:10px 15px}
+  #viewChips .chip.on{color:#fff}
+  #viewChips .chip[data-id="theme"].on{background:#6EE7F0;border-color:#6EE7F0;color:#0B0E15}
+  #viewChips .chip[data-id="rank"].on{background:var(--jp);border-color:var(--jp);color:#0B0E15}
+  #viewChips .chip[data-id="vol"].on{background:#3E9B62;border-color:#3E9B62;color:#fff}
+  #viewChips .chip[data-id="ret"].on{background:#E0433C;border-color:#E0433C;color:#fff}
+  #viewChips .chip[data-id="flow"].on{background:var(--us);border-color:var(--us);color:#fff}
+  #viewChips .chip[data-id="link"].on{background:#3B82C4;border-color:#3B82C4;color:#fff}
+  .chartbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 10px 8px;margin-top:12px}
+  .charttitle{font-size:11.5px;color:var(--dim);letter-spacing:1px;margin:0 4px 4px}
+  svg.lines{display:block;width:100%;height:auto;touch-action:none}
+  .meta{display:flex;gap:14px;font-size:11.5px;color:var(--dim);margin:12px 0 10px;flex-wrap:wrap}
+  .meta .right{margin-left:auto}
+  .dot-up{color:var(--up)}.dot-down{color:var(--down)}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .row{width:100%;display:flex;align-items:center;gap:11px;padding:13px;background:none;border:none;
+    color:var(--text);text-align:left;cursor:pointer;font:inherit}
+  .badge{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;
+    justify-content:center;font-size:12px;font-weight:700;color:#0B0E15;border:2px solid}
+  .tname{font-size:15px;font-weight:600;line-height:1.2}
+  .tsub{font-size:11px;color:var(--dim);margin-top:2px}
+  .barbg{margin-top:7px;height:5px;background:var(--panel2);border-radius:3px;overflow:hidden}
+  .barfill{height:100%;border-radius:3px;transition:width .4s cubic-bezier(.2,.7,.2,1)}
+  .avg{font-size:16px;font-weight:700;width:78px;text-align:right;flex-shrink:0}
+  .chev{flex-shrink:0;color:var(--faint);font-size:11px;transition:transform .2s}
+  .open .chev{transform:rotate(180deg)}
+  .detail{display:none;padding:0 13px 14px;border-top:1px solid var(--line)}
+  .open .detail{display:block;animation:rise .22s ease}
+  @keyframes rise{from{opacity:0;transform:translateY(-4px)}to{opacity:1}}
+  .subhead{font-size:12.5px;font-weight:700;margin:14px 0 7px;display:flex;align-items:center;gap:8px}
+  .subavg{margin-left:auto;font-weight:700}
+  .grp{font-size:10.5px;color:var(--dim);letter-spacing:1px;margin:8px 0 4px}
+  .stock{display:flex;align-items:center;gap:7px;font-size:12.5px;padding:6px;border-radius:8px;
+    cursor:pointer;border:none;background:none;color:#C5CCDA;width:100%;text-align:left;font:inherit}
+  .stock:active{background:var(--panel2)}
+  .stock .sym{font-weight:700;width:46px;flex-shrink:0}
+  .stock .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+  .stock .why{color:var(--text);font-size:10.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .stock .pct{font-weight:700;flex-shrink:0;width:62px;text-align:right}
+  .note{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:13px;font-size:11.5px;color:var(--dim);line-height:1.6}
+  .overlay{position:fixed;inset:0;background:rgba(5,8,14,.8);display:none;z-index:50}
+  .overlay.show{display:flex;align-items:flex-end;justify-content:center;padding-bottom:64px;box-sizing:border-box}
+  .sheet{background:var(--panel);border:1px solid var(--line);border-radius:16px 16px 0 0;
+    width:100%;max-width:820px;padding:16px 16px max(20px,env(safe-area-inset-bottom));animation:up .22s ease;
+    max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  @keyframes up{from{transform:translateY(24px);opacity:.5}to{transform:none}}
+  .sheethead{display:flex;align-items:baseline;gap:9px;margin-bottom:3px;position:sticky;top:0;
+    background:var(--panel);padding:6px 0 8px;z-index:5;border-bottom:1px solid var(--line)}
+  .backbtn{width:100%;padding:14px;margin:14px 0 4px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:11px;color:var(--text);font-size:15px;font-weight:700;cursor:pointer}
+  .backbtn:active{background:var(--ink)}
+  .sheethead .sym{font-size:17px;font-weight:800}
+  .sheethead .nm{color:var(--dim);font-size:13px;flex:1;min-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sigrow{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 6px}
+  .sigbadge{font-size:9.5px;font-weight:700;line-height:1.3;border:1px solid var(--line);border-radius:5px;padding:2px 6px;white-space:nowrap}
+  .close{background:none;border:none;color:var(--faint);font-size:22px;cursor:pointer;line-height:1;padding:4px}
+  .sheetmeta{display:flex;gap:12px;font-size:12px;color:var(--dim);margin-bottom:8px}
+  .retgrid{display:flex;gap:6px;margin-top:10px}
+  .retbox{flex:1;background:var(--panel2);border-radius:8px;padding:7px 4px;text-align:center}
+  .retbox .k{font-size:10.5px;color:var(--dim);margin-bottom:3px}
+  .retbox .v{font-size:13px;font-weight:700}
+  .chartwrap{margin-top:8px;background:var(--panel2);border-radius:10px;padding:10px 6px;min-height:280px}
+  .chartperiod{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+  .cpchip{padding:5px 11px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;
+    color:var(--dim);font-size:11.5px;font-weight:600;cursor:pointer}
+  .cpchip.on{background:var(--text);color:var(--ink);border-color:var(--text)}
+  .chartwrap svg{width:100%;display:block}
+  .malegend{display:flex;gap:12px;padding:2px 4px 8px;font-size:10px;justify-content:center}
+  .malegend{display:flex;gap:10px;padding:0 2px 6px;font-size:9px}
+  .maleg{letter-spacing:.5px}
+  .techbox{margin-top:14px;background:var(--panel2);border-radius:11px;padding:12px}
+  .techtitle{font-size:12px;font-weight:700;color:var(--dim);margin-bottom:8px}
+  .techgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .techcell{display:flex;justify-content:space-between;align-items:baseline;gap:6px;
+    background:var(--panel);border-radius:7px;padding:8px 10px}
+  .techcell .tk{font-size:11.5px;color:var(--dim);white-space:nowrap}
+  .techcell .tv{font-size:14px;font-weight:700}
+  .techhint{margin-top:10px;font-size:11.5px;line-height:1.6;color:var(--text)}
+  .themebox{margin-top:14px;background:var(--panel2);border-radius:11px;padding:12px}
+  .themechip2{display:inline-block;background:var(--panel);border:1px solid var(--line);
+    border-radius:7px;padding:7px 11px;margin:0 5px 5px 0;font-size:11.5px;color:var(--text);
+    cursor:pointer;text-align:left}
+  .themechip2:active{background:var(--panel2);border-color:var(--jp)}
+  .retbox .k{font-size:10.5px;color:var(--dim)}.retbox .v{font-size:12.5px;font-weight:700;margin-top:2px}
+  .dtbadge{display:inline-block;margin:8px 0 4px;padding:4px 10px;background:rgba(240,89,60,.15);color:var(--up);border-radius:6px;font-size:12px;font-weight:700}
+  .navbox{margin-top:14px}
+  .navrow{display:flex;gap:6px;margin-top:6px}
+  .navmini{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px;
+    background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--text);
+    font-size:10px;font-weight:600;cursor:pointer}
+  .navmini:active{background:var(--ink)}
+  .navmini .navi{font-size:17px}
+  .extlink{text-decoration:none}
+  .extlink:active{background:var(--ink)}
+  .navgrid{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+  .navbtn{width:100%;padding:11px 12px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;
+    color:var(--text);font-size:13px;font-weight:600;text-align:left;cursor:pointer}
+  .navbtn:active{background:var(--ink)}
+  .flash{animation:flashAnim 2s ease}
+  @keyframes flashAnim{0%,100%{background:transparent}20%,60%{background:rgba(63,167,214,.25)}}
+  .aibtn{width:100%;padding:12px;margin:4px 0 10px;background:linear-gradient(135deg,#3FA7D6,#5B9279);
+    border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+  .aibtn:active{opacity:.8}
+  .loading{text-align:center;color:var(--dim);padding:60px 0;font-size:14px}
+  /* === 添付風テーマ行 === */
+  .trow{display:flex;align-items:center;gap:10px;padding:14px 12px}
+  .rnum{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:800;color:#0B0E15;flex-shrink:0}
+  .tmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+  .trow .tname{font-size:15px;font-weight:800;line-height:1.3;color:var(--text);white-space:normal;font-family:var(--dot);letter-spacing:.3px}
+  .trow .tsub{font-size:11px;color:var(--dim)}
+  .tspark{width:110px;flex-shrink:0;display:flex;align-items:center}
+  .spark{width:110px;height:38px}
+  .tright{flex-shrink:0;text-align:right;min-width:72px}
+  .trow .avg{font-size:21px;font-weight:800}
+  /* 工程見出しの大型化(メリハリ) */
+  .procstage{font-size:15px!important;font-weight:900!important;margin:20px 2px 10px!important;letter-spacing:.08em!important}
+  .procstep-h{font-size:14.5px!important;font-weight:800!important}
+  .procicon{font-size:20px;margin-right:7px;vertical-align:-2px}
+  /* 銘柄ランキング */
+  .rankrow{display:flex;align-items:center;gap:8px;width:100%;padding:11px 10px;background:none;
+    border:none;border-bottom:1px solid var(--line);color:var(--text);font:inherit;text-align:left;cursor:pointer}
+  .rankrow:active{background:var(--panel2)}
+  .rkrank{width:26px;text-align:right;color:var(--faint);font-size:12px;flex-shrink:0;font-family:ui-monospace,monospace}
+  .rknm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+  .rkret{font-size:16px;font-weight:800;width:78px;text-align:right;flex-shrink:0}
+  .rktag{font-size:9.5px;font-weight:700;border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:1px}
+  .rktag.lead{background:rgba(240,89,60,.18);color:var(--up)}
+  .rktag.lag{background:rgba(63,167,214,.18);color:var(--down)}
+  .proccol-h{font-size:11px!important}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  /* 出来高フル列テーブル */
+  #volList{overflow-x:hidden}
+  .volhead,.volrow{display:grid;grid-template-columns:32px 1fr 72px 72px;
+    align-items:center;gap:6px;padding:11px 10px;font-size:13px}
+  .volhead{color:var(--dim);font-size:11px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--ink)}
+  .volrow{border-bottom:1px solid var(--line);background:none;border-left:none;border-right:none;border-top:none;
+    cursor:pointer;color:var(--text);font:inherit;text-align:left;width:100%}
+  .volrow:active{background:var(--panel2)}
+  .vh-rank{color:var(--faint);text-align:right}
+  .vh-sym{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+  .vh-nm{font-size:11px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .vh-num{text-align:right}
+  /* 連動ビュー */
+  .linkgrp{margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .linkgrp-h{font-size:12.5px;font-weight:700;padding:10px 12px;background:var(--panel2);line-height:1.3;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .linkgrp.trig{border-color:var(--up)}
+  .trigbadge{font-size:10.5px;font-weight:700;color:var(--up);border:1px solid var(--up);border-radius:6px;padding:2px 7px;white-space:nowrap;flex-shrink:0}
+  .trigbadge.off{color:var(--faint);border-color:var(--line);font-weight:400}
+  .uschips{display:flex;flex-wrap:wrap;gap:5px;padding:8px 12px;font-size:10px;color:var(--faint);border-bottom:1px solid var(--line)}
+  .uschip{background:var(--panel2);border-radius:5px;padding:2px 6px;font-size:11px}
+  .linkgrp-sub{display:flex;gap:4px;padding:4px 12px;font-size:11px;color:var(--dim)}
+  .linkrow{display:flex;align-items:center;gap:6px;width:100%;padding:9px 12px;background:none;
+    border:none;border-top:1px solid var(--line);color:var(--text);font:inherit;text-align:left;cursor:pointer;font-size:12.5px}
+  .linkrow:active{background:var(--panel2)}
+  .linkrow .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+  .lk-rate{width:48px;text-align:right;flex-shrink:0;font-weight:700}
+  .lk-avg{width:56px;text-align:right;flex-shrink:0}
+  .lk-n{width:42px;text-align:right;flex-shrink:0;font-size:11px}
+  /* 詳細シート内 連動内訳 */
+  .lkb{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .lkb-h{font-size:12px;font-weight:700;margin-bottom:8px}
+  .lkb-sub{display:flex;font-size:11px;color:var(--dim);padding:0 2px 4px}
+  .lkb-row{display:flex;align-items:center;gap:6px;padding:6px 2px;border-bottom:1px solid var(--line);font-size:12px}
+  .lkb-theme{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+  .lkb-macro{font-size:9.5px;color:var(--faint)}
+  .lkb-v{width:52px;text-align:right;flex-shrink:0;font-weight:700;font-family:ui-monospace,monospace}
+  .lkb-tag{width:46px;text-align:right;flex-shrink:0;font-size:10px;color:var(--dim)}
+  .lkb-n{color:var(--faint);margin-left:3px}
+  .lkb-note{font-size:10px;color:var(--faint);margin-top:8px;line-height:1.5}
+  /* 工程マップ */
+  .procstage{font-size:12px;font-weight:800;margin:16px 2px 8px;letter-spacing:.05em}
+  .procstep{background:var(--panel);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+  .procstep-h{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;flex-direction:column;gap:2px}
+  .procdesc{font-size:10.5px;color:var(--faint);font-weight:400}
+  .procgrouplabel{font-size:10.5px;color:var(--dim);margin:6px 0 4px}
+  .procchips{display:flex;flex-wrap:wrap;gap:6px}
+  .procchip{display:inline-flex;align-items:center;gap:5px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:8px;padding:5px 9px;cursor:pointer;color:var(--text);font:inherit}
+  .procchip:active{background:var(--ink)}
+  .procnm{font-size:11.5px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .procempty{font-size:11px;color:var(--faint)}
+  /* 工程: 装置｜材料 2カラム */
+  .proc2col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .proc2col .proccol:only-child{grid-column:1/-1}
+  .proccol{min-width:0}
+  .proccol-h{font-size:10px;font-weight:700;margin-bottom:5px;letter-spacing:.05em;border-bottom:1px solid var(--line);padding-bottom:3px}
+  .procarrow{text-align:center;color:var(--faint);font-size:14px;line-height:1;margin:2px 0 4px}
+  @media (max-width:380px){.proc2col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="rainbow"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SEMICONDUCTOR THEME TRACKER</div>
+    <h1><span class="tt-wafer">🌐</span>半導体<span class="tt-hot">テーマ</span>トラッカー<svg class="tt-hbm" viewBox="0 0 24 24" width="22" height="22" shape-rendering="crispEdges" aria-hidden="true">
+      <rect x="5" y="2" width="12" height="20" fill="#2A2E38" stroke="#4A5266" stroke-width="1"/>
+      <rect x="17" y="3" width="3" height="19" fill="#1A1D24"/>
+      <rect x="6" y="4" width="10" height="3" fill="#3A3F4B"/>
+      <rect x="6" y="8" width="10" height="3" fill="#3A3F4B"/>
+      <rect x="6" y="12" width="10" height="3" fill="#3A3F4B"/>
+      <rect x="6" y="16" width="10" height="3" fill="#3A3F4B"/>
+      <rect x="7" y="5" width="1" height="1" fill="#5BD98A"/><rect x="9" y="5" width="1" height="1" fill="#5BD98A"/><rect x="12" y="5" width="3" height="1" fill="#5BD98A"/>
+      <rect x="7" y="9" width="1" height="1" fill="#5BD98A"/><rect x="9" y="9" width="1" height="1" fill="#5BD98A"/><rect x="12" y="9" width="3" height="1" fill="#5BD98A"/>
+      <rect x="7" y="13" width="1" height="1" fill="#5BD98A"/><rect x="9" y="13" width="1" height="1" fill="#5BD98A"/><rect x="12" y="13" width="3" height="1" fill="#5BD98A"/>
+      <rect x="7" y="17" width="1" height="1" fill="#5BD98A"/><rect x="9" y="17" width="1" height="1" fill="#5BD98A"/><rect x="12" y="17" width="3" height="1" fill="#5BD98A"/>
+    </svg></h1>
+    <p class="sub">年初来の累積騰落率で、どのテーマに資金が来てどこから抜けたかを一望。タップでサブテーマ・連動日本株へ。</p>
+  </header>
+
+  <div class="searchbox searchrow">
+    <input type="text" id="searchInput" placeholder="🔍 銘柄コード・名前(例: 6146)" autocomplete="off" oninput="onSearch(this.value)">
+    <input type="text" id="tagSearchInput" placeholder="🏷️ タグ(例: 先端パッケージング/MLCC/PCB/テスト)" autocomplete="off" oninput="onTagSearch(this.value)">
+    <div id="searchResults" class="searchresults"></div>
+  </div>
+
+  <div class="ctrl-label">表示</div>
+  <div class="chips" id="viewChips"></div>
+
+  <div id="themeView">
+  <div class="ctrl-label">期間</div>
+  <div class="chips" id="periodChips"></div>
+  <div class="ctrl-label">平均の対象</div>
+  <div class="chips" id="marketChips"></div>
+
+  <div class="chartbox">
+    <div class="charttitle" id="chartTitle">累積騰落率(%) — テーマ平均</div>
+    <svg class="lines" id="chart" viewBox="0 0 360 200" preserveAspectRatio="none"></svg>
+  </div>
+
+  <div class="meta">
+    <span><span class="dot-up">●</span> 上昇</span>
+    <span><span class="dot-down">●</span> 下落</span>
+    <span class="right num" id="updated"></span>
+  </div>
+
+  <div class="list" id="list"><div class="loading">データ読み込み中…</div></div>
+  </div>
+
+  <div id="volView" style="display:none">
+    <div class="ctrl-label">市場フィルタ</div>
+    <div class="chips" id="volMarketChips"></div>
+    <div class="ctrl-label">並び替え</div>
+    <div class="chips" id="volSortChips"></div>
+    <div class="chips" id="volDirChips" style="margin-top:6px"></div>
+    <div class="charttitle" style="margin:12px 4px 8px">出来高率=本日出来高÷20日平均(相対)。2倍超=資金流入の兆し。発行株数に依存しない正確な指標。</div>
+    <div class="list" id="volList"></div>
+  </div>
+
+  <div id="linkView" style="display:none">
+    <div class="charttitle" style="margin:10px 4px 8px;line-height:1.5">
+      米国系テーマが <b style="color:var(--up)">+2%以上</b> 上昇した翌営業日に連動しやすい「テーマ→日本株」ランキング。<br>
+      <span style="color:var(--faint)">銘柄タップで、その株が"どのテーマにどれだけ連動するか"の内訳が見れる(純粋効果で交絡除去)</span>
+    </div>
+    <div class="list" id="linkList"></div>
+  </div>
+
+  <div id="rankView" style="display:none">
+    <div class="ctrl-label">セクター(マクロ)で絞る</div>
+    <div class="chips chips-wrap" id="rankSectorChips"></div>
+    <div class="chips chips-wrap" id="rankSubChips" style="display:none;margin-top:5px"></div>
+    <div class="ctrl-label">市場</div>
+    <div class="chips" id="rankMarketChips"></div>
+    <div class="ctrl-label">チャートパターンで絞る</div>
+    <div class="chips chips-wrap" id="rankPatternChips"></div>
+    <div class="ctrl-label">注目シグナルで絞る(複数タップでAND検索。例: 出来高3倍↑＋25日線押し目)</div>
+    <div class="chips chips-wrap" id="rankSignalChips"></div>
+    <div class="charttitle" style="margin:10px 4px 8px">パターン・シグナルで銘柄を絞り込み。並び順は前日比の大きい順。※チャートパターンは各銘柄の直近の値動きから固定判定(騰落率の期間とは無関係)。</div>
+    <button class="aibtn" onclick="copyAISummary()">📋 AI分析用サマリーをコピー(Claudeに貼って質問)</button>
+    <div class="list" id="rankList"></div>
+  </div>
+
+  <div id="retView" style="display:none">
+    <div class="ctrl-label">期間(この期間の騰落率で並べ替え)</div>
+    <div class="chips" id="retPeriodChips"></div>
+    <div class="ctrl-label">セクター(マクロ)で絞る</div>
+    <div class="chips chips-wrap" id="retSectorChips"></div>
+    <div class="chips chips-wrap" id="retSubChips" style="display:none;margin-top:5px"></div>
+    <div class="ctrl-label">市場</div>
+    <div class="chips" id="retMarketChips"></div>
+    <div class="charttitle" style="margin:10px 4px 8px">選んだ期間の騰落率ランキング。同セクターで絞れば「誰が先行・誰が出遅れ」が分かる。</div>
+    <div class="list" id="retList"></div>
+  </div>
+
+  <div id="flowView" style="display:none">
+    <div class="charttitle" style="margin:10px 4px 12px;line-height:1.6">
+      半導体づくりを<b>5ステージ</b>で図解。①前工程→②中工程・先端パッケージング→③後工程→④光電融合→⑤データセンター/インフラ(氷山)。<br>
+      <span style="color:var(--dim)">各工程をタップで銘柄が展開。②中工程は5階層、⑤データセンターは氷山8層(GPU→ストレージ→網→電源→冷却→建設→ゼネコン→電力)。</span>
+    </div>
+    <div id="flowList"></div>
+  </div>
+
+  <div id="procView" style="display:none">
+    <div class="charttitle" style="margin:10px 4px 10px;line-height:1.5">
+      半導体の製造プロセス順(設計→前工程→後工程→材料)に対応銘柄を配置。<br>
+      <span style="color:var(--dim)">上から下へ製造の流れ。各工程の銘柄をタップで詳細へ。</span>
+    </div>
+    <div class="ctrl-label">期間</div>
+    <div class="chips chips-wrap" id="procPeriodChips"></div>
+    <div id="procList"></div>
+  </div>
+
+  <div class="note" id="note">
+    出典: Stooq 日足(終値ベース)。平日に自動更新(東証引け後・NY引け後)。年初来始値=0%。<br>
+    個人利用専用。投資助言ではありません。売買判断は自己責任で。
+  </div>
+  <div style="height:72px"></div>
+</div>
+
+<div class="navfooter">
+  <button class="navfbtn" onclick="goBack()"><span class="navficon">←</span><span>前に戻る</span></button>
+  <button class="navfbtn home" onclick="goHome()"><span class="navficon">🏠</span><span>ホーム</span></button>
+  <button class="navfbtn" onclick="takeShot()"><span class="navficon">📷</span><span>保存</span></button>
+  <button class="navfbtn" onclick="scrollUpNav()"><span class="navficon">↑</span><span>上へ</span></button>
+</div>
+
+<div class="overlay" id="overlay"><div class="sheet" id="sheet"></div></div>
+
+<script>
+const MARKETS=[["both","統合"],["us","米国"],["jp","日本"]];
+// 期間: id, ラベル, 営業日数(YTDはnull=年初来)
+const PERIODS=[["1D","1日",1],["5D","5日",5],["1M","1ヶ月",21],
+  ["3M","3ヶ月",63],["6M","6ヶ月",126],["1Y","1年",252],["YTD","年初来",null]];
+let DATA=null, market="both", period="1M", openIdx=-1;
+let view="theme", volMarket="all", highlightSym=null;
+let viewHistory=[];  // 戻るボタン用の履歴
+const $=s=>document.querySelector(s);
+const fmt=v=>v==null?"–":(v>0?"+":"")+v.toFixed(1)+"%";
+const col=v=>v==null?"var(--dim)":v>0?"var(--up)":v<0?"var(--down)":"var(--dim)";
+const periodDays=()=>(PERIODS.find(p=>p[0]===period)||[])[2];
+
+// 1銘柄の「選択期間」の日足を切り出す → [[date,close]...]
+function sliceDaily(sym){
+  const d=DATA.quotes[sym]?.daily; if(!d||d.length<2) return null;
+  const days=periodDays();
+  if(days==null){ // YTD: 今年の最初の営業日から
+    const yr=DATA.updated.slice(0,4);
+    const ys=d.filter(p=>p[0]>=yr+"-01-01");
+    return ys.length>=2?ys:null;
+  }
+  return d.slice(Math.max(0,d.length-1-days));
+}
+// 切り出した日足 → 始点0%の累積騰落率ライン
+function cumLine(sym){
+  const s=sliceDaily(sym); if(!s) return null;
+  const base=s[0][1]; if(!base) return null;
+  return s.map(p=>[p[0], (p[1]/base-1)*100]);
+}
+// 銘柄の選択期間リターン(末尾の値)
+function symRet(sym){const c=cumLine(sym);return c?c[c.length-1][1]:null;}
+
+// 複数銘柄の累積ラインを各日付で平均
+function avgSeries(syms){
+  const arrs=syms.map(s=>cumLine(s)).filter(Boolean);
+  if(!arrs.length) return null;
+  const n=Math.min(...arrs.map(a=>a.length));
+  const out=[];
+  for(let i=0;i<n;i++){
+    const vs=arrs.map(a=>a[a.length-n+i][1]);
+    out.push([arrs[0][arrs[0].length-n+i][0], vs.reduce((x,y)=>x+y,0)/vs.length]);
+  }
+  return out;
+}
+function pickSyms(sub){
+  if(market==="us") return sub.us.map(x=>x[0]);
+  if(market==="jp") return [...sub.jp.map(x=>x[0]),...sub.solo.map(x=>x[0])];
+  return [...sub.us.map(x=>x[0]),...sub.jp.map(x=>x[0]),...sub.solo.map(x=>x[0])];
+}
+function macroSyms(m){const s=new Set();m.subs.forEach(sub=>pickSyms(sub).forEach(x=>s.add(x)));return [...s];}
+function lastOf(series){return series&&series.length?series[series.length-1][1]:null;}
+
+function rankedMacros(){
+  return DATA.macro.map((m,idx)=>{
+    const series=avgSeries(macroSyms(m));
+    return {...m, idx, series, avg:lastOf(series)};
+  }).filter(m=>m.series).sort((a,b)=>(b.avg??-1e9)-(a.avg??-1e9));
+}
+
+// 複数テーマの累積ラインを重ねて描画
+function drawChart(rows){
+  const W=360,H=200,padL=4,padR=14,padT=10,padB=16;
+  let all=[]; rows.forEach(r=>r.series.forEach(p=>all.push(p[1])));
+  if(!all.length){$("#chart").innerHTML="";return;}
+  let mn=Math.min(...all,0), mx=Math.max(...all,0);
+  const pad=(mx-mn)*0.08||1; mn-=pad; mx+=pad;
+  const n=Math.max(...rows.map(r=>r.series.length));
+  const X=i=>padL+(i/(n-1))*(W-padL-padR);
+  const Y=v=>padT+(1-(v-mn)/(mx-mn))*(H-padT-padB);
+  let svg="";
+  // ドット風グリッド(点線・水平4分割)
+  for(let g=0;g<=4;g++){
+    const gy=(padT+(H-padT-padB)*g/4).toFixed(1);
+    svg+=`<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="rgba(138,148,168,.14)" stroke-width="1" stroke-dasharray="1 3" shape-rendering="crispEdges" vector-effect="non-scaling-stroke"/>`;
+  }
+  // zero line(強調)
+  svg+=`<line x1="${padL}" y1="${Y(0).toFixed(1)}" x2="${W-padR}" y2="${Y(0).toFixed(1)}" stroke="rgba(138,148,168,.35)" stroke-width="1" stroke-dasharray="2 3" shape-rendering="crispEdges" vector-effect="non-scaling-stroke"/>`;
+  // grid labels (max/min/0%)
+  svg+=`<text x="${padL+2}" y="${(Y(mx)+8).toFixed(1)}" fill="#8B94A8" font-size="8" font-family="'DotGothic16',monospace">${mx.toFixed(0)}%</text>`;
+  svg+=`<text x="${padL+2}" y="${(Y(mn)-3).toFixed(1)}" fill="#8B94A8" font-size="8" font-family="'DotGothic16',monospace">${mn.toFixed(0)}%</text>`;
+  svg+=`<text x="${padL+2}" y="${(Y(0)-2).toFixed(1)}" fill="#5A6478" font-size="7.5" font-family="'DotGothic16',monospace">0%</text>`;
+  rows.forEach((r,ri)=>{
+    const len=r.series.length;
+    // 実線(視認性優先)
+    const pts=r.series.map((p,i)=>`${X(i).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(" ");
+    svg+=`<polyline points="${pts}" fill="none" stroke="${r.color}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke" opacity="0.9"/>`;
+    const last=r.series[len-1];
+    const cx=X(len-1), cy=Y(last[1]);
+    // 順位番号バッジ(ライン末尾・ドット絵風の四角)
+    svg+=`<rect x="${(cx-6).toFixed(1)}" y="${(cy-6).toFixed(1)}" width="12" height="12" fill="${r.color}" stroke="#0B0E15" stroke-width="1.5" shape-rendering="crispEdges"/>`;
+    svg+=`<text x="${cx.toFixed(1)}" y="${(cy+3).toFixed(1)}" fill="#0B0E15" font-size="8" font-weight="700" font-family="'DotGothic16',ui-monospace,monospace" text-anchor="middle">${ri+1}</text>`;
+  });
+  const c=$("#chart"); c.setAttribute("viewBox",`0 0 ${W} ${H}`); c.innerHTML=svg;
+}
+
+// ===== ドット絵風・株価チャート(MA 5/25/75/200 + 出来高) =====
+const MA_DEFS=[[5,"#6EE7F0"],[25,"#E8B04B"],[50,"#5BD98A"],[75,"#9D7CF0"],[200,"#F05989"]];
+function maSeries(closes,n){
+  // closes全体からn日移動平均を計算(先頭n-1本はnull)
+  const out=new Array(closes.length).fill(null);
+  let s=0;
+  for(let i=0;i<closes.length;i++){
+    s+=closes[i];
+    if(i>=n)s-=closes[i-n];
+    if(i>=n-1)out[i]=s/n;
+  }
+  return out;
+}
+// 週足/月足への集計: [日付,終値,出来高,(始値,高値,安値)] → 同形式
+function aggregateRows(dd,unit){
+  // unit: "W"=週足(月曜起点) / "M"=月足
+  const out=[];let key=null,cur=null;
+  dd.forEach(r=>{
+    const dt=new Date(r[0]+"T00:00:00Z");
+    let k;
+    if(unit==="M"){k=r[0].slice(0,7);}
+    else{
+      const day=(dt.getUTCDay()+6)%7;              // 月曜=0
+      const mon=new Date(dt);mon.setUTCDate(dt.getUTCDate()-day);
+      k=mon.toISOString().slice(0,10);
+    }
+    const o=r.length>=6?r[3]:r[1], h=r.length>=6?r[4]:r[1], l=r.length>=6?r[5]:r[1];
+    if(k!==key){
+      if(cur)out.push(cur);
+      key=k;cur=[r[0],r[1],r[2]||0,o,h,l];
+    }else{
+      cur[1]=r[1];                                  // 終値=期間最後
+      cur[2]+=(r[2]||0);
+      cur[4]=Math.max(cur[4],h);cur[5]=Math.min(cur[5],l);
+      cur[0]=r[0];                                  // ラベル=期間最終日
+    }
+  });
+  if(cur)out.push(cur);
+  return out;
+}
+function bigChart(allRows,dispCount){
+  // allRows=時間軸ごとの全ローソク([[date,c,v,o,h,l],...]) dispCount=表示本数(末尾から)
+  // viewBox比率を縦長寄りに(横長で潰れないよう)。実際の描画幅はCSSで制御
+  const W=300,H=280,padL=6,padR=44,padT=10,padB=30;
+  const PXH=176, VGAP=14, VOLH=44;
+  const VOLT=padT+PXH+VGAP;
+  if(!allRows||allRows.length<2) return "<p style='color:var(--dim);padding:20px 0'>チャートデータなし</p>";
+  const startIdx=Math.max(0,allRows.length-dispCount);
+  const seg=allRows.slice(startIdx);
+  const n=seg.length;
+  if(n<2) return "<p style='color:var(--dim);padding:20px 0'>チャートデータなし</p>";
+  const closesAll=allRows.map(p=>p[1]);
+  const vols=seg.map(p=>p[2]||0);
+  const hasVol=vols.some(v=>v>0);
+  const hasOHLC=seg.every(r=>r.length>=6);
+  const mas=MA_DEFS.map(([nn])=>maSeries(closesAll,nn).slice(startIdx));
+  let mn,mx;
+  if(hasOHLC){mn=Math.min(...seg.map(p=>p[5]));mx=Math.max(...seg.map(p=>p[4]));}
+  else{const vs=seg.map(p=>p[1]);mn=Math.min(...vs);mx=Math.max(...vs);}
+  mas.forEach(m=>m.forEach(v=>{if(v!=null){if(v<mn)mn=v;if(v>mx)mx=v;}}));
+  const pad=(mx-mn)*0.06||1;mn-=pad;mx+=pad;
+  const X=i=>padL+(i/(n-1))*(W-padL-padR);
+  const Y=v=>padT+(1-(v-mn)/(mx-mn))*PXH;
+  const UP="#F0593C",DN="#3FA7D6";
+  let svg="";
+  // 黒パネル背景
+  svg+=`<rect x="0" y="0" width="${W}" height="${H}" fill="#0E1219" rx="4"/>`;
+  // 水平グリッド(点線・薄グレー)
+  for(let g=0;g<=4;g++){
+    const gy=(padT+PXH*g/4).toFixed(1);
+    svg+=`<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="rgba(138,148,168,.18)" stroke-width="1" stroke-dasharray="1 3" shape-rendering="crispEdges"/>`;
+  }
+  // 価格軸ラベル(右)
+  const fmtP=v=>v>=10000?(v/1000).toFixed(1)+"k":v>=100?v.toFixed(0):v.toFixed(1);
+  for(let g=0;g<=4;g++){
+    const val=mx-(mx-mn)*g/4, gy=padT+PXH*g/4;
+    svg+=`<text x="${W-padR+4}" y="${(gy+3).toFixed(1)}" fill="#8B94A8" font-size="9" font-family="'DotGothic16',monospace">${fmtP(val)}</text>`;
+  }
+  // ===== X軸: 月境界に縦グリッド+日付ラベル(3/1,4/1,...) =====
+  // 各バーの年月を取り、月が変わる位置にラベル
+  const marks=[];
+  let prevYM=null;
+  for(let i=0;i<n;i++){
+    const ym=seg[i][0].slice(0,7);
+    if(ym!==prevYM){marks.push(i);prevYM=ym;}
+  }
+  // マークが多すぎる場合は間引き(最大7個程度)
+  let step=Math.ceil(marks.length/7)||1;
+  const shown=marks.filter((_,idx)=>idx%step===0);
+  shown.forEach(i=>{
+    const x=X(i);
+    // 月境界の縦点線
+    svg+=`<line x1="${x.toFixed(1)}" y1="${padT}" x2="${x.toFixed(1)}" y2="${(padT+PXH).toFixed(1)}" stroke="rgba(138,148,168,.12)" stroke-width="1" stroke-dasharray="1 3" shape-rendering="crispEdges"/>`;
+    const parts=seg[i][0].split("-");  // YYYY-MM-DD
+    const label=`${parseInt(parts[1])}/1`;
+    svg+=`<text x="${x.toFixed(1)}" y="${(padT+PXH+VGAP+VOLH+16).toFixed(1)}" fill="#8B94A8" font-size="9" font-family="monospace" text-anchor="middle">${label}</text>`;
+  });
+  // ローソク(陽線=赤 / 陰線=青)
+  if(hasOHLC){
+    const bw=Math.max(1.6,((W-padL-padR)/n)*0.66);
+    for(let i=0;i<n;i++){
+      const o=seg[i][3],h=seg[i][4],l=seg[i][5],c=seg[i][1];
+      const up=c>=o, colr=up?UP:DN, x=X(i);
+      svg+=`<line x1="${x.toFixed(1)}" y1="${Y(h).toFixed(1)}" x2="${x.toFixed(1)}" y2="${Y(l).toFixed(1)}" stroke="${colr}" stroke-width="1"/>`;
+      const yTop=Y(Math.max(o,c)),bh=Math.max(1.2,Y(Math.min(o,c))-yTop);
+      svg+=`<rect x="${(x-bw/2).toFixed(1)}" y="${yTop.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="${up?UP:'#0E1219'}" stroke="${colr}" stroke-width="1" shape-rendering="crispEdges"/>`;
+    }
+  }else{
+    const vs=seg.map(p=>p[1]);
+    const pts=vs.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ");
+    svg+=`<polyline points="${pts}" fill="none" stroke="${vs[n-1]>=vs[0]?UP:DN}" stroke-width="2" stroke-linejoin="round"/>`;
+  }
+  // MAライン
+  MA_DEFS.forEach(([nn,colr],mi)=>{
+    const m=mas[mi];
+    let pts="",started=false;
+    for(let i=0;i<n;i++){
+      if(m[i]==null)continue;
+      pts+=`${started?" ":""}${X(i).toFixed(1)},${Y(m[i]).toFixed(1)}`;started=true;
+    }
+    if(started&&pts.includes(" "))
+      svg+=`<polyline points="${pts}" fill="none" stroke="${colr}" stroke-width="1.4" opacity="0.9"/>`;
+  });
+  // 出来高(下段)
+  if(hasVol){
+    const vmax=Math.max(...vols)||1;
+    const bw=Math.max(1.2,((W-padL-padR)/n)*0.66);
+    svg+=`<text x="${padL}" y="${(VOLT-3).toFixed(1)}" fill="#8A8F80" font-size="8.5" font-family="'DotGothic16',monospace">出来高</text>`;
+    for(let i=0;i<n;i++){
+      if(!vols[i])continue;
+      const bh=Math.max(1,(vols[i]/vmax)*VOLH);
+      const up=hasOHLC?(seg[i][1]>=seg[i][3]):(i===0||seg[i][1]>=seg[i-1][1]);
+      svg+=`<rect x="${(X(i)-bw/2).toFixed(1)}" y="${(VOLT+VOLH-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="${up?UP:DN}" opacity="0.6" shape-rendering="crispEdges"/>`;
+    }
+  }
+  // MA凡例
+  const legend=MA_DEFS.map(([nn,colr],mi)=>{
+    const avail=mas[mi].some(v=>v!=null);
+    return `<span class="maleg" style="color:${avail?colr:'#4A5266'}">━${nn}MA</span>`;
+  }).join("");
+  return `<div class="chartwrap"><div class="malegend pixel">${legend}</div>
+  <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" style="display:block;width:100%;max-width:420px;margin:0 auto">${svg}</svg></div>`;
+}
+// 詳細シートのチャート期間
+const CHART_TFS=[["日足","D"],["週足","W"],["月足","M"]];
+let sheetSym=null, sheetTf="D";
+function sheetChartHTML(sym,tf){
+  const q=DATA.quotes[sym];
+  const dd=q?.daily;
+  if(!dd||dd.length<2) return bigChart(null,0);
+  if(tf==="W"){const w=q.weekly||aggregateRows(dd,"W");return bigChart(w,9999);}   // 週足
+  if(tf==="M"){const m=q.monthly||aggregateRows(dd,"M");return bigChart(m,9999);}  // 月足
+  return bigChart(dd,80);                                                          // 日足: 直近80本
+}
+function setChartPeriod(tf){
+  sheetTf=tf;
+  if(sheetSym){
+    document.getElementById("sheetChart").innerHTML=sheetChartHTML(sheetSym,tf);
+    document.querySelectorAll("#chartPeriodChips .cpchip").forEach(b=>{
+      b.classList.toggle("on", b.textContent===(CHART_TFS.find(p=>p[1]===tf)||[])[0]);
+    });
+  }
+}
+function showStock(sym){
+  const q=DATA.quotes[sym]; if(!q) return;
+  sheetSym=sym;                 // 現在開いてる銘柄を記憶
+  sheetTf=sheetTf||"D";  // チャート時間軸(デフォルト日足)
+  const mkCol=q.market==="jp"?"var(--jp)":"var(--us)";
+  // この銘柄が属するテーマを全部集める(マクロindexも保持)
+  const themes=[];
+  (DATA.macro||[]).forEach((m,mi)=>m.subs.forEach(s=>{
+    const inIt=[...s.us,...s.jp,...s.solo].some(x=>x[0]===sym);
+    if(inIt)themes.push({label:`${m.name} > ${s.name}`, mi});
+  }));
+  // シグナルの色
+  const sigCol=q.signal==="押し目"?"var(--up)":q.signal==="過熱"?"var(--down)":q.signal==="25日線付近"?"#E0A458":"var(--dim)";
+  const sigBadge=q.signal?`<span class="sigbadge" style="color:${sigCol};border-color:${sigCol}">${q.signal}</span>`:"";
+  // パターンの色(強気=赤、弱気=青)
+  const patBull=["直近高値ブレイク","直近高値ブレイクリーチ","52週高値更新","三角ブレイク","CWH形成中","CWH押し目/抜け","フラッグブレイク","逆三尊・底打ち","トリプルボトム","ダブルボトム"].includes(q.pattern);
+  const patBear=["52週安値圏","三尊・天井注意","トリプルトップ","ダブルトップ"].includes(q.pattern);
+  const patCol=patBull?"var(--up)":patBear?"var(--down)":"var(--dim)";
+  const patBadge=q.pattern?`<span class="sigbadge" style="color:${patCol};border-color:${patCol}">${q.pattern}</span>`:"";
+  // パーフェクトオーダー・押し目バッジ
+  let poBadge="";
+  if(q.po)poBadge=`<span class="sigbadge" style="color:#fff;background:var(--up);border-color:var(--up)">📈パーフェクトオーダー</span>`;
+  else if(q.poBear)poBadge=`<span class="sigbadge" style="color:#fff;background:var(--down);border-color:var(--down)">📉逆PO</span>`;
+  const pbBadge=q.pullback?`<span class="sigbadge" style="color:var(--up);border-color:var(--up)">🎯${q.pullback}</span>`:"";
+  // 出来高急増バッジ(2倍/3倍/5倍)
+  let vsBadge="";
+  if(q.volSurge===3)vsBadge=`<span class="sigbadge" style="color:#fff;background:var(--up);border-color:var(--up)">🔊出来高5倍↑</span>`;
+  else if(q.volSurge===2)vsBadge=`<span class="sigbadge" style="color:var(--up);border-color:var(--up)">🔊出来高3倍↑</span>`;
+  else if(q.volSurge===1)vsBadge=`<span class="sigbadge" style="color:var(--up);border-color:var(--up)">🔊出来高2倍↑</span>`;
+  // ボリンジャーバンドウォークバッジ
+  let bbBadge="";
+  if(q.bbWalk==="up")bbBadge=`<span class="sigbadge" style="color:#fff;background:var(--up);border-color:var(--up)">📊+2σバンドウォーク</span>`;
+  else if(q.bbWalk==="down")bbBadge=`<span class="sigbadge" style="color:#fff;background:var(--down);border-color:var(--down)">📊-2σバンドウォーク</span>`;
+  $("#sheet").innerHTML=`
+    <div class="sheethead"><span class="sym num" style="color:${mkCol}">${sym}</span>
+      <span class="nm">${q.name}</span><button class="close" onclick="hideSheet()">✕</button></div>
+    <div class="sigrow">${poBadge}${bbBadge}${vsBadge}${pbBadge}${sigBadge}${patBadge}</div>
+    <div class="sheetmeta num"><span>終値 ${q.last.toLocaleString()}</span><span>${q.lastDate}</span>
+      <span>${q.market==="jp"?"東証":"US"}</span></div>
+    <div class="sheetmeta num" style="flex-wrap:wrap">
+      <span>前日比 <b style="color:${col(q.chg)}">${fmt(q.chg)}</b></span>
+      <span>出来高率 <b style="color:${q.volRatio>=2?'var(--up)':'var(--text)'}">${q.volRatio!=null?q.volRatio.toFixed(1)+'x':'–'}</b></span>
+    </div>
+    <div class="techtitle" style="margin-top:12px">値動きチャート</div>
+    <div class="chartperiod" id="chartPeriodChips">
+      ${CHART_TFS.map(p=>`<button class="cpchip ${p[1]===sheetTf?'on':''}" onclick="setChartPeriod('${p[1]}')">${p[0]}</button>`).join("")}
+    </div>
+    <div id="sheetChart">${sheetChartHTML(sym,sheetTf)}</div>
+    <div class="techtitle" style="margin-top:12px">期間別騰落率</div>
+    <div class="retgrid">
+      ${PERIODS.map(p=>{const c=cumLineP(sym,p[2]);const v=c?c[c.length-1][1]:null;
+        return `<div class="retbox"><div class="k">${p[1]}</div>
+        <div class="v num" style="color:${col(v)}">${fmt(v)}</div></div>`;}).join("")}
+    </div>
+    <div class="techbox">
+      <div class="techtitle">📅 スイング目線(中期・数日〜数週)</div>
+      <div class="techgrid">
+        <div class="techcell"><span class="tk">25日線乖離</span><span class="tv num" style="color:${q.dev25<=-5?'var(--up)':q.dev25>=8?'var(--down)':'var(--text)'}">${q.dev25!=null?fmt(q.dev25):'–'}</span></div>
+        <div class="techcell"><span class="tk">1ヶ月騰落</span><span class="tv num" style="color:${col(q.ret1m)}">${q.ret1m!=null?fmt(q.ret1m):'–'}</span></div>
+        <div class="techcell"><span class="tk">RSI(14)</span><span class="tv num" style="color:${q.rsi<=35?'var(--up)':q.rsi>=70?'var(--down)':'var(--text)'}">${q.rsi!=null?q.rsi:'–'}</span></div>
+        <div class="techcell"><span class="tk">52週位置</span><span class="tv num">${q.posPct!=null?q.posPct+'%':'–'}</span></div>
+        <div class="techcell"><span class="tk">52週高値</span><span class="tv num">${q.hi52!=null?q.hi52.toLocaleString():'–'}</span></div>
+        <div class="techcell"><span class="tk">52週安値</span><span class="tv num">${q.lo52!=null?q.lo52.toLocaleString():'–'}</span></div>
+        <div class="techcell"><span class="tk">移動平均の並び</span><span class="tv" style="font-size:11px;color:${q.po?'var(--up)':q.poBear?'var(--down)':'var(--dim)'}">${q.po?'5>25>75 ✅強気PO':q.poBear?'5<25<75 弱気':'バラバラ'}</span></div>
+      </div>
+      ${q.pullback?`<div class="dtbadge" style="background:rgba(240,89,60,.12);color:var(--up)">🎯 ${q.pullback}(上昇トレンド中の買い場候補)</div>`:""}
+      <div class="techtitle" style="margin-top:10px">⚡ デイトレ目線(超短期・当日〜数日)</div>
+      <div class="techgrid">
+        <div class="techcell"><span class="tk">5日線乖離</span><span class="tv num" style="color:${q.dev5<=-4?'var(--up)':q.dev5>=5?'var(--down)':'var(--text)'}">${q.dev5!=null?fmt(q.dev5):'–'}</span></div>
+        <div class="techcell"><span class="tk">3日騰落</span><span class="tv num" style="color:${col(q.ret3d)}">${q.ret3d!=null?fmt(q.ret3d):'–'}</span></div>
+        <div class="techcell"><span class="tk">出来高率</span><span class="tv num" style="color:${q.volRatio>=2?'var(--up)':'var(--text)'}">${q.volRatio!=null?q.volRatio.toFixed(1)+'x':'–'}</span></div>
+        <div class="techcell"><span class="tk">連続</span><span class="tv num" style="color:${q.streak>0?'var(--up)':q.streak<0?'var(--down)':'var(--text)'}">${q.streak>0?'+'+q.streak+'日':q.streak<0?q.streak+'日':'–'}</span></div>
+        <div class="techcell"><span class="tk">BB %B(2σ位置)</span><span class="tv num" style="color:${q.bbPctB>=0.9?'var(--up)':q.bbPctB<=0.1?'var(--down)':'var(--text)'}">${q.bbPctB!=null?(q.bbPctB*100).toFixed(0)+'%':'–'}</span></div>
+        <div class="techcell"><span class="tk">バンドウォーク</span><span class="tv" style="font-size:11px;color:${q.bbWalk==='up'?'var(--up)':q.bbWalk==='down'?'var(--down)':'var(--dim)'}">${q.bbWalk==='up'?'+2σ 上昇中 🔥':q.bbWalk==='down'?'-2σ 下落中':'なし'}</span></div>
+      </div>
+      ${q.daytrade?`<div class="dtbadge">⚡ ${q.daytrade}</div>`:""}
+      <div class="techhint">${techHint(q)}</div>
+    </div>
+    ${(themes.length||(q.tags||[]).length)?`<div class="themebox">
+      <div class="techtitle">属するテーマ/タグ(${themes.length+(q.tags||[]).length})</div>
+      ${themes.map(t=>`<button class="themechip2" onclick="gotoTheme(${t.mi})">${t.label} ›</button>`).join("")}
+      ${(q.tags||[]).map(t=>`<button class="tagchip" onclick="searchTagFromSheet('${t.replace(/'/g,"\\'")}')">#${t}</button>`).join("")}
+    </div>`:""}
+    <div class="navbox">
+      <div class="techtitle">他のページで見る</div>
+      <div class="navrow">
+        <button class="navmini" onclick="gotoView('vol','${sym}')"><span class="navi">📊</span><span>出来高率</span></button>
+        <button class="navmini" onclick="gotoView('rank','${sym}')"><span class="navi">📈</span><span>騰落率</span></button>
+        <button class="navmini" onclick="gotoView('link','${sym}')"><span class="navi">🔗</span><span>連動</span></button>
+
+        <button class="navmini" onclick="gotoView('theme','${sym}')"><span class="navi">🗂️</span><span>テーマ</span></button>
+      </div>
+    </div>
+    <div class="navbox">
+      <div class="techtitle">外部サイトで詳しく見る</div>
+      <div class="navrow">
+        ${q.market==="jp"
+          ? `<a class="navmini extlink" href="https://s.kabutan.jp/stocks/${sym}/" target="_blank" rel="noopener"><span class="navi">📰</span><span>株探</span></a>
+             <a class="navmini extlink" href="https://kabutan.jp/stock/chart?code=${sym}" target="_blank" rel="noopener"><span class="navi">📉</span><span>株探チャート</span></a>
+             <a class="navmini extlink" href="https://finance.yahoo.co.jp/quote/${sym}.T" target="_blank" rel="noopener"><span class="navi">🌐</span><span>Yahoo</span></a>`
+          : `<a class="navmini extlink" href="https://us.kabutan.jp/stocks/${sym}" target="_blank" rel="noopener"><span class="navi">📰</span><span>株探US</span></a>
+             <a class="navmini extlink" href="https://finance.yahoo.com/quote/${sym}" target="_blank" rel="noopener"><span class="navi">🌐</span><span>Yahoo</span></a>
+             <a class="navmini extlink" href="https://www.tradingview.com/symbols/${sym}/" target="_blank" rel="noopener"><span class="navi">📊</span><span>TradingView</span></a>`}
+      </div>
+    </div>
+    <button class="backbtn" onclick="hideSheet()">← 閉じる</button>`;
+  $("#overlay").classList.add("show");
+  $("#sheet").scrollTop=0;
+}
+// 詳細シートから各ビューへジャンプ(該当銘柄をハイライト)
+function gotoView(v,sym){
+  hideSheet();
+  view=v;
+  highlightSym=sym;
+  render();
+  // 該当行までスクロール
+  setTimeout(()=>{
+    const el=document.querySelector(`[data-sym="${sym}"]`);
+    if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.classList.add("flash");
+      setTimeout(()=>el.classList.remove("flash"),2000);}
+  },150);
+}
+// ===== タグ/キーワード検索 =====
+// テーマ名・サブテーマ名・銘柄メモ・フロー図のロールラベルからタグインデックスを構築
+let TAG_INDEX=null;
+function buildTagIndex(){
+  if(TAG_INDEX||!DATA)return;
+  TAG_INDEX={};
+  const add=(sym,tag)=>{
+    if(!sym||!tag)return;
+    if(!TAG_INDEX[sym])TAG_INDEX[sym]={tags:new Set()};
+    TAG_INDEX[sym].tags.add(tag);
+  };
+  // マクロテーマ・サブテーマ・銘柄メモ
+  (DATA.macro||[]).forEach(m=>{
+    (m.subs||[]).forEach(sub=>{
+      ["jp","us","solo"].forEach(mk=>{
+        (sub[mk]||[]).forEach(row=>{
+          const sym=row[0];
+          add(sym,m.name);add(sym,sub.name);
+          if(row[2])add(sym,row[2]);  // メモ(例: SiC・GaNパワー半導体)
+        });
+      });
+    });
+  });
+  // 銘柄タグ(tags.py由来)
+  Object.entries(DATA.quotes||{}).forEach(([sym,q])=>{
+    (q.tags||[]).forEach(t=>add(sym,t));
+  });
+  // フロー図: ステージ名・ステップ名・説明・ロールラベル
+  (DATA.flow||[]).forEach(stg=>{
+    (stg.steps||[]).forEach(st=>{
+      (st.roles||[]).forEach(r=>{
+        (r.items||[]).forEach(it=>{
+          add(it.code,stg.name);add(it.code,st.name);add(it.code,r.label);
+          if(st.desc)add(it.code,st.desc);
+        });
+      });
+    });
+  });
+}
+function onTagSearch(qstr){
+  const box=document.getElementById("searchResults");
+  const s=(qstr||"").trim().toLowerCase();
+  if(!s||!DATA){box.innerHTML="";return;}
+  buildTagIndex();
+  // タグに部分一致する銘柄を集め、一致したタグも表示
+  const hits=[];
+  for(const[sym,info]of Object.entries(TAG_INDEX)){
+    const matched=[...info.tags].filter(t=>t.toLowerCase().includes(s));
+    if(matched.length&&DATA.quotes[sym])hits.push([sym,DATA.quotes[sym],matched]);
+  }
+  // 前日比の大きい順に(その日動いてるやつを上に)
+  hits.sort((a,b)=>Math.abs(b[1].chg??0)-Math.abs(a[1].chg??0));
+  if(!hits.length){box.innerHTML=`<div class="sresult" style="color:var(--dim)">「${qstr}」タグ該当なし</div>`;return;}
+  const head=`<div class="sresult" style="color:var(--dim);pointer-events:none">🏷️「${qstr}」${hits.length}銘柄</div>`;
+  box.innerHTML=head+hits.slice(0,20).map(([sym,q,matched])=>{
+    const mkCol=q.market==="jp"?"var(--jp)":"var(--us)";
+    const tagStr=matched.slice(0,2).join(" / ");
+    return `<button class="sresult" onclick="pickSearch('${sym}')">
+      <span class="scode num" style="color:${mkCol}">${sym}</span>
+      <span class="snm">${q.name}<span class="stag">${tagStr}</span></span>
+      <span class="schg num" style="color:${col(q.chg)}">${fmt(q.chg)}</span>
+    </button>`;
+  }).join("");
+}
+// 銘柄検索: コード・名前で絞り込み→候補表示→タップで詳細
+function onSearch(qstr){
+  const box=document.getElementById("searchResults");
+  const s=(qstr||"").trim().toLowerCase();
+  if(!s||!DATA){box.innerHTML="";return;}
+  const hits=Object.entries(DATA.quotes).filter(([sym,q])=>{
+    return sym.toLowerCase().includes(s)||(q.name||"").toLowerCase().includes(s);
+  }).slice(0,15);
+  if(!hits.length){box.innerHTML=`<div class="sresult" style="color:var(--dim)">該当なし</div>`;return;}
+  box.innerHTML=hits.map(([sym,q])=>{
+    const mkCol=q.market==="jp"?"var(--jp)":"var(--us)";
+    return `<button class="sresult" onclick="pickSearch('${sym}')">
+      <span class="scode num" style="color:${mkCol}">${sym}</span>
+      <span class="snm">${q.name}</span>
+      <span class="schg num" style="color:${col(q.chg)}">${fmt(q.chg)}</span>
+    </button>`;
+  }).join("");
+}
+function pickSearch(sym){
+  document.getElementById("searchResults").innerHTML="";
+  document.getElementById("searchInput").value="";
+  const t=document.getElementById("tagSearchInput");if(t)t.value="";
+  showStock(sym);
+}
+// タグチップをタップ → シートを閉じてタグ検索
+function searchTagFromSheet(tag){
+  hideSheet();
+  const inp=document.getElementById("tagSearchInput");
+  if(inp){inp.value=tag;onTagSearch(tag);window.scrollTo({top:0,behavior:"smooth"});}
+}
+// 属するテーマをタップ → テーマタブに飛んで該当マクロを開く
+function gotoTheme(mi){
+  hideSheet();
+  view="theme";
+  openIdx=mi;
+  render();
+  setTimeout(()=>{
+    // カードはソートされてるのでdata-idxで正しいカードを探す
+    const card=document.querySelector(`#themeView .card[data-idx="${mi}"]`);
+    if(card){card.scrollIntoView({behavior:"smooth",block:"start"});}
+  },150);
+}
+// テクニカルから一言コメント
+function techHint(q){
+  const hints=[];
+  if(q.daytrade==="資金流入急増")hints.push("⚡ 出来高急増＋上昇=今日資金が入ってる。デイトレ妙味あり(ただし高値掴み注意)");
+  else if(q.daytrade==="初動の兆し")hints.push("⚡ 出来高増え始め＋小幅上昇=初動の可能性。早めの監視");
+  else if(q.daytrade==="急落・リバ狙い")hints.push("⚡ 出来高急増＋急落=狼狽売り後のリバウンド狙い候補");
+  if(q.signal==="押し目")hints.push("📉 25日線から大きく下＋RSI低い=反発狙いの押し目候補(スイング)");
+  else if(q.signal==="過熱")hints.push("🔥 過熱気味。短期は利確・調整に注意");
+  else if(q.signal==="25日線付近")hints.push("⚖️ 25日線付近。方向感待ち");
+  if(q.streak!=null&&q.streak<=-4)hints.push(`📍 ${-q.streak}日連続下落=売られすぎ反発に警戒`);
+  if(q.streak!=null&&q.streak>=4)hints.push(`📈 ${q.streak}日連続上昇=勢いあるが過熱も`);
+  if(q.ret1m!=null&&q.ret1m<=-15)hints.push(`📍 1ヶ月で${q.ret1m}%下落=出遅れ・リバ狙いの監視対象`);
+  if(q.posPct!=null&&q.posPct>=90)hints.push("🚀 52週高値圏=強いが高値掴み注意");
+  if(q.posPct!=null&&q.posPct<=15)hints.push("🔻 52週安値圏=底値狙いの監視対象");
+  return hints.length?hints.join("<br>"):"特筆すべきシグナルなし";
+}
+
+// AI分析用サマリーをテキスト化してクリップボードにコピー
+function copyAISummary(){
+  if(!DATA){alert("データ未読み込み");return;}
+  const qs=Object.entries(DATA.quotes).map(([s,q])=>({sym:s,...q}));
+  const fmtP=v=>v==null?"–":(v>=0?"+":"")+v.toFixed(1)+"%";
+  let txt="";
+  // ★ Claudeへの分析指示文(これがあるのでコピペ一発で分析が返る)
+  txt+="あなたは半導体株に詳しい投資分析アシスタントです。以下は私の半導体テーマトラッカーから出力した本日の市場データです。これを読んで、次の観点で分析してください:\n\n";
+  txt+="【分析してほしいこと】\n";
+  txt+="1. 今日のデイトレ候補トップ3(フラッグブレイク・資金流入・出来高急増を重視)。各銘柄の根拠・想定エントリー・損切り目安も。\n";
+  txt+="2. スイング候補トップ3(パーフェクトオーダー＋押し目を最優先。52週位置とRSIも考慮)。なぜ今が買い場か。\n";
+  txt+="3. 米国株トリガーが点灯したセクターがあれば、連動して翌日動きやすい日本株で「まだ出遅れている」ものを指摘。\n";
+  txt+="4. 過熱・天井圏(三尊/ダブルトップ/RSI高すぎ)で手を出すと危険な銘柄があれば警告。\n";
+  txt+="5. 総括: 今日のセクター資金の流れ(どこに資金が来てどこから抜けたか)を2〜3行で。\n\n";
+  txt+="※これは投資助言ではなく、私が自己責任で判断するための材料整理です。断定を避け、根拠とリスクを併記してください。データはサンプルや取得漏れで誤りもあり得るので、怪しい数値は指摘してOKです。\n";
+  txt+="━━━━━━━━━━━━━━━━━━━━\n\n";
+  txt+="【半導体トラッカー 市場サマリー】データ日付:"+(DATA.updated||"").slice(0,10)+"\n";
+  txt+="※終値ベース。デイトレ=今日の値動き・出来高、スイング=数日〜数週の押し目\n\n";
+
+  txt+="━━━ デイトレ向き(超短期) ━━━\n";
+  // ① 出来高急増×上昇(今日資金が入って動いてる)
+  const inflow=qs.filter(q=>q.daytrade==="資金流入急増").sort((a,b)=>b.volRatio-a.volRatio).slice(0,10);
+  txt+="\n■ 資金流入急増(出来高2倍↑＋上昇2%↑ = 今日の主役)\n";
+  inflow.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / 出来高${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"} / 5日線乖離${fmtP(q.dev5)} / 連続${q.streak>0?"+"+q.streak+"日上昇":q.streak<0?q.streak+"日下落":"–"}\n`);
+  if(!inflow.length)txt+="  該当なし\n";
+  // ② 初動の兆し(出来高増え始め＋小幅上昇)
+  const hatsudo=qs.filter(q=>q.daytrade==="初動の兆し").sort((a,b)=>b.volRatio-a.volRatio).slice(0,8);
+  txt+="\n■ 初動の兆し(出来高1.5倍↑＋小幅上昇 = 入りかけ)\n";
+  hatsudo.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / 出来高${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"} / 3日${fmtP(q.ret3d)}\n`);
+  if(!hatsudo.length)txt+="  該当なし\n";
+  // ③ 急落リバ狙い(出来高急増×急落)
+  const reba=qs.filter(q=>q.daytrade==="急落・リバ狙い").sort((a,b)=>a.chg-b.chg).slice(0,8);
+  txt+="\n■ 急落・リバウンド狙い(出来高急増＋急落 = 反発期待)\n";
+  reba.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / 出来高${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"} / RSI${q.rsi==null?"–":q.rsi}\n`);
+  if(!reba.length)txt+="  該当なし\n";
+  // ④ 出来高率トップ(本日の売買が活発)
+  const hot=qs.filter(q=>q.volRatio!=null).sort((a,b)=>b.volRatio-a.volRatio).slice(0,10);
+  txt+="\n■ 出来高率トップ(本日の売買が活発・注目度高)\n";
+  hot.forEach(q=>txt+=`  ${q.sym} ${q.name}: 出来高率${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"} / 前日比${fmtP(q.chg)} / 3日${fmtP(q.ret3d)}\n`);
+  // 出来高急増(3倍以上=強い異変)
+  const surge=qs.filter(q=>q.volSurge>=2).sort((a,b)=>(b.volRatio||0)-(a.volRatio||0));
+  txt+="\n■★ 出来高急増(25日平均の3倍↑ = 資金が突っ込んでる異変)\n";
+  surge.forEach(q=>txt+=`  ${q.sym} ${q.name}: 出来高率${q.volRatio.toFixed(1)}x${q.volSurge>=3?"(5倍↑!)":""} / 前日比${fmtP(q.chg)} / 3日${fmtP(q.ret3d)}\n`);
+  if(!surge.length)txt+="  該当なし\n";
+  // ボリンジャーバンド +2σ バンドウォーク(強い上昇継続)
+  const bbw=qs.filter(q=>q.bbWalk==="up").sort((a,b)=>(b.ret5d||0)-(a.ret5d||0));
+  txt+="\n■ +2σバンドウォーク(ボリンジャーバンド上限に沿った強い上昇)\n";
+  bbw.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / 5日${fmtP(q.ret5d)} / RSI${q.rsi==null?"–":q.rsi} / 出来高${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"}\n`);
+  if(!bbw.length)txt+="  該当なし\n";
+  // ⑤ フラッグブレイク(急騰→小休止→上抜け。数は少なめ)
+  const flagTop=qs.filter(q=>q.pattern==="フラッグブレイク").sort((a,b)=>(b.volRatio||0)-(a.volRatio||0));
+  txt+="\n■ フラッグブレイク(急騰→小休止→上抜け)\n";
+  flagTop.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / 出来高${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"} / 3日${fmtP(q.ret3d)} / 5日線乖離${fmtP(q.dev5)}\n`);
+  if(!flagTop.length)txt+="  該当なし\n";
+
+  txt+="\n━━━ スイング向き(数日〜数週) ━━━\n";
+  // ⑤ 押し目候補
+  const oshime=qs.filter(q=>q.signal==="押し目"||(q.ret1m!=null&&q.ret1m<=-12&&q.rsi!=null&&q.rsi<=40))
+    .sort((a,b)=>(a.rsi||50)-(b.rsi||50)).slice(0,10);
+  txt+="\n■ 押し目・反発狙い(25日線から下＋売られすぎ)\n";
+  oshime.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / 25日線乖離${fmtP(q.dev25)} / 1ヶ月${fmtP(q.ret1m)} / RSI${q.rsi==null?"–":q.rsi} / 52週位置${q.posPct==null?"–":q.posPct+"%"}\n`);
+  if(!oshime.length)txt+="  該当なし\n";
+  // ⑥ 1ヶ月下落トップ(出遅れ)
+  const drops=qs.filter(q=>q.ret1m!=null).sort((a,b)=>a.ret1m-b.ret1m).slice(0,8);
+  txt+="\n■ 1ヶ月下落率トップ(出遅れ・リバウンド狙い)\n";
+  drops.forEach(q=>txt+=`  ${q.sym} ${q.name}: 1ヶ月${fmtP(q.ret1m)} / 25日線乖離${fmtP(q.dev25)} / RSI${q.rsi==null?"–":q.rsi}\n`);
+  // ⑦ 過熱(利確注意)
+  const overheat=qs.filter(q=>q.signal==="過熱").sort((a,b)=>(b.dev25||0)-(a.dev25||0)).slice(0,6);
+  txt+="\n■ 過熱気味(利確・調整注意)\n";
+  overheat.forEach(q=>txt+=`  ${q.sym} ${q.name}: 25日線乖離${fmtP(q.dev25)} / RSI${q.rsi==null?"–":q.rsi} / 1ヶ月${fmtP(q.ret1m)}\n`);
+  if(!overheat.length)txt+="  該当なし\n";
+
+  txt+="\n━━━ チャートパターン別 ━━━\n";
+  const pat=(name)=>qs.filter(q=>q.pattern===name);
+  const patBreak=pat("直近高値ブレイク").concat(pat("三角ブレイク")).concat(pat("52週高値更新")).sort((a,b)=>(b.posPct||0)-(a.posPct||0)).slice(0,12);
+  txt+="\n■ 高値更新・ブレイクアウト(新高値・上抜け)\n";
+  patBreak.forEach(q=>txt+=`  ${q.sym} ${q.name}[${q.pattern}]: 前日比${fmtP(q.chg)} / 52週位置${q.posPct==null?"–":q.posPct+"%"} / 出来高${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"}\n`);
+  if(!patBreak.length)txt+="  該当なし\n";
+  const patCup=pat("CWH押し目/抜け").concat(pat("CWH形成中"));
+  txt+="\n■ カップ&ハンドル形成中(再上昇の準備)\n";
+  patCup.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / 52週位置${q.posPct==null?"–":q.posPct+"%"} / 5日線乖離${fmtP(q.dev5)}\n`);
+  if(!patCup.length)txt+="  該当なし\n";
+  const patUp=[];
+  patUp.forEach(q=>txt+=`  ${q.sym} ${q.name}: 1ヶ月${fmtP(q.ret1m)} / 25日線乖離${fmtP(q.dev25)}\n`);
+  const patFlag=pat("フラッグブレイク");
+  txt+="\n■ フラッグブレイク(急騰→小休止→上抜け)\n";
+  patFlag.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / 3日${fmtP(q.ret3d)} / 出来高${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"}\n`);
+  if(!patFlag.length)txt+="  該当なし\n";
+  const patGyaku=pat("逆三尊・底打ち");
+  txt+="\n■ 逆三尊・底打ち反転(下落終了→上昇の可能性)\n";
+  patGyaku.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / RSI${q.rsi==null?"–":q.rsi} / 52週位置${q.posPct==null?"–":q.posPct+"%"}\n`);
+  if(!patGyaku.length)txt+="  該当なし\n";
+  const patSanten=pat("三尊・天井注意");
+  txt+="\n■ 三尊・天井注意(上昇終了→下落の可能性)\n";
+  patSanten.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / RSI${q.rsi==null?"–":q.rsi} / 52週位置${q.posPct==null?"–":q.posPct+"%"}\n`);
+  if(!patSanten.length)txt+="  該当なし\n";
+  const patWB=pat("ダブルボトム").concat(pat("トリプルボトム"));
+  txt+="\n■ ダブル/トリプルボトム(底固め→反発期待)\n";
+  patWB.forEach(q=>txt+=`  ${q.sym} ${q.name}[${q.pattern}]: 前日比${fmtP(q.chg)} / RSI${q.rsi==null?"–":q.rsi} / 52週位置${q.posPct==null?"–":q.posPct+"%"}\n`);
+  if(!patWB.length)txt+="  該当なし\n";
+  const patMT=pat("ダブルトップ").concat(pat("トリプルトップ"));
+  txt+="\n■ ダブル/トリプルトップ(天井圏→下落注意)\n";
+  patMT.forEach(q=>txt+=`  ${q.sym} ${q.name}[${q.pattern}]: 前日比${fmtP(q.chg)} / RSI${q.rsi==null?"–":q.rsi} / 52週位置${q.posPct==null?"–":q.posPct+"%"}\n`);
+  if(!patMT.length)txt+="  該当なし\n";
+
+  // ★ パーフェクトオーダー(日足5>25>75・強気トレンド)
+  txt+="\n━━━ パーフェクトオーダー(日足・強気トレンド) ━━━\n";
+  const poList=qs.filter(q=>q.po).sort((a,b)=>(b.ret1m||0)-(a.ret1m||0)).slice(0,15);
+  txt+="\n■ パーフェクトオーダー継続中(5日>25日>75日線・全部上向き)\n";
+  poList.forEach(q=>txt+=`  ${q.sym} ${q.name}: 1ヶ月${fmtP(q.ret1m)} / 25日線乖離${fmtP(q.dev25)} / RSI${q.rsi==null?"–":q.rsi}${q.pullback?" / "+q.pullback:""}\n`);
+  if(!poList.length)txt+="  該当なし\n";
+  // ★ 押し目(5日/25日/75日線バッファ付き。上昇基調中の買い場候補)
+  const pb25=qs.filter(q=>q.pullbackMa===25).sort((a,b)=>(b.ret1m||0)-(a.ret1m||0));
+  const pb50=qs.filter(q=>q.pullbackMa===50).sort((a,b)=>(b.ret1m||0)-(a.ret1m||0));
+  const pb75=qs.filter(q=>q.pullbackMa===75).sort((a,b)=>(b.ret1m||0)-(a.ret1m||0));
+  const pb5=qs.filter(q=>q.pullbackMa===5).sort((a,b)=>(b.ret1m||0)-(a.ret1m||0));
+  txt+="\n■★ 25日線の押し目(中期の買い場・最注目)\n";
+  pb25.forEach(q=>txt+=`  ${q.sym} ${q.name}: 25日線乖離${fmtP(q.dev25)} / 1ヶ月${fmtP(q.ret1m)} / RSI${q.rsi==null?"–":q.rsi}${q.po?" / 📈PO":""}\n`);
+  if(!pb25.length)txt+="  該当なし\n";
+  txt+="\n■ 50日線の押し目(中期の買い場)\n";
+  pb50.forEach(q=>txt+=`  ${q.sym} ${q.name}: 50日線乖離${fmtP(q.dev50)} / 1ヶ月${fmtP(q.ret1m)} / RSI${q.rsi==null?"–":q.rsi}${q.po?" / 📈PO":""}\n`);
+  if(!pb50.length)txt+="  該当なし\n";
+  txt+="\n■ 75日線の押し目(深い押し・反発狙い)\n";
+  pb75.forEach(q=>txt+=`  ${q.sym} ${q.name}: 1ヶ月${fmtP(q.ret1m)} / RSI${q.rsi==null?"–":q.rsi}\n`);
+  if(!pb75.length)txt+="  該当なし\n";
+  txt+="\n■ 5日線の押し目(浅い押し・短期)\n";
+  pb5.forEach(q=>txt+=`  ${q.sym} ${q.name}: 5日線乖離${fmtP(q.dev5)} / 3日${fmtP(q.ret3d)}\n`);
+  if(!pb5.length)txt+="  該当なし\n";
+
+  // ★ 連動セクター分析(米国株の動きと日本株セクターの連動)
+  if(DATA.linkage){
+    txt+="\n━━━ 米国株トリガー × 連動セクター ━━━\n";
+    const lkArr=Object.entries(DATA.linkage).map(([name,d])=>({name,...d}))
+      .filter(d=>d.rows&&d.rows.length).sort((a,b)=>(b.usAvg||0)-(a.usAvg||0));
+    txt+="\n■ 米国株が上昇→連動して動きやすい日本株セクター(usAvg=米国構成銘柄の前日比平均)\n";
+    lkArr.slice(0,8).forEach(d=>{
+      const us=d.us.map(u=>`${u[1]}${fmtP(u[2])}`).join(", ");
+      const top=d.rows.slice(0,3).map(r=>`${r.code} ${r.name}(連動${r.rate}%)`).join(", ");
+      txt+=`  【${d.name}】米国: ${us} → 連動上位: ${top}${d.trigLevel>=3?" ▲▲▲急騰トリガー":d.trigLevel>=2?" ▲▲大幅高トリガー":d.trigLevel>=1?" ▲点灯":""}\n`;
+    });
+  }
+
+  txt+="\n【さらに深掘りしたい時の追加質問例(任意)】\n";
+  txt+="・上の分析で挙げた銘柄の中で、明日寄り付きで一番入りやすいのは?\n";
+  txt+="・半導体ETF(SOXX/SMH)と直近一番連動してた日本株セクターは?\n";
+  txt+="・特定の銘柄(例: 6146ディスコ)について、今のテクニカルをもっと詳しく\n";
+  txt+="\n※このアプリは投資助言ではありません。最終判断は株探等で実チャート・財務を確認し自己責任で。";
+
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=>{
+      alert("コピーしました!Claudeに貼り付けて質問できます。");
+    }).catch(()=>fallbackCopy(txt));
+  }else{fallbackCopy(txt);}
+}
+function fallbackCopy(txt){
+  const ta=document.createElement("textarea");
+  ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand("copy");alert("コピーしました!");}
+  catch(e){prompt("以下をコピーしてください:",txt);}
+  document.body.removeChild(ta);
+}
+function toggle(idx){openIdx=openIdx===idx?-1:idx;render();}
+// 任意日数指定で累積ラインを出す(シート内の全期間サマリ用)
+function cumLineP(sym,days){
+  const d=DATA.quotes[sym]?.daily; if(!d||d.length<2) return null;
+  let s;
+  if(days==null){const yr=DATA.updated.slice(0,4);s=d.filter(p=>p[0]>=yr+"-01-01");}
+  else s=d.slice(Math.max(0,d.length-1-days));
+  if(s.length<2) return null;
+  const base=s[0][1]; if(!base) return null;
+  return s.map(p=>[p[0],(p[1]/base-1)*100]);
+}
+function hideSheet(){$("#overlay").classList.remove("show")}
+document.addEventListener("click",e=>{if(e.target.id==="overlay")hideSheet()});
+
+function stockRow(row,mk){
+  const sym=row[0], why=row[2]||"";
+  const q=DATA.quotes[sym];
+  const mkCol=mk==="us"?"var(--us)":"var(--jp)";
+  if(!q) return `<div class="stock"><span class="sym num" style="color:${mkCol}">${sym}</span><span class="nm" style="color:var(--faint)">${row[1]} (データなし)</span></div>`;
+  return `<button class="stock" data-sym="${sym}" onclick="showStock('${sym}')">
+    <span class="sym num" style="color:${mkCol}">${sym}</span>
+    <span class="nm">${q.name}</span>
+    ${why?`<span class="why">${why}</span>`:""}
+    <span class="pct num" style="color:${col(symRet(sym))}">${fmt(symRet(sym))}</span></button>`;
+}
+
+function pushHistory(){ viewHistory.push(view); if(viewHistory.length>30)viewHistory.shift(); }
+function goBack(){
+  if($("#overlay").classList.contains("show")){ hideSheet(); return; }  // シート表示中はまず閉じる
+  if(viewHistory.length){ view=viewHistory.pop(); render(); window.scrollTo({top:0,behavior:"smooth"}); }
+  else { goHome(); }
+}
+function goHome(){
+  hideSheet();
+  viewHistory=[]; view="theme"; openIdx=-1; render(); window.scrollTo({top:0,behavior:"smooth"});
+}
+function scrollUpNav(){
+  const sheetEl=$("#sheet");
+  if($("#overlay").classList.contains("show")&&sheetEl){ sheetEl.scrollTo({top:0,behavior:"smooth"}); }
+  else { window.scrollTo({top:0,behavior:"smooth"}); }
+}
+let _h2cLoading=false;
+function _loadH2C(){
+  return new Promise((resolve,reject)=>{
+    if(window.html2canvas){resolve();return;}
+    if(_h2cLoading){const t=setInterval(()=>{if(window.html2canvas){clearInterval(t);resolve();}},100);return;}
+    _h2cLoading=true;
+    const s=document.createElement("script");
+    s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+    s.onload=()=>resolve();
+    s.onerror=()=>reject(new Error("no-net"));
+    document.head.appendChild(s);
+  });
+}
+async function takeShot(){
+  const toast=(msg)=>{
+    let t=document.getElementById("shotToast");
+    if(!t){t=document.createElement("div");t.id="shotToast";
+      t.style.cssText="position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:200;background:#1A1D26;color:#EAF0F8;padding:10px 18px;border-radius:20px;font-size:13px;border:1px solid #333;box-shadow:0 4px 16px rgba(0,0,0,.5)";
+      document.body.appendChild(t);}
+    t.textContent=msg; t.style.opacity="1";
+    clearTimeout(t._h); t._h=setTimeout(()=>{t.style.opacity="0";},2600);
+  };
+  toast("📷 画像を作成中…");
+  try{
+    await _loadH2C();
+  }catch(e){
+    toast("⚠ ネット接続時のみ保存できます");
+    return;
+  }
+  // 撮影対象: シートが開いてればシート、なければメインコンテンツ
+  const overlayOpen=$("#overlay").classList.contains("show");
+  const target=overlayOpen?$("#sheet"):document.querySelector(".wrap")||document.body;
+  try{
+    const canvas=await html2canvas(target,{backgroundColor:"#0B0E15",scale:2,useCORS:true,logging:false,
+      windowWidth:target.scrollWidth,windowHeight:target.scrollHeight});
+    const url=canvas.toDataURL("image/png");
+    const ts=new Date().toISOString().slice(0,16).replace(/[:T]/g,"-");
+    const fname=`semi-tracker-${ts}.png`;
+    // Web Share API(スマホ)優先。ダメならダウンロード
+    if(navigator.canShare){
+      try{
+        const blob=await new Promise(r=>canvas.toBlob(r,"image/png"));
+        const file=new File([blob],fname,{type:"image/png"});
+        if(navigator.canShare({files:[file]})){
+          await navigator.share({files:[file],title:"半導体テーマトラッカー"});
+          toast("✓ 共有しました");
+          return;
+        }
+      }catch(e){/* 共有キャンセル時は下のDL処理へ */}
+    }
+    const a=document.createElement("a");a.href=url;a.download=fname;a.click();
+    toast("✓ 画像を保存しました");
+  }catch(e){
+    toast("⚠ 画像作成に失敗しました");
+  }
+}
+function render(){
+  chips("#viewChips",[["theme","テーマ"],["rank","銘柄分析"],["vol","前日比・出来高"],["ret","騰落率"],["flow","フロー図"],["link","連動"]],view,id=>{pushHistory();view=id;render()});
+  const tv=document.getElementById("themeView"),vv=document.getElementById("volView"),lv=document.getElementById("linkView"),pv=document.getElementById("procView"),rv=document.getElementById("rankView"),fv=document.getElementById("flowView"),etv=document.getElementById("retView");
+  const chartBox=document.getElementById("chartTitle").parentElement;
+  const hideAll=()=>{tv.style.display="none";vv.style.display="none";lv.style.display="none";pv.style.display="none";rv.style.display="none";fv.style.display="none";etv.style.display="none";chartBox.style.display="none";};
+  if(view==="rank"){
+    hideAll();rv.style.display="block";
+    renderRank();
+    if(DATA) document.getElementById("updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
+    return;
+  }
+  if(view==="ret"){
+    hideAll();etv.style.display="block";
+    renderRet();
+    if(DATA) document.getElementById("updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
+    return;
+  }
+  if(view==="vol"){
+    hideAll();vv.style.display="block";
+    renderVol();
+    if(DATA) document.getElementById("updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
+    return;
+  }
+  if(view==="link"){
+    hideAll();lv.style.display="block";
+    renderLink();
+    if(DATA) document.getElementById("updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
+    return;
+  }
+  if(view==="flow"){
+    hideAll();fv.style.display="block";
+    renderFlow();
+    if(DATA) document.getElementById("updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
+    return;
+  }
+  if(view==="proc"){
+    hideAll();pv.style.display="block";
+    renderProc();
+    if(DATA) document.getElementById("updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
+    return;
+  }
+  hideAll();tv.style.display="block";chartBox.style.display="block";
+  chips("#periodChips",PERIODS.map(p=>[p[0],p[1]]),period,id=>{period=id;render()});
+  chips("#marketChips",MARKETS,market,id=>{market=id;render()});
+  if(!DATA) return;
+  const plabel=(PERIODS.find(p=>p[0]===period)||[])[1];
+  $("#chartTitle").textContent=plabel+" 累積騰落率(%) — テーマ平均";
+  $("#updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
+  const rows=rankedMacros();
+  drawChart(rows);
+  const maxAbs=Math.max(...rows.map(r=>Math.abs(r.avg??0)),1);
+  $("#list").innerHTML=rows.map((r,rank)=>{
+    const subsHtml=r.subs.map(sub=>{
+      const ss=avgSeries(pickSyms(sub)); const savg=lastOf(ss);
+      const us=market!=="jp"?sub.us.map(x=>stockRow(x,"us")).join(""):"";
+      const jp=market!=="us"?sub.jp.map(x=>stockRow(x,"jp")).join(""):"";
+      const solo=market!=="us"?sub.solo.map(x=>stockRow(x,"jp")).join(""):"";
+      return `<div class="subhead">${sub.name}<span class="subavg num" style="color:${col(savg)}">${fmt(savg)}</span></div>
+        ${us?`<div class="grp">米国株</div>${us}`:""}
+        ${jp?`<div class="grp">連動日本株</div>${jp}`:""}
+        ${solo?`<div class="grp">日本単独テーマ</div>${solo}`:""}`;
+    }).join("");
+    return `<div class="card ${r.idx===openIdx?"open":""}" data-idx="${r.idx}">
+      <button class="row trow" onclick="toggle(${r.idx})">
+        <span class="rnum" style="background:${r.color}">${rank+1}</span>
+        <span class="tmain">
+          <span class="tname">${r.name}</span>
+          <span class="tsub">${r.subs.length}サブテーマ</span>
+        </span>
+        <span class="tspark">${themeSparkline(r.key)}</span>
+        <span class="tright">
+          <span class="avg num" style="color:${col(r.avg)}">${fmt(r.avg)}</span>
+        </span>
+        <span class="chev">▼</span></button>
+      <div class="detail">${subsHtml}</div></div>`;
+  }).join("");
+}
+// テーマの1年推移ミニチャート(SVG sparkline)
+function themeSparkline(macroKey){
+  // そのマクロの米国株を集めて1年の累積騰落率ラインを作る
+  const m=(DATA.macro||[]).find(x=>x.key===macroKey);
+  if(!m) return "";
+  const syms=[];
+  m.subs.forEach(s=>s.us.forEach(u=>syms.push(u[0])));
+  if(!syms.length) return "";
+  // 各銘柄の日次リターンを平均して累積
+  const seriesList=syms.map(s=>{
+    const q=DATA.quotes[s];if(!q||!q.daily)return null;
+    return q.daily;
+  }).filter(Boolean);
+  if(!seriesList.length) return "";
+  // 全営業日の集合(最長系列基準)、直近250日
+  let base=seriesList.reduce((a,b)=>b.length>a.length?b:a,seriesList[0]);
+  const dates=base.map(d=>d[0]).slice(-250);
+  // 各銘柄のdate->close
+  const maps=seriesList.map(d=>Object.fromEntries(d));
+  const pts=[];
+  let prev=null;
+  dates.forEach(dt=>{
+    const vals=maps.map(mp=>mp[dt]).filter(v=>v!=null);
+    if(!vals.length)return;
+    const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+    pts.push(avg);
+  });
+  if(pts.length<2) return "";
+  // 累積騰落率(最初を基準に)
+  const c0=pts[0];
+  const cum=pts.map(p=>(p/c0-1)*100);
+  const min=Math.min(...cum),max=Math.max(...cum);
+  const rng=(max-min)||1;
+  const W=110,H=38;
+  const step=W/(cum.length-1);
+  const path=cum.map((v,i)=>`${i===0?'M':'L'}${(i*step).toFixed(1)} ${(H-((v-min)/rng)*H).toFixed(1)}`).join(" ");
+  const last=cum[cum.length-1];
+  const lineCol=last>=0?"var(--up)":"var(--down)";
+  const zeroY=(H-((0-min)/rng)*H).toFixed(1);
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <line x1="0" y1="${zeroY}" x2="${W}" y2="${zeroY}" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 2"/>
+    <path d="${path}" fill="none" stroke="${lineCol}" stroke-width="1.5"/>
+    <circle cx="${((cum.length-1)*step).toFixed(1)}" cy="${(H-((last-min)/rng)*H).toFixed(1)}" r="2.5" fill="${lineCol}"/>
+  </svg>`;
+}
+function chips(elId,defs,cur,onPick){
+  const el=$(elId);el.innerHTML="";
+  defs.forEach(([id,label])=>{const b=document.createElement("button");
+    b.className="chip"+(id===cur?" on":"");b.textContent=label;b.dataset.id=id;b.onclick=()=>onPick(id);el.appendChild(b);});
+}
+// 複数選択(AND)対応のチップ。selはSet。"all"を押すと全解除
+function chipsMulti(elId,defs,selSet,onToggle){
+  const el=$(elId);el.innerHTML="";
+  defs.forEach(([id,label])=>{const b=document.createElement("button");
+    const isOn = id==="all" ? selSet.size===0 : selSet.has(id);
+    b.className="chip"+(isOn?" on":"");b.textContent=label;b.onclick=()=>onToggle(id);el.appendChild(b);});
+}
+let volSort="volRatio"; // volRatio | chg
+let volDir="desc";       // desc=多い順 / asc=少ない順
+function renderVol(){
+  chips("#volMarketChips",[["all","すべて"],["jp","日本"],["us","米国"]],volMarket,id=>{volMarket=id;render()});
+  chips("#volSortChips",[["chg","前日比"],["volRatio","出来高率"]],volSort,id=>{volSort=id;render()});
+  chips("#volDirChips",[["desc","多い順 ↓"],["asc","少ない順 ↑"]],volDir,id=>{volDir=id;render()});
+  if(!DATA) return;
+  let rows=Object.entries(DATA.quotes)
+    .filter(([s,q])=>(volMarket==="all"||q.market===volMarket))
+    .map(([s,q])=>({sym:s,...q}));
+  rows=rows.filter(r=>r[volSort]!=null).sort((a,b)=>volDir==="desc"?b[volSort]-a[volSort]:a[volSort]-b[volSort]);
+  const head=`<div class="volhead">
+    <span class="vh-rank">#</span><span class="vh-sym">銘柄</span>
+    <span class="vh-num">前日比</span><span class="vh-num">出来高率</span></div>`;
+  document.getElementById("volList").innerHTML=head+rows.map((r,i)=>{
+    const mkCol=r.market==="jp"?"var(--jp)":"var(--us)";
+    const hotV=r.volRatio>=2;
+    return `<button class="volrow" data-sym="${r.sym}" onclick="showStock('${r.sym}')">
+      <span class="vh-rank num">${i+1}</span>
+      <span class="vh-sym"><span class="num" style="color:${mkCol};font-weight:700">${r.sym}</span><span class="vh-nm">${r.name}</span></span>
+      <span class="vh-num num" style="color:${col(r.chg)}">${fmt(r.chg)}</span>
+      <span class="vh-num num" style="color:${hotV?'var(--up)':'var(--text)'};font-weight:${hotV?700:400}">${r.volRatio!=null?r.volRatio.toFixed(1)+'x':'–'}</span>
+    </button>`;
+  }).join("");
+}
+// 売買代金(百万通貨)を億表記に
+function money(mil){
+  const oku=mil/100; // 百万円→億円(日本株前提の概算)
+  if(oku>=10000) return (oku/10000).toFixed(1)+'兆';
+  if(oku>=1) return oku.toFixed(0)+'億';
+  return (mil).toFixed(0)+'百万';
+}
+// 時価総額(億円)の整形
+function okuFmt(oku){
+  if(oku>=10000) return (oku/10000).toFixed(1)+'兆';
+  return Math.round(oku).toLocaleString()+'億';
+}
+
+function renderLink(){
+  if(!DATA||!DATA.linkage){
+    document.getElementById("linkList").innerHTML='<div class="loading">連動データがありません。</div>';
+    return;
+  }
+  const link=DATA.linkage;
+  const keys=Object.keys(link);
+  if(!keys.length){
+    document.getElementById("linkList").innerHTML='<div class="loading">連動トリガーがまだありません(米国テーマが+2%超えた日が必要)。</div>';
+    return;
+  }
+  // トリガー点灯中のテーマを上に(段階が高い順)
+  keys.sort((a,b)=>(link[b].trigLevel||0)-(link[a].trigLevel||0));
+  document.getElementById("linkList").innerHTML=keys.map(theme=>{
+    const g=link[theme];
+    const us=theme.split(" > ")[0], sub=theme.split(" > ").pop();
+    // 構成米国株(直近前日比つき)
+    const usChips=(g.us||[]).map(u=>{
+      const c=u[2];
+      return `<span class="uschip"><span class="num" style="color:var(--us);font-weight:700">${u[0]}</span> <span class="num" style="color:${col(c)}">${c!=null?fmt(c):'–'}</span></span>`;
+    }).join("");
+    const lv=g.trigLevel||0;
+    let badge;
+    if(lv===3) badge=`<span class="trigbadge" style="background:var(--up);color:#fff">▲▲▲ 急騰 ${fmt(g.usAvg)}</span>`;
+    else if(lv===2) badge=`<span class="trigbadge" style="background:rgba(240,89,60,.85);color:#fff">▲▲ 大幅高 ${fmt(g.usAvg)}</span>`;
+    else if(lv===1) badge=`<span class="trigbadge">▲ 点灯 ${fmt(g.usAvg)}</span>`;
+    else badge=`<span class="trigbadge off">平均 ${g.usAvg!=null?fmt(g.usAvg):'–'}</span>`;
+    const body=(g.rows||[]).map(r=>{
+      const low=r.n<5;
+      return `<button class="linkrow" data-sym="${r.code}" onclick="showStock('${r.code}')">
+        <span class="num" style="color:var(--jp);font-weight:700;width:48px;flex-shrink:0">${r.code}</span>
+        <span class="nm" style="flex:1">${r.name}</span>
+        <span class="num lk-rate" style="color:${r.rate>=60?'var(--up)':r.rate<=40?'var(--down)':'var(--text)'}">${r.rate}%</span>
+        <span class="num lk-avg" style="color:${col(r.avg)}">${fmt(r.avg)}</span>
+        <span class="num lk-n" style="color:${low?'var(--down)':'var(--faint)'}">n${r.n}</span>
+      </button>`;
+    }).join("");
+    return `<div class="linkgrp${lv>0?' trig':''}">
+      <div class="linkgrp-h"><span>${sub}<span style="font-size:10.5px;color:var(--dim);font-weight:400;display:block">${us}</span></span>${badge}</div>
+      <div class="uschips">前日の米国: ${usChips}</div>
+      <div class="linkgrp-sub"><span style="flex:1">↓ 翌日に連動する日本株</span><span class="lk-rate">連動率</span><span class="lk-avg">翌日平均</span><span class="lk-n">回数</span></div>
+      ${body}</div>`;
+  }).join("");
+}
+
+let procPeriod="chg"; // chg=前日比 / ret5d / ret1m / ret3m
+function procValOf(q){
+  if(!q)return null;
+  if(procPeriod==="chg")return q.chg;
+  if(procPeriod==="ret5d")return q.ret5d;
+  if(procPeriod==="ret1m")return q.ret1m;
+  if(procPeriod==="ret3m")return q.ret3m;
+  return q.chg;
+}
+function procStockBtn(s){
+  const q=DATA.quotes[s.code];
+  const ch=procValOf(q);
+  const mkCol=s.market==="jp"?"var(--jp)":"var(--us)";
+  return `<button class="procchip" data-sym="${s.code}" onclick="showStock('${s.code}')">
+    <span class="num" style="color:${mkCol};font-weight:700">${s.code}</span>
+    <span class="procnm">${s.name}</span>
+    <span class="num" style="color:${col(ch)};font-size:11px">${fmt(ch)}</span>
+  </button>`;
+}
+const STAGE_COLORS={design:"#8E7CC3",front:"#3FA7D6",back:"#E0A458",facility:"#5B9279",maker:"#C77DA0"};
+const STAGE_LABELS={design:"設計",front:"前工程",back:"後工程",facility:"インフラ・部品",maker:"メーカー"};
+// フロー図: 4ステージ、工程タップで銘柄展開
+let flowOpen={}; // {stageKey_stepIdx: true}
+function toggleFlowStep(key){flowOpen[key]=!flowOpen[key];renderFlow();}
+function stageVisual(v){
+  // ステージ別ビジュアル(ドット絵風)
+  if(v==="loop")return `<div class="fviz floop pixel">🔄 洗浄→成膜→露光→エッチング→CMP を<br>何層も繰り返して回路ビルを建てる</div>`;
+  if(v==="package3")return `<div class="fviz fpkg3">
+    <div class="p3-label pixel">先端パッケージの4層構造(CoWoS→CoPoS)</div>
+    <div class="p3layer p3top"><span class="p3chip">GPU</span><span class="p3chip" style="background:rgba(63,167,214,.45)">HBM</span><span class="p3chip" style="background:rgba(240,89,60,.45)">💠CPO</span><span class="p3tag pixel">チップ&光の出口</span></div>
+    <div class="p3layer p3mid"><span class="p3full">◧ インターポーザー(Si / ガラス) ◧</span><span class="p3tag pixel">★歪まない中間層</span></div>
+    <div class="p3layer p3bot"><span class="p3full">▦ パッケージ基板(ABF/樹脂) ▦</span><span class="p3tag pixel">骨格・密着</span></div>
+    <div class="p3layer p3mb"><span class="p3full">▩ マザーボード(PCB) ▩</span><span class="p3tag pixel">大地</span></div>
+    <div class="p3note pixel">CoPoS=四角いガラスパネル化で面積効率UP</div>
+  </div>`;
+  if(v==="test")return `<div class="fviz ftest pixel">✅ 完成チップを全数検査・テストして出荷</div>`;
+  if(v==="cpo")return `<div class="fviz fcpo">
+    <div class="p3-label pixel">光電融合(CPO)の立体構造</div>
+    <div class="p3layer p3top"><span class="p3chip">GPU</span><span class="p3chip">HBM</span><span class="p3chip" style="background:rgba(110,231,240,.4)">💠光エンジン</span></div>
+    <div class="p3layer p3mid"><span class="p3full">シリコンフォトニクス層(光配線)</span></div>
+    <div class="p3layer p3bot"><span class="p3full">🧵 光ファイバーで外部へ →→→ 🌊海底ケーブルで大陸間へ</span></div>
+    <div class="p3note pixel">電気→光変換で低電力・大容量化(NVIDIA Vera Rubin等)</div>
+  </div>`;
+  if(v==="iceberg")return icebergViz();
+  return "";
+}
+function icebergViz(){
+  // ═══ アンダーテール風・ドット絵氷山(8層) ═══
+  // 海面上=GPU(見える部分)、海面下=7層(見えない土台)。計8層。
+  const C=12, COLS=26, ROWS=34, W=COLS*C+220, H=ROWS*C+30;
+  // 各行の氷山の[開始列,終了列](上は尖り、中央で最大幅、下でまた窄まるダイヤ型)
+  const rows=[
+    [12,13],[11,14],[11,14],[10,15],                    // 0-3: 海面上(氷山の一角)
+    [10,15],[9,16],[9,16],[8,17],                       // 4-7: ストレージ層
+    [8,17],[7,18],[7,18],[6,19],                        // 8-11: ネットワーク層
+    [6,19],[5,20],[5,20],[4,21],                        // 12-15: 電源層
+    [4,21],[3,22],[3,22],[3,22],                        // 16-19: 冷却層
+    [3,22],[4,21],[4,21],[5,20],                        // 20-23: 建設層
+    [5,20],[6,19],[6,19],[7,18],                        // 24-27: ゼネコン層
+    [8,17],[9,16],[10,15],[11,14],[12,13],[13,13],      // 28-33: 電力層(最深部・窄まる)
+  ];
+  const strata=[
+    {from:0,to:3,color:"#EAF6FF",edge:"#FFFFFF"},       // 氷(海面上)
+    {from:4,to:7,color:"#8FDEEC",edge:"#B0ECF5"},       // ストレージ
+    {from:8,to:11,color:"#5FC0DE",edge:"#7ECFE8"},      // ネットワーク
+    {from:12,to:15,color:"#3E97CC",edge:"#5AAEDA"},     // 電源
+    {from:16,to:19,color:"#2E7BB8",edge:"#4693CC"},     // 冷却
+    {from:20,to:23,color:"#245F9E",edge:"#3A7BBE"},     // 建設
+    {from:24,to:27,color:"#1B4A82",edge:"#2C63A0"},     // ゼネコン
+    {from:28,to:33,color:"#12355F",edge:"#204B7E"},     // 電力(最深)
+  ];
+  const WATER_Y=4*C+15;  // 海面ライン
+  let svg="";
+  svg+=`<rect x="0" y="0" width="${W}" height="${WATER_Y}" fill="#070A12"/>`;
+  svg+=`<rect x="0" y="${WATER_Y}" width="${W}" height="${H-WATER_Y}" fill="#0A1626"/>`;
+  [[20,18],[50,30],[95,12],[160,25],[230,16],[280,38],[330,12],[300,50],[130,45],[400,28]].forEach(([sx,sy])=>{
+    svg+=`<rect x="${sx}" y="${sy}" width="3" height="3" fill="#FFF" opacity="0.8"/>`;
+  });
+  rows.forEach((ext,r)=>{
+    const st=strata.find(s=>r>=s.from&&r<=s.to);
+    const y=r*C+15;
+    for(let col=ext[0];col<=ext[1];col++){
+      const x=col*C+8;
+      const isEdge=(col===ext[0]||col===ext[1]);
+      svg+=`<rect x="${x}" y="${y}" width="${C}" height="${C}" fill="${isEdge?st.edge:st.color}" shape-rendering="crispEdges"/>`;
+    }
+  });
+  // 頂上のGPUサーバー
+  const gx=12*C+8, gy=15-9;
+  svg+=`<rect x="${gx-4}" y="${gy}" width="34" height="11" fill="#F0593C" stroke="#FFF" stroke-width="2" shape-rendering="crispEdges"/>`;
+  svg+=`<text x="${gx+13}" y="${gy+8}" fill="#FFF" font-size="7.5" font-family="'DotGothic16',monospace" text-anchor="middle">GPU</text>`;
+  // 海面(波)
+  for(let x=0;x<W;x+=16){
+    svg+=`<rect x="${x}" y="${WATER_Y-2}" width="8" height="3" fill="#FFF" opacity="0.9" shape-rendering="crispEdges"/>`;
+    svg+=`<rect x="${x+8}" y="${WATER_Y+2}" width="8" height="2" fill="#6EC5E4" opacity="0.5" shape-rendering="crispEdges"/>`;
+  }
+  svg+=`<text x="${W-6}" y="${WATER_Y-8}" fill="#8B94A8" font-size="9" font-family="'DotGothic16',monospace" text-anchor="end">▲ 海面(みんなが見てる線)</text>`;
+  // 8層ラベル(右側・接続線つき) 全層はっきり見える明色で統一
+  const labels=[
+    [1.5,"第1層 GPUサーバー","見える部分",   "#EAF6FF"],
+    [5.5,"第2層 ストレージ","食材倉庫",     "#BFEAF5"],
+    [9.5,"第3層 ネットワーク","神経網",     "#A6DCF0"],
+    [13.5,"第4層 電源設備","心臓部",        "#8FD0EC"],
+    [17.5,"第5層 冷却設備","生命維持装置",   "#7EC8E8"],
+    [21.5,"第6層 建設・工事","施工部隊",     "#8FC4E8"],
+    [25.5,"第7層 ゼネコン","巨大な箱と地盤", "#A0C8EC"],
+    [30.5,"第8層 大元インフラ","電力の源泉", "#B0D0F0"],
+  ];
+  const LX=22*C+8+C+6;
+  labels.forEach(([r,t1,t2,colr])=>{
+    const y=r*C+15;
+    svg+=`<rect x="${LX}" y="${y-2}" width="12" height="4" fill="${colr}" shape-rendering="crispEdges"/>`;
+    svg+=`<text x="${LX+18}" y="${y+4}" fill="${colr}" font-size="13" font-weight="bold" font-family="'DotGothic16',monospace">${t1}</text>`;
+    svg+=`<text x="${LX+18}" y="${y+19}" fill="#C5D0E0" font-size="11" font-family="'DotGothic16',monospace">＝${t2}</text>`;
+  });
+  return `<div class="fviz fice">
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block" preserveAspectRatio="xMidYMid meet">${svg}</svg>
+    <div class="ice-talk pixel"><span class="ice-heart">♥</span>* どれか1つ かけても AIは とまる。</div>
+  </div>`;
+}
+function renderFlow(){
+  if(!DATA||!DATA.flow){document.getElementById("flowList").innerHTML='<div class="loading">フローデータがありません。</div>';return;}
+  const html=DATA.flow.map(stage=>{
+    const steps=stage.steps.map((step,si)=>{
+      const key=stage.key+"_"+si;
+      const open=flowOpen[key];
+      const total=step.roles.reduce((a,r)=>a+r.items.length,0);
+      const rolesHtml=step.roles.map(role=>{
+        const chips=role.items.map(it=>{
+          const q=DATA.quotes[it.code];
+          const chg=q?q.chg:null;
+          const mkCol=it.market==="jp"?"var(--jp)":"var(--us)";
+          return `<button class="fchip" onclick="event.stopPropagation();showStock('${it.code}')">
+            <span class="num" style="color:${mkCol};font-weight:700">${it.code}</span>
+            <span class="fchip-nm">${it.name}</span>
+            <span class="num" style="color:${col(chg)};font-size:10.5px">${fmt(chg)}</span>
+          </button>`;
+        }).join("");
+        return `<div class="frole"><span class="frole-label">${role.label}</span><div class="fchips">${chips}</div></div>`;
+      }).join("");
+      return `<div class="fstep ${open?'open':''}">
+        <button class="fstep-h" onclick="toggleFlowStep('${key}')">
+          <span class="fstep-icon">${step.icon}</span>
+          <span class="fstep-main"><span class="fstep-name">${step.name}</span><span class="fstep-desc">${step.desc}</span></span>
+          <span class="fstep-cnt">${total}銘柄 ${open?'▲':'▼'}</span>
+        </button>
+        ${open?`<div class="fstep-body">${rolesHtml}</div>`:""}
+      </div>`;
+    }).join("");
+    return `<div class="fstage" style="border-color:${stage.color}">
+      <div class="fstage-h" style="background:${stage.color}22">
+        <span class="fstage-icon">${stage.icon}</span>
+        <span class="fstage-name" style="color:${stage.color}">${stage.name}</span>
+      </div>
+      <div class="fstage-desc">${stage.desc}</div>
+      ${stageVisual(stage.visual)}
+      <div class="fsteps">${steps}</div>
+    </div>
+    <div class="farrow">▼</div>`;
+  }).join("");
+  document.getElementById("flowList").innerHTML=html;
+}
+function renderProc(){
+  if(!DATA||!DATA.process){
+    document.getElementById("procList").innerHTML='<div class="loading">工程データがありません。</div>';
+    return;
+  }
+  chips("#procPeriodChips",[["chg","前日比"],["ret5d","5日"],["ret1m","1ヶ月"],["ret3m","3ヶ月"]],procPeriod,id=>{procPeriod=id;render()});
+  let lastStage="";
+  document.getElementById("procList").innerHTML=DATA.process.map((step,i)=>{
+    const c0=STAGE_COLORS[step.stage]||"#888";
+    let header="";
+    if(step.stage!==lastStage){
+      lastStage=step.stage;
+      header=`<div class="procstage" style="color:${c0}">■ ${STAGE_LABELS[step.stage]||step.stage}</div>`;
+    }
+    const arrow = i>0 && !header ? `<div class="procarrow">↓</div>` : "";
+    // メーカー(グループ)はそのまま
+    if(step.groups){
+      const body=step.groups.map(g=>`
+        <div class="procgrouplabel">${g.label}</div>
+        <div class="procchips">${g.stocks.map(procStockBtn).join("")||'<span class="procempty">—</span>'}</div>
+      `).join("");
+      return `${header}<div class="procstep" style="border-left:3px solid ${c0}">
+        <div class="procstep-h"><span class="procicon">${step.icon||""}</span>${step.name}<span class="procdesc">${step.desc}</span></div>${body}</div>`;
+    }
+    // 装置｜材料 の2カラム
+    const eq=(step.equip||[]).map(procStockBtn).join("")||'<span class="procempty">—</span>';
+    const mt=(step.material||[]).map(procStockBtn).join("")||'<span class="procempty">—</span>';
+    const hasMat=(step.material||[]).length>0;
+    return `${arrow}${header}
+      <div class="procstep" style="border-left:3px solid ${c0}">
+        <div class="procstep-h"><span class="procicon">${step.icon||""}</span>${step.name}<span class="procdesc">${step.desc}</span></div>
+        <div class="proc2col">
+          <div class="proccol">
+            <div class="proccol-h" style="color:${c0}">装置</div>
+            <div class="procchips">${eq}</div>
+          </div>
+          ${hasMat?`<div class="proccol">
+            <div class="proccol-h" style="color:var(--dim)">材料</div>
+            <div class="procchips">${mt}</div>
+          </div>`:""}
+        </div>
+      </div>`;
+  }).join("");
+}
+
+// 銘柄ランキング(期間別騰落率＋セクター/市場フィルター)
+let rankSector="all", rankMarket="all", rankSub="all";
+let rankSignals=new Set();   // 複数選択(AND): po/pullback/bbwalk/vol2...
+let rankPatterns=new Set();  // 複数選択(OR): パターン名
+function periodReturn(sym,days){
+  const q=DATA.quotes[sym];
+  if(!q||!q.daily||q.daily.length<2)return null;
+  const d=q.daily;
+  let startIdx;
+  if(days==="ytd"){
+    const yr=d[d.length-1][0].slice(0,4);
+    startIdx=d.findIndex(x=>x[0]>=yr+"-01-01");
+  }else{
+    startIdx=Math.max(0,d.length-1-days);
+  }
+  if(startIdx<0||startIdx>=d.length-1)startIdx=0;
+  const c0=d[startIdx][1],c1=d[d.length-1][1];
+  return c0?(c1/c0-1)*100:null;
+}
+// マクロkey -> その配下の全銘柄code
+function sectorSyms(macroKey){
+  const m=(DATA.macro||[]).find(x=>x.key===macroKey);
+  if(!m)return null;
+  const set=new Set();
+  m.subs.forEach(s=>{s.us.forEach(u=>set.add(u[0]));s.jp.forEach(u=>set.add(u[0]));s.solo.forEach(u=>set.add(u[0]));});
+  return set;
+}
+function subSyms(macroKey,subName){
+  const m=(DATA.macro||[]).find(x=>x.key===macroKey);
+  if(!m)return null;
+  const sub=m.subs.find(s=>s.name===subName);
+  if(!sub)return null;
+  const set=new Set();
+  sub.us.forEach(u=>set.add(u[0]));sub.jp.forEach(u=>set.add(u[0]));sub.solo.forEach(u=>set.add(u[0]));
+  return set;
+}
+const RANK_PERIODS=[["1M",21,"1ヶ月"],["3M",63,"3ヶ月"],["6M",126,"6ヶ月"],["1Y",250,"1年"],["ytd","ytd","年初来"]];
+// SPE(半導体製造装置)のサブテーマを前/中/後の3工程にグルーピング
+const SPE_PROCESS={
+  "front":{label:"前工程",subs:["露光(リソグラフィ)","成膜(Deposition)","エッチング(Etch)","洗浄(Clean)","検査・計測(Metrology)","EUVマスク・材料","イオン注入・CMP"]},
+  "middle":{label:"中工程・先端パッケージング",subs:["後工程・ダイシング・封止"]},
+  "back":{label:"後工程",subs:["テスト(ATE)・プローブカード"]},
+};
+// 工程キー -> その工程配下の全サブの全銘柄code
+function speProcessSyms(procKey){
+  const m=(DATA.macro||[]).find(x=>x.key==="spe");
+  if(!m||!SPE_PROCESS[procKey])return null;
+  const names=SPE_PROCESS[procKey].subs;
+  const set=new Set();
+  m.subs.filter(s=>names.includes(s.name)).forEach(s=>{
+    s.us.forEach(u=>set.add(u[0]));s.jp.forEach(u=>set.add(u[0]));s.solo.forEach(u=>set.add(u[0]));
+  });
+  return set;
+}
+function renderRank(){
+  if(!DATA)return;
+  const sectorOpts=[["all","すべて"]].concat((DATA.macro||[]).map(m=>[m.key,m.name]));
+  chips("#rankSectorChips",sectorOpts,rankSector,id=>{rankSector=id;rankSub="all";render()});
+  // マクロ選択中は、その下のサブテーマを第2段で表示(階層展開)
+  const subWrap=document.getElementById("rankSubChips");
+  if(rankSector!=="all"){
+    const m=(DATA.macro||[]).find(x=>x.key===rankSector);
+    if(m){
+      let subOpts;
+      if(rankSector==="spe"){
+        subOpts=[["all","▼ 製造装置・全部"]].concat(Object.entries(SPE_PROCESS).map(([k,v])=>["proc:"+k,v.label]));
+      }else{
+        subOpts=[["all","▼ "+m.name+"・全部"]].concat(m.subs.map(s=>[s.name,s.name]));
+      }
+      subWrap.style.display="";
+      chips("#rankSubChips",subOpts,rankSub,id=>{rankSub=id;render()});
+    }
+  } else {
+    subWrap.style.display="none";
+    subWrap.innerHTML="";
+  }
+  chips("#rankMarketChips",[["all","両方"],["jp","日本"],["us","米国"]],rankMarket,id=>{rankMarket=id;render()});
+  const patOpts=[["all","すべて"],["直近高値ブレイク","直近高値ブレイク"],["直近高値ブレイクリーチ","直近高値ブレイクリーチ"],["52週高値更新","52週高値"],["三角ブレイク","三角ブレイク"],["三角ブレイクリーチ","三角ブレイクリーチ"],["CWH押し目/抜け","CWH押し目/抜け"],["CWH形成中","CWH形成中"],["フラッグブレイク","フラッグ"],["逆三尊・底打ち","逆三尊"],["三尊・天井注意","三尊"],["ダブルボトム","ダブル底(W)"],["ダブルトップ","ダブル天井(M)"],["トリプルボトム","トリプル底"],["トリプルトップ","トリプル天井"],["52週安値圏","安値圏"]];
+  chipsMulti("#rankPatternChips",patOpts,rankPatterns,id=>{
+    if(id==="all"){rankPatterns.clear();}else{rankPatterns.has(id)?rankPatterns.delete(id):rankPatterns.add(id);}render();
+  });
+  const sigOpts=[["all","すべて"],["po","📈パーフェクトオーダー"],["bbwalk","📊+2σバンドウォーク"],["vol2","🔊出来高2倍↑"],["vol3","🔊出来高3倍↑"],["vol5","🔊出来高5倍↑"],["pullback","🎯押し目(全部)"],["pb5","5日線押し目"],["pb25","25日線押し目"],["pb50","50日線押し目"],["pb75","75日線押し目"],["inflow","資金流入急増"],["overheat","過熱注意"]];
+  chipsMulti("#rankSignalChips",sigOpts,rankSignals,id=>{
+    if(id==="all"){rankSignals.clear();}else{rankSignals.has(id)?rankSignals.delete(id):rankSignals.add(id);}render();
+  });
+  let secSet=rankSector==="all"?null:sectorSyms(rankSector);
+  if(rankSector!=="all"&&rankSub!=="all"){
+    if(rankSub.startsWith("proc:")){
+      const ps=speProcessSyms(rankSub.slice(5));
+      if(ps)secSet=ps;
+    }else{
+      const ss=subSyms(rankSector,rankSub);
+      if(ss)secSet=ss;
+    }
+  }
+  function matchSignal(q){
+    for(const sig of rankSignals){
+      if(sig==="po"&&!q.po)return false;
+      if(sig==="pullback"&&!q.pullback)return false;
+      if(sig==="bbwalk"&&q.bbWalk!=="up")return false;
+      if(sig==="vol2"&&!(q.volSurge>=1))return false;
+      if(sig==="vol3"&&!(q.volSurge>=2))return false;
+      if(sig==="vol5"&&!(q.volSurge>=3))return false;
+      if(sig==="pb5"&&q.pullbackMa!==5)return false;
+      if(sig==="pb25"&&q.pullbackMa!==25)return false;
+      if(sig==="pb50"&&q.pullbackMa!==50)return false;
+      if(sig==="pb75"&&q.pullbackMa!==75)return false;
+      if(sig==="inflow"&&q.daytrade!=="資金流入急増")return false;
+      if(sig==="overheat"&&q.signal!=="過熱")return false;
+    }
+    return true;
+  }
+  let rows=Object.keys(DATA.quotes).filter(s=>{
+    const q=DATA.quotes[s];
+    if(rankMarket!=="all"&&q.market!==rankMarket)return false;
+    if(secSet&&!secSet.has(s))return false;
+    if(rankPatterns.size>0&&!rankPatterns.has(q.pattern))return false;
+    if(!matchSignal(q))return false;
+    return true;
+  }).map(s=>({sym:s,name:DATA.quotes[s].name,market:DATA.quotes[s].market,pattern:DATA.quotes[s].pattern,po:DATA.quotes[s].po,pullback:DATA.quotes[s].pullback,chg:DATA.quotes[s].chg}))
+    .sort((a,b)=>(b.chg??-999)-(a.chg??-999));
+  if(!rows.length){document.getElementById("rankList").innerHTML='<div class="loading">該当なし</div>';return;}
+  document.getElementById("rankList").innerHTML=rows.map((r,i)=>{
+    const mkCol=r.market==="jp"?"var(--jp)":"var(--us)";
+    let patTag="";
+    if((rankPatterns.size>0||rankSignals.size>0)&&r.pattern){
+      const bull=["直近高値ブレイク","52週高値更新","三角ブレイク","CWH形成中","CWH押し目/抜け","フラッグブレイク","逆三尊・底打ち","トリプルボトム","ダブルボトム"].includes(r.pattern);
+      patTag=`<span class="rktag" style="background:${bull?'rgba(240,89,60,.15)':'rgba(63,167,214,.15)'};color:${bull?'var(--up)':'var(--down)'}">${r.pattern}</span>`;
+    }
+    return `<button class="rankrow" data-sym="${r.sym}" onclick="showStock('${r.sym}')">
+      <span class="rkrank">${i+1}</span>
+      <span class="num" style="color:${mkCol};font-weight:700;width:50px;flex-shrink:0">${r.sym}</span>
+      <span class="rknm">${r.name}${patTag}</span>
+      <span class="num rkret" style="color:${col(r.chg)}">${fmt(r.chg)}</span>
+    </button>`;
+  }).join("");
+}
+
+// ===== 騰落率タブ(期間で並べ替え・セクター/市場絞り) =====
+let retPeriod="3M", retSector="all", retMarket="all", retSub="all";
+function renderRet(){
+  if(!DATA)return;
+  chips("#retPeriodChips",RANK_PERIODS.map(p=>[p[0],p[2]]),retPeriod,id=>{retPeriod=id;render()});
+  const sectorOpts=[["all","すべて"]].concat((DATA.macro||[]).map(m=>[m.key,m.name]));
+  chips("#retSectorChips",sectorOpts,retSector,id=>{retSector=id;retSub="all";render()});
+  const subWrap=document.getElementById("retSubChips");
+  if(retSector!=="all"){
+    const m=(DATA.macro||[]).find(x=>x.key===retSector);
+    if(m){
+      let subOpts;
+      if(retSector==="spe"){
+        subOpts=[["all","▼ 製造装置・全部"]].concat(Object.entries(SPE_PROCESS).map(([k,v])=>["proc:"+k,v.label]));
+      }else{
+        subOpts=[["all","▼ "+m.name+"・全部"]].concat(m.subs.map(s=>[s.name,s.name]));
+      }
+      subWrap.style.display="";
+      chips("#retSubChips",subOpts,retSub,id=>{retSub=id;render()});
+    }
+  } else {
+    subWrap.style.display="none";
+    subWrap.innerHTML="";
+  }
+  chips("#retMarketChips",[["all","両方"],["jp","日本"],["us","米国"]],retMarket,id=>{retMarket=id;render()});
+  const pdef=RANK_PERIODS.find(p=>p[0]===retPeriod);
+  const days=pdef[1];
+  let secSet=retSector==="all"?null:sectorSyms(retSector);
+  if(retSector!=="all"&&retSub!=="all"){
+    if(retSub.startsWith("proc:")){
+      const ps=speProcessSyms(retSub.slice(5));
+      if(ps)secSet=ps;
+    }else{
+      const ss=subSyms(retSector,retSub);
+      if(ss)secSet=ss;
+    }
+  }
+  let rows=Object.keys(DATA.quotes).filter(s=>{
+    const q=DATA.quotes[s];
+    if(retMarket!=="all"&&q.market!==retMarket)return false;
+    if(secSet&&!secSet.has(s))return false;
+    return true;
+  }).map(s=>({sym:s,name:DATA.quotes[s].name,market:DATA.quotes[s].market,ret:periodReturn(s,days)}))
+    .filter(r=>r.ret!=null).sort((a,b)=>b.ret-a.ret);
+  if(!rows.length){document.getElementById("retList").innerHTML='<div class="loading">該当なし</div>';return;}
+  const n=rows.length;
+  document.getElementById("retList").innerHTML=rows.map((r,i)=>{
+    const mkCol=r.market==="jp"?"var(--jp)":"var(--us)";
+    let tag="";
+    if(i<Math.ceil(n*0.2))tag='<span class="rktag lead">先行</span>';
+    else if(i>=Math.floor(n*0.8))tag='<span class="rktag lag">出遅れ</span>';
+    return `<button class="rankrow" data-sym="${r.sym}" onclick="showStock('${r.sym}')">
+      <span class="rkrank">${i+1}</span>
+      <span class="num" style="color:${mkCol};font-weight:700;width:50px;flex-shrink:0">${r.sym}</span>
+      <span class="rknm">${r.name}${tag}</span>
+      <span class="num rkret" style="color:${col(r.ret)}">${fmt(r.ret)}</span>
+    </button>`;
+  }).join("");
+}
+
+async function load(){
+  try{
+    const r=await fetch("data.json?t="+Date.now()); DATA=await r.json();
+    if(DATA.failed?.length) $("#note").innerHTML+="<br>取得失敗: "+DATA.failed.join(", ");
+  }catch(e){
+    $("#list").innerHTML='<div class="loading">data.json が読めません。<br>update_data.py を実行して docs/data.json を生成してください。</div>';
+  }
+  render();
+}
+load();
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+</script>
+</body>
+</html>
