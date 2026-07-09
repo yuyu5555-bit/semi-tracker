@@ -18,6 +18,11 @@ on:
   workflow_dispatch: {}
 permissions:
   contents: write
+# 1回の実行が数十分かかるため、間隔の短いスケジュール同士が重なることがある。
+# 同時実行を禁止し、前の実行が終わるまで次は待機させる(重複pushによる衝突エラー防止)。
+concurrency:
+  group: update-data
+  cancel-in-progress: false
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -34,4 +39,7 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add docs/data.json
           git diff --cached --quiet || git commit -m "data: auto update"
-          git push
+      - name: Pull latest before push (avoid race with overlapping runs)
+        run: git pull --rebase --autostash origin main
+      - name: Push
+        run: git push
