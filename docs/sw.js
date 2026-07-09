@@ -1,6 +1,6 @@
 // 半導体テーマトラッカー Service Worker
 // シェルはキャッシュ優先、data.json はネット優先(失敗時に前回キャッシュ)
-const SHELL = "semi-tt-shell-v3";
+const SHELL = "semi-tt-shell-v4";
 const ASSETS = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", (e) => {

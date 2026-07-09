@@ -297,34 +297,29 @@ def main():
             if vol_ratio >= 5.0: vol_surge = 3   # 5倍以上=異常な急増
             elif vol_ratio >= 3.0: vol_surge = 2  # 3倍以上=強い急増
             elif vol_ratio >= 2.0: vol_surge = 1  # 2倍以上=急増
-        # === ボリンジャーバンド(25日・2σ)とバンドウォーク判定 ===
-        bb_walk = None  # "up"=上昇バンドウォーク, "down"=下降バンドウォーク
-        bb_pctb = None  # %B(バンド内の位置。1.0=+2σ, 0=-2σ)
+        # === ボリンジャーバンド(25日)σゾーン判定 ===
+        bb_pctb = None   # %B(バンド内の位置。1.0=+2σ, 0.5=中心, 0=-2σ)
+        bb_zone = None   # "3σ+" / "2σ+" / "2σ-" / "3σ-" (バンド外への到達度)
         if len(closes) >= 25:
             import statistics as _st
             win = closes[-25:]
             bb_mid = sum(win) / 25
             bb_sd = _st.pstdev(win)
             if bb_sd > 0:
-                upper = bb_mid + 2 * bb_sd
-                lower = bb_mid - 2 * bb_sd
-                bb_pctb = round((closes[-1] - lower) / (upper - lower), 2)
-                # バンドウォーク: 直近数日、株価が+2σ付近(%B>=0.8)に張り付いて上昇
-                recent5 = closes[-5:]
-                pctbs = []
-                for i in range(-5, 0):
-                    w = closes[i-24:i+1] if len(closes) >= 25 - i else None
-                    if w and len(w) >= 25:
-                        m = sum(w) / len(w); s = _st.pstdev(w)
-                        if s > 0: pctbs.append((closes[i] - (m - 2*s)) / (4*s))
-                if pctbs:
-                    # 直近5日の大半が+2σ付近(%B>=0.8)＝上昇バンドウォーク
-                    hi_cnt = sum(1 for p in pctbs if p >= 0.8)
-                    lo_cnt = sum(1 for p in pctbs if p <= 0.2)
-                    if hi_cnt >= 3 and closes[-1] > closes[-5]:
-                        bb_walk = "up"
-                    elif lo_cnt >= 3 and closes[-1] < closes[-5]:
-                        bb_walk = "down"
+                cur_c = closes[-1]
+                # 中心からの乖離を標準偏差の何倍か(z)で表す
+                z = (cur_c - bb_mid) / bb_sd
+                upper2, lower2 = bb_mid + 2 * bb_sd, bb_mid - 2 * bb_sd
+                bb_pctb = round((cur_c - lower2) / (upper2 - lower2), 2)
+                # ±2σ/±3σの外側到達を段階判定(3σが最優先)
+                if z >= 3:
+                    bb_zone = "3σ+"
+                elif z >= 2:
+                    bb_zone = "2σ+"
+                elif z <= -3:
+                    bb_zone = "3σ-"
+                elif z <= -2:
+                    bb_zone = "2σ-"
         # 前日比(%)
         prev = closes[-2] if len(closes) >= 2 else None
         chg = round((closes[-1] / prev - 1) * 100, 2) if prev else None
@@ -681,11 +676,11 @@ def main():
                 pattern = "ダブルトップ"
             elif tri_post:
                 pattern = "三角ブレイク"
-            # ブレイク後(直近60日高値を上抜け＋出来高増)
-            elif cur >= prior_hi and vol_up and cur > recent20_hi * 0.99:
+            # ブレイク: 直近3ヶ月(=63営業日, 前日まで)の高値を当日終値が上抜け(＋出来高増で確度UP)
+            elif (hi3m := (max(closes[-64:-1]) if len(closes) >= 64 else max(closes[:-1]))) and cur > hi3m and vol_up:
                 pattern = "直近高値ブレイク"
-            # ブレイク前(3ヶ月高値の2%以内に接近・未突破)
-            elif prior_hi and prior_hi * 0.98 <= cur < prior_hi:
+            # リーチ: 直近3ヶ月高値の2%以内に接近・未突破
+            elif hi3m and hi3m * 0.98 <= cur <= hi3m:
                 pattern = "直近高値ブレイクリーチ"
             elif tri_pre:
                 pattern = "三角ブレイクリーチ"
@@ -705,7 +700,7 @@ def main():
             "chg": chg,
             "volRatio": vol_ratio,
             "volSurge": vol_surge,  # 出来高急増レベル(0/1=2倍/2=3倍/3=5倍)
-            "bbWalk": bb_walk,      # ボリンジャーバンドウォーク(up/down)
+            "bbZone": bb_zone,      # σゾーン(3σ+/2σ+/2σ-/3σ-)
             "bbPctB": bb_pctb,      # %B(1.0=+2σ, 0=-2σ)
             "dev25": dev25,         # 25日線乖離率(%)
             "dev50": dev50,         # 50日線乖離率(%)

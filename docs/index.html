@@ -132,12 +132,24 @@
   /* 表示メニュー(テーマ/銘柄分析/前日比・出来高/フロー図/連動)は大きく・選択でボタン固有色 */
   #viewChips .chip{font-size:15px;font-weight:700;padding:10px 15px}
   #viewChips .chip.on{color:#fff}
-  #viewChips .chip[data-id="theme"].on{background:#6EE7F0;border-color:#6EE7F0;color:#0B0E15}
-  #viewChips .chip[data-id="rank"].on{background:var(--jp);border-color:var(--jp);color:#0B0E15}
+  #viewChips .chip[data-id="theme"].on{background:#6EE7F0;border-color:#6EE7F0;color:#fff}
+  #viewChips .chip[data-id="rank"].on{background:var(--jp);border-color:var(--jp);color:#fff}
   #viewChips .chip[data-id="vol"].on{background:#3E9B62;border-color:#3E9B62;color:#fff}
   #viewChips .chip[data-id="ret"].on{background:#E0433C;border-color:#E0433C;color:#fff}
   #viewChips .chip[data-id="flow"].on{background:var(--us);border-color:var(--us);color:#fff}
   #viewChips .chip[data-id="link"].on{background:#3B82C4;border-color:#3B82C4;color:#fff}
+  /* 工程別ビュー(騰落率のグループ平均モードで使用) */
+  .pcstage{width:100%;display:flex;align-items:center;gap:9px;padding:11px 10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:6px;cursor:pointer;text-align:left;color:var(--text)}
+  .pcstage.open{border-color:#E0863C}
+  .pcrank{font-family:var(--dot);font-size:12px;color:var(--faint);width:22px;flex-shrink:0;text-align:center}
+  .pcmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+  .pcname{font-size:13.5px;font-weight:700;font-family:var(--dot);letter-spacing:.3px;color:var(--text)}
+  .pcsub{font-size:10px;color:var(--dim)}
+  .pccnt{font-size:11px;color:var(--dim);background:rgba(224,134,60,.14);border:1px solid rgba(224,134,60,.4);border-radius:20px;padding:2px 9px;flex-shrink:0;font-family:var(--dot)}
+  .pcavg{width:66px;text-align:right;flex-shrink:0;font-weight:700}
+  .pcdetail{padding:2px 4px 10px}
+  .pcstockrow{display:flex;align-items:center;gap:9px;padding:8px 8px;border-bottom:1px solid var(--line);width:100%;background:none;border:none;text-align:left;cursor:pointer;color:var(--text)}
+  .pcrolechip{display:inline-block;font-size:9px;font-family:var(--dot);color:var(--faint);background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;margin:2px 3px 4px 0}
   .chartbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 10px 8px;margin-top:12px}
   .charttitle{font-size:11.5px;color:var(--dim);letter-spacing:1px;margin:0 4px 4px}
   svg.lines{display:block;width:100%;height:auto;touch-action:none}
@@ -353,6 +365,9 @@
   <div class="chips" id="viewChips"></div>
 
   <div id="themeView">
+  <div class="ctrl-label">軸</div>
+  <div class="chips" id="themeAxisChips"></div>
+  <div class="chips chips-wrap" id="themeStageChips" style="display:none;margin-top:5px"></div>
   <div class="ctrl-label">期間</div>
   <div class="chips" id="periodChips"></div>
   <div class="ctrl-label">平均の対象</div>
@@ -391,7 +406,9 @@
   </div>
 
   <div id="rankView" style="display:none">
-    <div class="ctrl-label">セクター(マクロ)で絞る</div>
+    <div class="ctrl-label">軸</div>
+    <div class="chips" id="rankAxisChips"></div>
+    <div class="ctrl-label" id="rankSectorLabel">セクター(マクロ)で絞る</div>
     <div class="chips chips-wrap" id="rankSectorChips"></div>
     <div class="chips chips-wrap" id="rankSubChips" style="display:none;margin-top:5px"></div>
     <div class="ctrl-label">市場</div>
@@ -406,14 +423,18 @@
   </div>
 
   <div id="retView" style="display:none">
+    <div class="ctrl-label">軸</div>
+    <div class="chips" id="retAxisChips"></div>
+    <div class="ctrl-label">表示</div>
+    <div class="chips" id="retModeChips"></div>
     <div class="ctrl-label">期間(この期間の騰落率で並べ替え)</div>
     <div class="chips" id="retPeriodChips"></div>
-    <div class="ctrl-label">セクター(マクロ)で絞る</div>
+    <div class="ctrl-label" id="retSectorLabel">セクター(マクロ)で絞る</div>
     <div class="chips chips-wrap" id="retSectorChips"></div>
     <div class="chips chips-wrap" id="retSubChips" style="display:none;margin-top:5px"></div>
     <div class="ctrl-label">市場</div>
     <div class="chips" id="retMarketChips"></div>
-    <div class="charttitle" style="margin:10px 4px 8px">選んだ期間の騰落率ランキング。同セクターで絞れば「誰が先行・誰が出遅れ」が分かる。</div>
+    <div class="charttitle" style="margin:10px 4px 8px" id="retNote">選んだ期間の騰落率ランキング。同セクターで絞れば「誰が先行・誰が出遅れ」が分かる。</div>
     <div class="list" id="retList"></div>
   </div>
 
@@ -510,6 +531,16 @@ function rankedMacros(){
     return {...m, idx, series, avg:lastOf(series)};
   }).filter(m=>m.series).sort((a,b)=>(b.avg??-1e9)-(a.avg??-1e9));
 }
+let themeAxis="theme", themeStage="front";
+// テーマ画面の「工程」軸: procStepsを再利用してフロー図の各工程をマクロテーマと同じ形(series/avg/color)に揃える
+function rankedProcSteps(stageKey){
+  const palette=(DATA.macro||[]).map(m=>m.color);
+  return procSteps(stageKey).map((st,idx)=>{
+    const codes=st.items.map(it=>it.code);
+    const series=avgSeries(codes);
+    return {...st, idx, codes, series, avg:lastOf(series), color:palette[idx%palette.length]||"#8B94A8"};
+  }).filter(st=>st.series).sort((a,b)=>(b.avg??-1e9)-(a.avg??-1e9));
+}
 
 // 複数テーマの累積ラインを重ねて描画
 function drawChart(rows){
@@ -533,16 +564,43 @@ function drawChart(rows){
   svg+=`<text x="${padL+2}" y="${(Y(mx)+8).toFixed(1)}" fill="#8B94A8" font-size="8" font-family="'DotGothic16',monospace">${mx.toFixed(0)}%</text>`;
   svg+=`<text x="${padL+2}" y="${(Y(mn)-3).toFixed(1)}" fill="#8B94A8" font-size="8" font-family="'DotGothic16',monospace">${mn.toFixed(0)}%</text>`;
   svg+=`<text x="${padL+2}" y="${(Y(0)-2).toFixed(1)}" fill="#5A6478" font-size="7.5" font-family="'DotGothic16',monospace">0%</text>`;
+  const ends=[];
   rows.forEach((r,ri)=>{
     const len=r.series.length;
     // 実線(視認性優先)
     const pts=r.series.map((p,i)=>`${X(i).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(" ");
     svg+=`<polyline points="${pts}" fill="none" stroke="${r.color}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke" opacity="0.9"/>`;
     const last=r.series[len-1];
-    const cx=X(len-1), cy=Y(last[1]);
-    // 順位番号バッジ(ライン末尾・ドット絵風の四角)
-    svg+=`<rect x="${(cx-6).toFixed(1)}" y="${(cy-6).toFixed(1)}" width="12" height="12" fill="${r.color}" stroke="#0B0E15" stroke-width="1.5" shape-rendering="crispEdges"/>`;
-    svg+=`<text x="${cx.toFixed(1)}" y="${(cy+3).toFixed(1)}" fill="#0B0E15" font-size="8" font-weight="700" font-family="'DotGothic16',ui-monospace,monospace" text-anchor="middle">${ri+1}</text>`;
+    ends.push({num:ri+1, color:r.color, x:X(len-1), y:Y(last[1])});
+  });
+  // ===== 順位番号バッジ: 末尾で重なるのを縦に散らして全番号を読めるようにする =====
+  const R=6.4, minGap=13.2, bx=W-padR-2, top=padT+R, bot=H-padB-R;
+  const order=[...ends].sort((a,b)=>a.y-b.y);
+  order.forEach(e=>{ e.by=Math.min(Math.max(e.y,top),bot); });
+  // 上から順に最小間隔を確保
+  for(let i=1;i<order.length;i++){
+    if(order[i].by < order[i-1].by+minGap) order[i].by=order[i-1].by+minGap;
+  }
+  // 下端をはみ出したら上方向へ押し戻す
+  if(order.length && order[order.length-1].by>bot){
+    order[order.length-1].by=bot;
+    for(let i=order.length-2;i>=0;i--){
+      if(order[i].by > order[i+1].by-minGap) order[i].by=order[i+1].by-minGap;
+    }
+  }
+  // リーダー線(実際のライン末尾 → ずらしたバッジ位置)。ずれてる時だけ細点線で結ぶ
+  order.forEach(e=>{
+    if(Math.abs(e.by-e.y)>1.5){
+      svg+=`<path d="M${e.x.toFixed(1)},${e.y.toFixed(1)} L${(bx-R-1).toFixed(1)},${e.by.toFixed(1)}" fill="none" stroke="${e.color}" stroke-width="1" opacity="0.4" stroke-dasharray="1 2" vector-effect="non-scaling-stroke"/>`;
+    }
+  });
+  // ドット風の四角バッジ(グロー+濃縁+光沢ハイライト)
+  order.forEach(e=>{
+    const y=e.by, s=R*2, gs=(R+2.4)*2;
+    svg+=`<rect x="${(bx-R-2.4).toFixed(1)}" y="${(y-R-2.4).toFixed(1)}" width="${gs.toFixed(1)}" height="${gs.toFixed(1)}" rx="3" fill="${e.color}" opacity="0.16"/>`;
+    svg+=`<rect x="${(bx-R).toFixed(1)}" y="${(y-R).toFixed(1)}" width="${s.toFixed(1)}" height="${s.toFixed(1)}" rx="2.4" fill="${e.color}" stroke="#0B0E15" stroke-width="1.6"/>`;
+    svg+=`<rect x="${(bx-R+1.2).toFixed(1)}" y="${(y-R+1.2).toFixed(1)}" width="2.6" height="1.6" rx="0.8" fill="#FFFFFF" opacity="0.5"/>`;
+    svg+=`<text x="${bx}" y="${(y+2.9).toFixed(1)}" fill="#0B0E15" font-size="8" font-weight="700" font-family="'DotGothic16',ui-monospace,monospace" text-anchor="middle">${e.num}</text>`;
   });
   const c=$("#chart"); c.setAttribute("viewBox",`0 0 ${W} ${H}`); c.innerHTML=svg;
 }
@@ -739,10 +797,12 @@ function showStock(sym){
   if(q.volSurge===3)vsBadge=`<span class="sigbadge" style="color:#fff;background:var(--up);border-color:var(--up)">🔊出来高5倍↑</span>`;
   else if(q.volSurge===2)vsBadge=`<span class="sigbadge" style="color:var(--up);border-color:var(--up)">🔊出来高3倍↑</span>`;
   else if(q.volSurge===1)vsBadge=`<span class="sigbadge" style="color:var(--up);border-color:var(--up)">🔊出来高2倍↑</span>`;
-  // ボリンジャーバンドウォークバッジ
+  // σゾーンバッジ(±2σ/±3σ)
   let bbBadge="";
-  if(q.bbWalk==="up")bbBadge=`<span class="sigbadge" style="color:#fff;background:var(--up);border-color:var(--up)">📊+2σバンドウォーク</span>`;
-  else if(q.bbWalk==="down")bbBadge=`<span class="sigbadge" style="color:#fff;background:var(--down);border-color:var(--down)">📊-2σバンドウォーク</span>`;
+  if(q.bbZone==="3σ+")bbBadge=`<span class="sigbadge" style="color:#fff;background:var(--up);border-color:var(--up)">📈+3σ</span>`;
+  else if(q.bbZone==="2σ+")bbBadge=`<span class="sigbadge" style="color:var(--up);border-color:var(--up)">📈+2σ</span>`;
+  else if(q.bbZone==="3σ-")bbBadge=`<span class="sigbadge" style="color:#fff;background:var(--down);border-color:var(--down)">📉-3σ</span>`;
+  else if(q.bbZone==="2σ-")bbBadge=`<span class="sigbadge" style="color:var(--down);border-color:var(--down)">📉-2σ</span>`;
   $("#sheet").innerHTML=`
     <div class="sheethead"><span class="sym num" style="color:${mkCol}">${sym}</span>
       <span class="nm">${q.name}</span><button class="close" onclick="hideSheet()">✕</button></div>
@@ -783,7 +843,7 @@ function showStock(sym){
         <div class="techcell"><span class="tk">出来高率</span><span class="tv num" style="color:${q.volRatio>=2?'var(--up)':'var(--text)'}">${q.volRatio!=null?q.volRatio.toFixed(1)+'x':'–'}</span></div>
         <div class="techcell"><span class="tk">連続</span><span class="tv num" style="color:${q.streak>0?'var(--up)':q.streak<0?'var(--down)':'var(--text)'}">${q.streak>0?'+'+q.streak+'日':q.streak<0?q.streak+'日':'–'}</span></div>
         <div class="techcell"><span class="tk">BB %B(2σ位置)</span><span class="tv num" style="color:${q.bbPctB>=0.9?'var(--up)':q.bbPctB<=0.1?'var(--down)':'var(--text)'}">${q.bbPctB!=null?(q.bbPctB*100).toFixed(0)+'%':'–'}</span></div>
-        <div class="techcell"><span class="tk">バンドウォーク</span><span class="tv" style="font-size:11px;color:${q.bbWalk==='up'?'var(--up)':q.bbWalk==='down'?'var(--down)':'var(--dim)'}">${q.bbWalk==='up'?'+2σ 上昇中 🔥':q.bbWalk==='down'?'-2σ 下落中':'なし'}</span></div>
+        <div class="techcell"><span class="tk">σゾーン</span><span class="tv" style="font-size:11px;color:${(q.bbZone||'').includes('+')?'var(--up)':(q.bbZone||'').includes('-')?'var(--down)':'var(--dim)'}">${q.bbZone||'バンド内'}</span></div>
       </div>
       ${q.daytrade?`<div class="dtbadge">⚡ ${q.daytrade}</div>`:""}
       <div class="techhint">${techHint(q)}</div>
@@ -999,10 +1059,10 @@ function copyAISummary(){
   txt+="\n■★ 出来高急増(25日平均の3倍↑ = 資金が突っ込んでる異変)\n";
   surge.forEach(q=>txt+=`  ${q.sym} ${q.name}: 出来高率${q.volRatio.toFixed(1)}x${q.volSurge>=3?"(5倍↑!)":""} / 前日比${fmtP(q.chg)} / 3日${fmtP(q.ret3d)}\n`);
   if(!surge.length)txt+="  該当なし\n";
-  // ボリンジャーバンド +2σ バンドウォーク(強い上昇継続)
-  const bbw=qs.filter(q=>q.bbWalk==="up").sort((a,b)=>(b.ret5d||0)-(a.ret5d||0));
-  txt+="\n■ +2σバンドウォーク(ボリンジャーバンド上限に沿った強い上昇)\n";
-  bbw.forEach(q=>txt+=`  ${q.sym} ${q.name}: 前日比${fmtP(q.chg)} / 5日${fmtP(q.ret5d)} / RSI${q.rsi==null?"–":q.rsi} / 出来高${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"}\n`);
+  // ボリンジャーバンド σゾーン(±2σ/±3σ到達)
+  const bbw=qs.filter(q=>q.bbZone==="3σ+"||q.bbZone==="2σ+").sort((a,b)=>(b.ret5d||0)-(a.ret5d||0));
+  txt+="\n■ +2σ/+3σ到達(ボリンジャーバンド上限突破)\n";
+  bbw.forEach(q=>txt+=`  ${q.sym} ${q.name}: ${q.bbZone} / 前日比${fmtP(q.chg)} / 5日${fmtP(q.ret5d)} / RSI${q.rsi==null?"–":q.rsi} / 出来高${q.volRatio==null?"–":q.volRatio.toFixed(1)+"x"}\n`);
   if(!bbw.length)txt+="  該当なし\n";
   // ⑤ フラッグブレイク(急騰→小休止→上抜け。数は少なめ)
   const flagTop=qs.filter(q=>q.pattern==="フラッグブレイク").sort((a,b)=>(b.volRatio||0)-(a.volRatio||0));
@@ -1215,7 +1275,7 @@ async function takeShot(){
   }
 }
 function render(){
-  chips("#viewChips",[["theme","テーマ"],["rank","銘柄分析"],["vol","前日比・出来高"],["ret","騰落率"],["flow","フロー図"],["link","連動"]],view,id=>{pushHistory();view=id;render()});
+  chips("#viewChips",[["theme","テーマ"],["rank","銘柄分析"],["ret","騰落率"],["vol","前日比・出来高"],["flow","フロー図"],["link","連動"]],view,id=>{pushHistory();view=id;render()});
   const tv=document.getElementById("themeView"),vv=document.getElementById("volView"),lv=document.getElementById("linkView"),pv=document.getElementById("procView"),rv=document.getElementById("rankView"),fv=document.getElementById("flowView"),etv=document.getElementById("retView");
   const chartBox=document.getElementById("chartTitle").parentElement;
   const hideAll=()=>{tv.style.display="none";vv.style.display="none";lv.style.display="none";pv.style.display="none";rv.style.display="none";fv.style.display="none";etv.style.display="none";chartBox.style.display="none";};
@@ -1256,39 +1316,60 @@ function render(){
     return;
   }
   hideAll();tv.style.display="block";chartBox.style.display="block";
+  chips("#themeAxisChips",[["theme","テーマ"],["proc","工程"]],themeAxis,id=>{themeAxis=id;openIdx=-1;render()});
+  const stageWrap=document.getElementById("themeStageChips");
+  if(themeAxis==="proc"){
+    const stageOpts=(DATA&&DATA.flow||[]).map(s=>[s.key, s.name.replace(/^[①-⑳]\s*/,"")]);
+    stageWrap.style.display=""; chips("#themeStageChips",stageOpts,themeStage,id=>{themeStage=id;openIdx=-1;render()});
+  } else {
+    stageWrap.style.display="none"; stageWrap.innerHTML="";
+  }
   chips("#periodChips",PERIODS.map(p=>[p[0],p[1]]),period,id=>{period=id;render()});
   chips("#marketChips",MARKETS,market,id=>{market=id;render()});
   if(!DATA) return;
   const plabel=(PERIODS.find(p=>p[0]===period)||[])[1];
-  $("#chartTitle").textContent=plabel+" 累積騰落率(%) — テーマ平均";
+  $("#chartTitle").textContent=plabel+(themeAxis==="proc"?" 累積騰落率(%) — 工程平均":" 累積騰落率(%) — テーマ平均");
   $("#updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
-  const rows=rankedMacros();
+  const rows = themeAxis==="proc" ? rankedProcSteps(themeStage) : rankedMacros();
   drawChart(rows);
   const maxAbs=Math.max(...rows.map(r=>Math.abs(r.avg??0)),1);
   $("#list").innerHTML=rows.map((r,rank)=>{
-    const subsHtml=r.subs.map(sub=>{
-      const ss=avgSeries(pickSyms(sub)); const savg=lastOf(ss);
-      const us=market!=="jp"?sub.us.map(x=>stockRow(x,"us")).join(""):"";
-      const jp=market!=="us"?sub.jp.map(x=>stockRow(x,"jp")).join(""):"";
-      const solo=market!=="us"?sub.solo.map(x=>stockRow(x,"jp")).join(""):"";
-      return `<div class="subhead">${sub.name}<span class="subavg num" style="color:${col(savg)}">${fmt(savg)}</span></div>
-        ${us?`<div class="grp">米国株</div>${us}`:""}
-        ${jp?`<div class="grp">連動日本株</div>${jp}`:""}
-        ${solo?`<div class="grp">日本単独テーマ</div>${solo}`:""}`;
-    }).join("");
+    let detailHtml, subLabel, sparkHtml;
+    if(themeAxis==="proc"){
+      const stockRows=r.items
+        .filter(it=>market==="both"||it.market===market)
+        .map(it=>({row:[it.code,it.name,it.role], mk:it.market, ret:symRet(it.code)}))
+        .sort((a,b)=>(b.ret??-1e9)-(a.ret??-1e9));
+      detailHtml = stockRows.map(x=>stockRow(x.row,x.mk)).join("") || '<div class="procempty">該当銘柄なし</div>';
+      subLabel = `${r.items.length}銘柄`;
+      sparkHtml = sparklineFromCodes(r.codes);
+    } else {
+      subLabel = `${r.subs.length}サブテーマ`;
+      sparkHtml = themeSparkline(r.key);
+      detailHtml = r.subs.map(sub=>{
+        const ss=avgSeries(pickSyms(sub)); const savg=lastOf(ss);
+        const us=market!=="jp"?sub.us.map(x=>stockRow(x,"us")).join(""):"";
+        const jp=market!=="us"?sub.jp.map(x=>stockRow(x,"jp")).join(""):"";
+        const solo=market!=="us"?sub.solo.map(x=>stockRow(x,"jp")).join(""):"";
+        return `<div class="subhead">${sub.name}<span class="subavg num" style="color:${col(savg)}">${fmt(savg)}</span></div>
+          ${us?`<div class="grp">米国株</div>${us}`:""}
+          ${jp?`<div class="grp">連動日本株</div>${jp}`:""}
+          ${solo?`<div class="grp">日本単独テーマ</div>${solo}`:""}`;
+      }).join("");
+    }
     return `<div class="card ${r.idx===openIdx?"open":""}" data-idx="${r.idx}">
       <button class="row trow" onclick="toggle(${r.idx})">
         <span class="rnum" style="background:${r.color}">${rank+1}</span>
         <span class="tmain">
-          <span class="tname">${r.name}</span>
-          <span class="tsub">${r.subs.length}サブテーマ</span>
+          <span class="tname">${r.icon?r.icon+" ":""}${r.name}</span>
+          <span class="tsub">${subLabel}</span>
         </span>
-        <span class="tspark">${themeSparkline(r.key)}</span>
+        <span class="tspark">${sparkHtml}</span>
         <span class="tright">
           <span class="avg num" style="color:${col(r.avg)}">${fmt(r.avg)}</span>
         </span>
         <span class="chev">▼</span></button>
-      <div class="detail">${subsHtml}</div></div>`;
+      <div class="detail">${detailHtml}</div></div>`;
   }).join("");
 }
 // テーマの1年推移ミニチャート(SVG sparkline)
@@ -1298,6 +1379,9 @@ function themeSparkline(macroKey){
   if(!m) return "";
   const syms=[];
   m.subs.forEach(s=>s.us.forEach(u=>syms.push(u[0])));
+  return sparklineFromCodes(syms);
+}
+function sparklineFromCodes(syms){
   if(!syms.length) return "";
   // 各銘柄の日次リターンを平均して累積
   const seriesList=syms.map(s=>{
@@ -1640,7 +1724,8 @@ function renderProc(){
 
 // 銘柄ランキング(期間別騰落率＋セクター/市場フィルター)
 let rankSector="all", rankMarket="all", rankSub="all";
-let rankSignals=new Set();   // 複数選択(AND): po/pullback/bbwalk/vol2...
+let rankAxis="theme", rankStage="front", rankStep="all";
+let rankSignals=new Set();   // 複数選択(AND): po/pullback/bb2p/bb3p/bb2m/bb3m/vol2...
 let rankPatterns=new Set();  // 複数選択(OR): パターン名
 function periodReturn(sym,days){
   const q=DATA.quotes[sym];
@@ -1658,86 +1743,65 @@ function periodReturn(sym,days){
   return c0?(c1/c0-1)*100:null;
 }
 // マクロkey -> その配下の全銘柄code
-function sectorSyms(macroKey){
-  const m=(DATA.macro||[]).find(x=>x.key===macroKey);
-  if(!m)return null;
-  const set=new Set();
-  m.subs.forEach(s=>{s.us.forEach(u=>set.add(u[0]));s.jp.forEach(u=>set.add(u[0]));s.solo.forEach(u=>set.add(u[0]));});
-  return set;
-}
-function subSyms(macroKey,subName){
-  const m=(DATA.macro||[]).find(x=>x.key===macroKey);
-  if(!m)return null;
-  const sub=m.subs.find(s=>s.name===subName);
-  if(!sub)return null;
-  const set=new Set();
-  sub.us.forEach(u=>set.add(u[0]));sub.jp.forEach(u=>set.add(u[0]));sub.solo.forEach(u=>set.add(u[0]));
-  return set;
-}
-const RANK_PERIODS=[["1M",21,"1ヶ月"],["3M",63,"3ヶ月"],["6M",126,"6ヶ月"],["1Y",250,"1年"],["ytd","ytd","年初来"]];
+const RET_PERIODS=[["1D",1,"1日"],["5D",5,"5日"],["1M",21,"1ヶ月"],["3M",63,"3ヶ月"],["6M",126,"6ヶ月"],["1Y",250,"1年"],["ytd","ytd","年初来"]];
 // SPE(半導体製造装置)のサブテーマを前/中/後の3工程にグルーピング
-const SPE_PROCESS={
-  "front":{label:"前工程",subs:["露光(リソグラフィ)","成膜(Deposition)","エッチング(Etch)","洗浄(Clean)","検査・計測(Metrology)","EUVマスク・材料","イオン注入・CMP"]},
-  "middle":{label:"中工程・先端パッケージング",subs:["後工程・ダイシング・封止"]},
-  "back":{label:"後工程",subs:["テスト(ATE)・プローブカード"]},
-};
-// 工程キー -> その工程配下の全サブの全銘柄code
-function speProcessSyms(procKey){
-  const m=(DATA.macro||[]).find(x=>x.key==="spe");
-  if(!m||!SPE_PROCESS[procKey])return null;
-  const names=SPE_PROCESS[procKey].subs;
-  const set=new Set();
-  m.subs.filter(s=>names.includes(s.name)).forEach(s=>{
-    s.us.forEach(u=>set.add(u[0]));s.jp.forEach(u=>set.add(u[0]));s.solo.forEach(u=>set.add(u[0]));
-  });
-  return set;
-}
 function renderRank(){
   if(!DATA)return;
-  const sectorOpts=[["all","すべて"]].concat((DATA.macro||[]).map(m=>[m.key,m.name]));
-  chips("#rankSectorChips",sectorOpts,rankSector,id=>{rankSector=id;rankSub="all";render()});
-  // マクロ選択中は、その下のサブテーマを第2段で表示(階層展開)
+  chips("#rankAxisChips",[["theme","テーマ"],["proc","工程"]],rankAxis,id=>{rankAxis=id;rankSector="all";rankSub="all";rankStage="front";rankStep="all";render()});
+  const secLabel=document.getElementById("rankSectorLabel");
   const subWrap=document.getElementById("rankSubChips");
-  if(rankSector!=="all"){
-    const m=(DATA.macro||[]).find(x=>x.key===rankSector);
-    if(m){
-      let subOpts;
-      if(rankSector==="spe"){
-        subOpts=[["all","▼ 製造装置・全部"]].concat(Object.entries(SPE_PROCESS).map(([k,v])=>["proc:"+k,v.label]));
-      }else{
-        subOpts=[["all","▼ "+m.name+"・全部"]].concat(m.subs.map(s=>[s.name,s.name]));
+  let secSet=null;
+  if(rankAxis==="theme"){
+    secLabel.textContent="セクター(マクロ)で絞る";
+    const sectorOpts=[["all","すべて"]].concat((DATA.macro||[]).map(m=>[m.key,m.name]));
+    chips("#rankSectorChips",sectorOpts,rankSector,id=>{rankSector=id;rankSub="all";render()});
+    if(rankSector!=="all"){
+      const m=(DATA.macro||[]).find(x=>x.key===rankSector);
+      if(m){
+        const subOpts=[["all","▼ "+m.name+"・全部"]].concat(m.subs.map(s=>[s.name,s.name]));
+        subWrap.style.display="";
+        chips("#rankSubChips",subOpts,rankSub,id=>{rankSub=id;render()});
       }
-      subWrap.style.display="";
-      chips("#rankSubChips",subOpts,rankSub,id=>{rankSub=id;render()});
+    } else {
+      subWrap.style.display="none"; subWrap.innerHTML="";
+    }
+    secSet=rankSector==="all"?null:new Set(allMacroCodes((DATA.macro||[]).find(x=>x.key===rankSector)||{subs:[]}));
+    if(rankSector!=="all"&&rankSub!=="all"){
+      const m=(DATA.macro||[]).find(x=>x.key===rankSector);
+      const sub=m&&m.subs.find(s=>s.name===rankSub);
+      if(sub) secSet=new Set(allSubCodes(sub));
     }
   } else {
-    subWrap.style.display="none";
-    subWrap.innerHTML="";
+    secLabel.textContent="工程ステージで絞る(フロー図の大分類)";
+    const stageOpts=(DATA.flow||[]).map(s=>[s.key, s.name.replace(/^[①-⑳]\s*/,"")]);
+    chips("#rankSectorChips",stageOpts,rankStage,id=>{rankStage=id;rankStep="all";render()});
+    const steps=procSteps(rankStage);
+    const stepOpts=[["all","▼ 全工程"]].concat(steps.map(st=>["step:"+st.id, st.name]));
+    subWrap.style.display=""; chips("#rankSubChips",stepOpts,rankStep,id=>{rankStep=id;render()});
+    if(rankStep==="all"){
+      secSet=new Set(steps.flatMap(st=>st.items.map(it=>it.code)));
+    } else {
+      const st=steps.find(x=>"step:"+x.id===rankStep);
+      secSet=st? new Set(st.items.map(it=>it.code)) : null;
+    }
   }
   chips("#rankMarketChips",[["all","両方"],["jp","日本"],["us","米国"]],rankMarket,id=>{rankMarket=id;render()});
   const patOpts=[["all","すべて"],["直近高値ブレイク","直近高値ブレイク"],["直近高値ブレイクリーチ","直近高値ブレイクリーチ"],["52週高値更新","52週高値"],["三角ブレイク","三角ブレイク"],["三角ブレイクリーチ","三角ブレイクリーチ"],["CWH押し目/抜け","CWH押し目/抜け"],["CWH形成中","CWH形成中"],["フラッグブレイク","フラッグ"],["逆三尊・底打ち","逆三尊"],["三尊・天井注意","三尊"],["ダブルボトム","ダブル底(W)"],["ダブルトップ","ダブル天井(M)"],["トリプルボトム","トリプル底"],["トリプルトップ","トリプル天井"],["52週安値圏","安値圏"]];
   chipsMulti("#rankPatternChips",patOpts,rankPatterns,id=>{
     if(id==="all"){rankPatterns.clear();}else{rankPatterns.has(id)?rankPatterns.delete(id):rankPatterns.add(id);}render();
   });
-  const sigOpts=[["all","すべて"],["po","📈パーフェクトオーダー"],["bbwalk","📊+2σバンドウォーク"],["vol2","🔊出来高2倍↑"],["vol3","🔊出来高3倍↑"],["vol5","🔊出来高5倍↑"],["pullback","🎯押し目(全部)"],["pb5","5日線押し目"],["pb25","25日線押し目"],["pb50","50日線押し目"],["pb75","75日線押し目"],["inflow","資金流入急増"],["overheat","過熱注意"]];
+  const sigOpts=[["all","すべて"],["po","📈パーフェクトオーダー"],["bb2p","📈+2σ"],["bb3p","📈+3σ"],["bb2m","📉-2σ"],["bb3m","📉-3σ"],["vol2","🔊出来高2倍↑"],["vol3","🔊出来高3倍↑"],["vol5","🔊出来高5倍↑"],["pullback","🎯押し目(全部)"],["pb5","5日線押し目"],["pb25","25日線押し目"],["pb50","50日線押し目"],["pb75","75日線押し目"],["inflow","資金流入急増"]];
   chipsMulti("#rankSignalChips",sigOpts,rankSignals,id=>{
     if(id==="all"){rankSignals.clear();}else{rankSignals.has(id)?rankSignals.delete(id):rankSignals.add(id);}render();
   });
-  let secSet=rankSector==="all"?null:sectorSyms(rankSector);
-  if(rankSector!=="all"&&rankSub!=="all"){
-    if(rankSub.startsWith("proc:")){
-      const ps=speProcessSyms(rankSub.slice(5));
-      if(ps)secSet=ps;
-    }else{
-      const ss=subSyms(rankSector,rankSub);
-      if(ss)secSet=ss;
-    }
-  }
   function matchSignal(q){
     for(const sig of rankSignals){
       if(sig==="po"&&!q.po)return false;
       if(sig==="pullback"&&!q.pullback)return false;
-      if(sig==="bbwalk"&&q.bbWalk!=="up")return false;
+      if(sig==="bb2p"&&q.bbZone!=="2σ+")return false;
+      if(sig==="bb2m"&&q.bbZone!=="2σ-")return false;
+      if(sig==="bb3p"&&q.bbZone!=="3σ+")return false;
+      if(sig==="bb3m"&&q.bbZone!=="3σ-")return false;
       if(sig==="vol2"&&!(q.volSurge>=1))return false;
       if(sig==="vol3"&&!(q.volSurge>=2))return false;
       if(sig==="vol5"&&!(q.volSurge>=3))return false;
@@ -1746,7 +1810,6 @@ function renderRank(){
       if(sig==="pb50"&&q.pullbackMa!==50)return false;
       if(sig==="pb75"&&q.pullbackMa!==75)return false;
       if(sig==="inflow"&&q.daytrade!=="資金流入急増")return false;
-      if(sig==="overheat"&&q.signal!=="過熱")return false;
     }
     return true;
   }
@@ -1778,41 +1841,151 @@ function renderRank(){
 
 // ===== 騰落率タブ(期間で並べ替え・セクター/市場絞り) =====
 let retPeriod="3M", retSector="all", retMarket="all", retSub="all";
+let retAxis="theme", retGroupMode="stock", retStage="front", retStep="all", retOpenGroup=null;
+function allSubCodes(sub){
+  return [...sub.us.map(x=>x[0]), ...sub.jp.map(x=>x[0]), ...sub.solo.map(x=>x[0])];
+}
+function allMacroCodes(m){
+  const set=new Set();
+  m.subs.forEach(s=>allSubCodes(s).forEach(c=>set.add(c)));
+  return [...set];
+}
+function codesToItems(codes){
+  return codes.map(code=>({code, name:(DATA.quotes[code]||{}).name||code, market:(DATA.quotes[code]||{}).market}));
+}
+function retGroupAvg(items,days){
+  const vals=[];
+  items.forEach(it=>{
+    if(retMarket!=="all" && it.market!==retMarket) return;
+    const r=periodReturn(it.code,days); if(r!=null) vals.push(r);
+  });
+  return {avg: vals.length? vals.reduce((a,b)=>a+b,0)/vals.length : null, n: vals.length};
+}
+function retStockRow(r,i,n,withTag){
+  const mkCol=r.market==="jp"?"var(--jp)":"var(--us)";
+  let tag="";
+  if(withTag){
+    if(i<Math.ceil(n*0.2))tag='<span class="rktag lead">先行</span>';
+    else if(i>=Math.floor(n*0.8))tag='<span class="rktag lag">出遅れ</span>';
+  }
+  return `<button class="rankrow" data-sym="${r.sym}" onclick="showStock('${r.sym}')">
+    <span class="rkrank">${i+1}</span>
+    <span class="num" style="color:${mkCol};font-weight:700;width:50px;flex-shrink:0">${r.sym}</span>
+    <span class="rknm">${r.name}${tag}</span>
+    <span class="num rkret" style="color:${col(r.ret)}">${fmt(r.ret)}</span>
+  </button>`;
+}
+function renderRetGroups(groups,days){
+  const noteEl=document.getElementById("retNote");
+  noteEl.textContent = retAxis==="proc"
+    ? "工程ごとの平均騰落率ランキング。資金の強弱が一望できる。タップで銘柄を展開。"
+    : "テーマ/サブテーマごとの平均騰落率ランキング。タップで銘柄を展開。";
+  const rows=groups.map(g=>{
+    const {avg,n}=retGroupAvg(g.items,days);
+    return {...g,avg,n};
+  }).filter(g=>g.n>0).sort((a,b)=>(b.avg??-1e9)-(a.avg??-1e9));
+  const host=document.getElementById("retList");
+  if(!rows.length){host.innerHTML='<div class="loading">該当銘柄なし</div>';return;}
+  host.innerHTML=rows.map((g,i)=>{
+    const isOpen=g.id===retOpenGroup;
+    let detail="";
+    if(isOpen){
+      const stockRows=g.items
+        .filter(it=>retMarket==="all"||it.market===retMarket)
+        .map(it=>({sym:it.code,name:it.name,market:it.market,role:it.role,ret:periodReturn(it.code,days)}))
+        .filter(r=>r.ret!=null).sort((a,b)=>b.ret-a.ret);
+      detail=`<div class="pcdetail">${stockRows.map(r=>{
+        const mkCol=r.market==="jp"?"var(--jp)":"var(--us)";
+        return `<button class="pcstockrow" onclick="event.stopPropagation();showStock('${r.sym}')">
+          <span class="num" style="color:${mkCol};font-weight:700;width:48px;flex-shrink:0">${r.sym}</span>
+          <span class="rknm" style="flex:1;min-width:0">${r.name}${r.role?`<span class="pcrolechip">${r.role}</span>`:""}</span>
+          <span class="num" style="color:${col(r.ret)};width:64px;text-align:right;flex-shrink:0">${fmt(r.ret)}</span>
+        </button>`;
+      }).join("")}</div>`;
+    }
+    return `<div>
+      <button class="pcstage${isOpen?" open":""}" onclick="retToggleGroup('${g.id.replace(/'/g,"\\'")}')">
+        <span class="pcrank">${i+1}</span>
+        <span class="pcmain">
+          <span class="pcname">${g.icon||""} ${g.name}</span>
+          <span class="pcsub">${g.n}銘柄の平均</span>
+        </span>
+        <span class="pccnt">${g.n}銘柄</span>
+        <span class="pcavg num" style="color:${col(g.avg)}">${fmt(g.avg)}</span>
+      </button>
+      ${detail}
+    </div>`;
+  }).join("");
+}
+function retToggleGroup(id){ retOpenGroup=(retOpenGroup===id?null:id); render(); }
+
 function renderRet(){
   if(!DATA)return;
-  chips("#retPeriodChips",RANK_PERIODS.map(p=>[p[0],p[2]]),retPeriod,id=>{retPeriod=id;render()});
-  const sectorOpts=[["all","すべて"]].concat((DATA.macro||[]).map(m=>[m.key,m.name]));
-  chips("#retSectorChips",sectorOpts,retSector,id=>{retSector=id;retSub="all";render()});
+  chips("#retAxisChips",[["theme","テーマ"],["proc","工程"]],retAxis,id=>{retAxis=id;retSector="all";retSub="all";retStage="front";retStep="all";retOpenGroup=null;render()});
+  chips("#retModeChips",[["stock","個別銘柄"],["group","グループ平均"]],retGroupMode,id=>{retGroupMode=id;retOpenGroup=null;render()});
+  chips("#retPeriodChips",RET_PERIODS.map(p=>[p[0],p[2]]),retPeriod,id=>{retPeriod=id;render()});
+  chips("#retMarketChips",[["all","両方"],["jp","日本"],["us","米国"]],retMarket,id=>{retMarket=id;render()});
+  const pdef=RET_PERIODS.find(p=>p[0]===retPeriod);
+  const days=pdef[1];
   const subWrap=document.getElementById("retSubChips");
-  if(retSector!=="all"){
-    const m=(DATA.macro||[]).find(x=>x.key===retSector);
-    if(m){
-      let subOpts;
-      if(retSector==="spe"){
-        subOpts=[["all","▼ 製造装置・全部"]].concat(Object.entries(SPE_PROCESS).map(([k,v])=>["proc:"+k,v.label]));
-      }else{
-        subOpts=[["all","▼ "+m.name+"・全部"]].concat(m.subs.map(s=>[s.name,s.name]));
+  const secLabel=document.getElementById("retSectorLabel");
+  const noteEl=document.getElementById("retNote");
+
+  let secSet=null, groups=null, leafSelected=false;
+
+  if(retAxis==="theme"){
+    secLabel.textContent="セクター(マクロ)で絞る";
+    const sectorOpts=[["all","すべて"]].concat((DATA.macro||[]).map(m=>[m.key,m.name]));
+    chips("#retSectorChips",sectorOpts,retSector,id=>{retSector=id;retSub="all";retOpenGroup=null;render()});
+    if(retSector!=="all"){
+      const m=(DATA.macro||[]).find(x=>x.key===retSector);
+      if(m){
+        const subOpts=[["all","▼ "+m.name+"・全部"]].concat(m.subs.map(s=>[s.name,s.name]));
+        subWrap.style.display="";
+        chips("#retSubChips",subOpts,retSub,id=>{retSub=id;retOpenGroup=null;render()});
       }
-      subWrap.style.display="";
-      chips("#retSubChips",subOpts,retSub,id=>{retSub=id;render()});
+    } else {
+      subWrap.style.display="none"; subWrap.innerHTML="";
+    }
+    secSet=retSector==="all"?null:new Set(allMacroCodes((DATA.macro||[]).find(x=>x.key===retSector)||{subs:[]}));
+    if(retSector!=="all"&&retSub!=="all"){
+      const m=(DATA.macro||[]).find(x=>x.key===retSector);
+      const sub=m&&m.subs.find(s=>s.name===retSub);
+      if(sub) secSet=new Set(allSubCodes(sub));
+      leafSelected=true;
+    }
+    if(retGroupMode==="group"&&!leafSelected){
+      if(retSector==="all"){
+        groups=(DATA.macro||[]).map(m=>({id:"macro:"+m.key,name:m.name,icon:"",items:codesToItems(allMacroCodes(m))}));
+      } else {
+        const m=(DATA.macro||[]).find(x=>x.key===retSector);
+        if(m) groups=m.subs.map(s=>({id:"sub:"+s.name,name:s.name,icon:"",items:codesToItems(allSubCodes(s))}));
+      }
     }
   } else {
-    subWrap.style.display="none";
-    subWrap.innerHTML="";
-  }
-  chips("#retMarketChips",[["all","両方"],["jp","日本"],["us","米国"]],retMarket,id=>{retMarket=id;render()});
-  const pdef=RANK_PERIODS.find(p=>p[0]===retPeriod);
-  const days=pdef[1];
-  let secSet=retSector==="all"?null:sectorSyms(retSector);
-  if(retSector!=="all"&&retSub!=="all"){
-    if(retSub.startsWith("proc:")){
-      const ps=speProcessSyms(retSub.slice(5));
-      if(ps)secSet=ps;
-    }else{
-      const ss=subSyms(retSector,retSub);
-      if(ss)secSet=ss;
+    secLabel.textContent="工程ステージで絞る(フロー図の大分類)";
+    const stageOpts=(DATA.flow||[]).map(s=>[s.key, s.name.replace(/^[①-⑳]\s*/,"")]);
+    chips("#retSectorChips",stageOpts,retStage,id=>{retStage=id;retStep="all";retOpenGroup=null;render()});
+    const steps=procSteps(retStage);
+    const stepOpts=[["all","▼ 全工程"]].concat(steps.map(st=>["step:"+st.id, st.name]));
+    subWrap.style.display=""; chips("#retSubChips",stepOpts,retStep,id=>{retStep=id;retOpenGroup=null;render()});
+    if(retStep==="all"){
+      secSet=new Set(steps.flatMap(st=>st.items.map(it=>it.code)));
+      if(retGroupMode==="group") groups=steps.map(st=>({id:st.id,name:st.name,icon:st.icon,items:st.items}));
+    } else {
+      const st=steps.find(x=>"step:"+x.id===retStep);
+      secSet=st? new Set(st.items.map(it=>it.code)) : null;
+      leafSelected=true;
     }
   }
+
+  if(retGroupMode==="group"&&groups&&groups.length){
+    renderRetGroups(groups,days);
+    return;
+  }
+  noteEl.textContent = retAxis==="proc"
+    ? "選んだ期間の騰落率ランキング(工程軸)。工程を絞れば「誰が先行・誰が出遅れ」が分かる。"
+    : "選んだ期間の騰落率ランキング。同セクターで絞れば「誰が先行・誰が出遅れ」が分かる。";
   let rows=Object.keys(DATA.quotes).filter(s=>{
     const q=DATA.quotes[s];
     if(retMarket!=="all"&&q.market!==retMarket)return false;
@@ -1822,18 +1995,22 @@ function renderRet(){
     .filter(r=>r.ret!=null).sort((a,b)=>b.ret-a.ret);
   if(!rows.length){document.getElementById("retList").innerHTML='<div class="loading">該当なし</div>';return;}
   const n=rows.length;
-  document.getElementById("retList").innerHTML=rows.map((r,i)=>{
-    const mkCol=r.market==="jp"?"var(--jp)":"var(--us)";
-    let tag="";
-    if(i<Math.ceil(n*0.2))tag='<span class="rktag lead">先行</span>';
-    else if(i>=Math.floor(n*0.8))tag='<span class="rktag lag">出遅れ</span>';
-    return `<button class="rankrow" data-sym="${r.sym}" onclick="showStock('${r.sym}')">
-      <span class="rkrank">${i+1}</span>
-      <span class="num" style="color:${mkCol};font-weight:700;width:50px;flex-shrink:0">${r.sym}</span>
-      <span class="rknm">${r.name}${tag}</span>
-      <span class="num rkret" style="color:${col(r.ret)}">${fmt(r.ret)}</span>
-    </button>`;
-  }).join("");
+  document.getElementById("retList").innerHTML=rows.map((r,i)=>retStockRow(r,i,n,true)).join("");
+}
+
+
+
+// procSteps: 指定ステージの各工程 → {id,name,icon,items:[{code,role,market,name}]} (FLOWを再利用、騰落率タブの工程軸で使用)
+function procSteps(stageKey){
+  const stg=(DATA.flow||[]).find(s=>s.key===stageKey);
+  if(!stg) return [];
+  return stg.steps.map((step,idx)=>{
+    const seen=new Set(), items=[];
+    step.roles.forEach(r=>r.items.forEach(it=>{
+      if(!seen.has(it.code)){ seen.add(it.code); items.push({code:it.code, role:r.label, market:it.market, name:it.name}); }
+    }));
+    return {id:stageKey+":"+idx, name:step.name, icon:step.icon, items};
+  });
 }
 
 async function load(){
