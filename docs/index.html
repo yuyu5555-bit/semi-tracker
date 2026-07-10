@@ -2023,6 +2023,23 @@ async function load(){
   render();
 }
 load();
+// バックグラウンドから復帰した時、前回取得から3分以上経ってたら自動で再取得
+let _lastLoadAt=Date.now();
+const _reloadIfStale=()=>{
+  if(document.visibilityState==="visible" && Date.now()-_lastLoadAt>3*60*1000){
+    _lastLoadAt=Date.now();
+    load();
+  }
+};
+document.addEventListener("visibilitychange",_reloadIfStale);
+window.addEventListener("focus",_reloadIfStale);
+// 開きっぱなしでも10分おきに自動更新(前面表示中のみ)
+setInterval(()=>{
+  if(document.visibilityState==="visible"){
+    _lastLoadAt=Date.now();
+    load();
+  }
+},10*60*1000);
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 </script>
 </body>
