@@ -769,12 +769,44 @@ def main():
             item["material"] = resolve(step.get("material", []))
         proc.append(item)
 
+    try:
+        from fetch_headlines import fetch_headlines as _fetch_hl
+        _headlines = _fetch_hl()
+        print(f"headlines: {len(_headlines)}件取得")
+    except Exception as _e:
+        print(f"headlines skip: {_e}")
+        _headlines = []
+
+    try:
+        import site_content as _sc
+        _content = {
+            "weekly": getattr(_sc, "WEEKLY", {}),
+            "events": getattr(_sc, "EVENTS", []),
+            "news": getattr(_sc, "NEWS", []),
+            "macro": getattr(_sc, "MACRO", {}),
+        }
+        print("content: site_content.py 反映")
+    except Exception as _e:
+        print(f"content skip: {_e}")
+        _content = {}
+
+    try:
+        from fetch_disclosures import fetch_disclosures as _fetch_ds
+        _disclosures = _fetch_ds()
+        print(f"disclosures: {len(_disclosures)}件取得(適時開示)")
+    except Exception as _e:
+        print(f"disclosures skip: {_e}")
+        _disclosures = []
+
     out = {
         "updated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "failed": failed, "macro": MACRO, "quotes": quotes,
         "linkage": linkage,
         "process": proc,
         "flow": _build_flow(symbols),
+        "headlines": _headlines,
+        "content": _content,
+        "disclosures": _disclosures,
     }
     os.makedirs("docs", exist_ok=True)
     with open("docs/data.json", "w", encoding="utf-8") as f:
