@@ -1,0 +1,33 @@
+name: update-calendar
+
+# 半導体イベントカレンダー(決算日・月次発表日)の更新。
+# 決算日程は頻繁に変わらないので週1回で十分。
+# 毎週月曜 06:30 JST(= 日曜 21:30 UTC)に実行。手動実行も可。
+on:
+  schedule:
+    - cron: "30 21 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  calendar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Fetch semiconductor event calendar
+        run: python update_calendar.py
+
+      - name: Commit calendar
+        run: |
+          git config user.name  "data-bot"
+          git config user.email "data-bot@users.noreply.github.com"
+          git add docs/calendar.json
+          git diff --staged --quiet || git commit -m "calendar: weekly update"
+          git push
