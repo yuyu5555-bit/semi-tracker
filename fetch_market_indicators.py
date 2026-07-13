@@ -22,106 +22,114 @@ def _http_get(url: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# TSMC 月次売上 — SEC EDGAR経由(公式・確実なソース)
+# TSMC 月次売上 — TSMC公式プレスリリース(pr.tsmc.com)
 # ---------------------------------------------------------------------------
-# 背景: investor.tsmc.com の月次売上ページはJavaScriptで描画されており、
-# 単純なHTML取得(urllib)では数字が取れないことが判明した(2026-07)。
-# 代わりにTSMCが米SEC(証券取引委員会)へ提出する Form 6-K(月次売上報告)を使う。
-# これはSECの公式API(静的JSON・認証不要)から確実に一覧取得でき、
-# 本文もシンプルな静的HTMLなので安定してパースできる。
-SEC_TSM_CIK = "0001046179"  # TSMCのSEC CIK番号(固定)
-SEC_SUBMISSIONS = f"https://data.sec.gov/submissions/CIK{SEC_TSM_CIK}.json"
-SEC_UA = {"User-Agent": "semi-tracker research contact@example.com"}  # SECはUser-Agent必須
+# 背景: investor.tsmc.com の月次売上ページはJavaScriptで描画され、
+# SEC(6-K)は決算以外の開示も混ざり本文構造も複雑で、どちらも安定して
+# パースできなかった(2026-07)。
+# pr.tsmc.com の個別プレスリリースは静的HTML・平文の英文で、
+# 「revenue for May 2026 was approximately NT$416.98 billion, an increase of
+#  1.5 percent from April 2026 and an increase of 30.1 percent from May 2025.」
+# という一文に売上・前月比・前年比が全て含まれており、最も安定して読み取れる。
+#
+# 一覧ページ(latest-news)には他のニュースも混ざり、1回の実行で取れるのは
+# 直近2〜4ヶ月分程度。そのため前回実行時の結果(previous)を引き継いで
+# マージし、実行を重ねるごとに履歴が蓄積される設計にしてある。
+TSMC_LIST_URLS = [
+    "https://pr.tsmc.com/english/latest-news",
+    "https://pr.tsmc.com/english/news-archives",
+]
+TSMC_MONTHS_RE = ("January|February|March|April|May|June|July|August|"
+                  "September|October|November|December")
+TSMC_MONTH_MAP = {m: i + 1 for i, m in enumerate([
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+])}
 
-MONTH_MAP = {
-    "January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6,
-    "July": 7, "August": 8, "September": 9, "October": 10, "November": 11, "December": 12,
-}
+
+def _strip_tags(html: str) -> str:
+    text = re.sub(r"<[^>]+>", " ", html)
+    text = (text.replace("&nbsp;", " ").replace("&#160;", " ")
+            .replace("&#8217;", "'").replace("&rsquo;", "'")
+            .replace("&#8211;", "-").replace("&ndash;", "-"))
+    return re.sub(r"\s+", " ", text)
 
 
-def _get_sec(url: str) -> str:
-    req = urllib.request.Request(url, headers=SEC_UA)
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-        return r.read().decode("utf-8", errors="ignore")
+def _find_revenue_report_ids(html: str) -> list[str]:
+    """一覧ページのHTMLから「◯◯ Revenue Report」記事のニュースIDを抽出。"""
+    ids = []
+    for m in re.finditer(
+        r'href="(?:https://pr\.tsmc\.com)?/english/news/(\d+)"'
+        rf'[\s\S]{{0,300}}?TSMC\s+(?:{TSMC_MONTHS_RE})\s+\d{{4}}\s+Revenue Report',
+        html,
+    ):
+        ids.append(m.group(1))
+    return ids
 
 
-def fetch_tsmc_monthly_revenue(max_months: int = 8) -> list[dict]:
-    """SEC EDGARからTSMCのForm 6-K(月次売上報告)を取得し、直近分をパースして返す。
-    返り値: [{year, month, net_revenue_mntd, yoy_pct}, ...] (新しい順)
+def _parse_tsmc_revenue_page(html: str) -> dict | None:
+    """個別プレスリリースの平文から、対象月・売上・前年比を抽出。"""
+    text = _strip_tags(html)
+    m = re.search(
+        rf"revenue for ({TSMC_MONTHS_RE}) (\d{{4}}) was approximately NT\$([\d,]+\.?\d*) billion,\s*"
+        r"(?:an increase|a decrease) of [\d.]+ percent from \w+ \d{4} and\s*"
+        r"(an increase|a decrease) of ([\d.]+) percent from \w+ \d{4}",
+        text,
+    )
+    if not m:
+        return None
+    month = TSMC_MONTH_MAP[m.group(1)]
+    year = int(m.group(2))
+    value_billion = float(m.group(3).replace(",", ""))
+    yoy = float(m.group(5))
+    if m.group(4) == "a decrease":
+        yoy = -yoy
+    return {
+        "year": year, "month": month,
+        "net_revenue_mntd": round(value_billion * 1000),  # 億NTD→百万NTD
+        "yoy_pct": yoy,
+    }
+
+
+def fetch_tsmc_monthly_revenue(max_months: int = 8, previous: list[dict] | None = None) -> list[dict]:
+    """TSMC公式プレスリリースから月次売上を取得し、前回結果とマージして返す。
+    previous: 前回実行時のリスト(呼び出し側が docs/data.json から読んで渡す)。
+              渡さなければ今回スクレイピングできた分のみになる。
     """
-    try:
-        data = json.loads(_get_sec(SEC_SUBMISSIONS))
-    except Exception as e:
-        print(f"SEC submissions fetch error: {e}")
-        return []
-
-    recent = data.get("filings", {}).get("recent", {})
-    forms = recent.get("form", [])
-    dates = recent.get("filingDate", [])
-    accessions = recent.get("accessionNumber", [])
-    docs = recent.get("primaryDocument", [])
-
-    candidates = []
-    for i, form in enumerate(forms):
-        if form != "6-K":
-            continue
-        candidates.append((dates[i], accessions[i], docs[i]))
-    candidates.sort(reverse=True)  # 新しい提出日順
-
-    out = []
-    checked = 0
-    for filing_date, accession, doc in candidates:
-        if checked >= max_months + 6:  # 売上以外の6-Kも混じるため少し多めに見る
-            break
-        checked += 1
-        acc_nodash = accession.replace("-", "")
-        url = f"https://www.sec.gov/Archives/edgar/data/{int(SEC_TSM_CIK)}/{acc_nodash}/{doc}"
+    ids = []
+    for url in TSMC_LIST_URLS:
         try:
-            html = _get_sec(url)
+            html = _http_get(url)
+            ids += _find_revenue_report_ids(html)
+        except Exception as e:
+            print(f"TSMC list fetch error ({url}): {e}")
+
+    seen, uniq_ids = set(), []
+    for i in ids:
+        if i not in seen:
+            seen.add(i)
+            uniq_ids.append(i)
+    uniq_ids.sort(key=int, reverse=True)  # IDが大きいほど新しい
+
+    scraped = []
+    for nid in uniq_ids[:max_months + 4]:  # 非売上記事の混入を見込み少し多めに試す
+        try:
+            page = _http_get(f"https://pr.tsmc.com/english/news/{nid}")
         except Exception:
             continue
-
-        # タイトルから対象月を特定: 例 "TSMC May 2026 Revenue Report"
-        m_title = re.search(
-            r"TSMC\s+(January|February|March|April|May|June|July|August|"
-            r"September|October|November|December)\s+(\d{4})\s+Revenue Report",
-            html,
-        )
-        if not m_title:
-            continue  # 月次売上報告以外の6-K(決算・その他開示)はスキップ
-        month = MONTH_MAP[m_title.group(1)]
-        year = int(m_title.group(2))
-
-        # Net Revenue行から当月実績とYoY%を抽出(表がテキスト化されても崩れにくいよう緩めに)
-        m_rev = re.search(
-            r"Net Revenue[^\d\-]*?([\d,]{6,})[^\d\-]*?([\d,]{6,})[^\d\-]*?"
-            r"(-?[\d.]+)[^\d\-]*?([\d,]{6,})[^\d\-]*?(-?[\d.]+)",
-            html,
-        )
-        if not m_rev:
-            continue
-        try:
-            net_revenue = int(m_rev.group(1).replace(",", ""))
-            yoy_pct = float(m_rev.group(5))
-        except ValueError:
-            continue
-
-        out.append({
-            "year": year, "month": month,
-            "net_revenue_mntd": net_revenue, "yoy_pct": yoy_pct,
-        })
-        if len(out) >= max_months:
+        parsed = _parse_tsmc_revenue_page(page)
+        if parsed:
+            scraped.append(parsed)
+        if len(scraped) >= max_months:
             break
 
-    # 重複排除 + 新しい順
-    seen, dedup = set(), []
-    for r in sorted(out, key=lambda r: (r["year"], r["month"]), reverse=True):
-        key = (r["year"], r["month"])
-        if key in seen:
-            continue
-        seen.add(key)
-        dedup.append(r)
-    return dedup
+    # 前回結果とマージ(同じ年月は今回の値で上書き) → 実行を重ねるほど履歴が充実
+    merged = {(r["year"], r["month"]): r for r in (previous or [])}
+    for r in scraped:
+        merged[(r["year"], r["month"])] = r
+
+    out = sorted(merged.values(), key=lambda r: (r["year"], r["month"]), reverse=True)
+    return out[:max_months]
 
 
 # ---------------------------------------------------------------------------
@@ -178,9 +186,55 @@ def fetch_sox_index() -> dict:
         return {}
 
 
+# ---------------------------------------------------------------------------
+# 米国長期金利(10年債利回り, ^TNX) — Yahoo Finance
+# ---------------------------------------------------------------------------
+def fetch_us10y_yield() -> dict:
+    """米10年国債利回り(^TNX)の直近日足を返す。取得失敗時は空dict。
+    ^TNXは"利回り×10"で配信される(例: 44.2 は 4.42%)ため /10 する。
+    """
+    url = ("https://query1.finance.yahoo.com/v8/finance/chart/%5ETNX"
+           "?range=1y&interval=1d&includeAdjustedClose=false")
+    try:
+        text = _http_get(url)
+        data = json.loads(text)
+        res = data["chart"]["result"][0]
+        ts = res["timestamp"]
+        closes = res["indicators"]["quote"][0]["close"]
+        pairs = [(t, c) for t, c in zip(ts, closes) if c is not None]
+        if len(pairs) < 2:
+            return {}
+        last_ts, last_raw = pairs[-1]
+        prev_raw = pairs[-2][1]
+        last_yield = last_raw / 10
+        prev_yield = prev_raw / 10
+        chg_bp = (last_yield - prev_yield) * 100  # bp(ベーシスポイント)変化
+
+        all_yields = [c / 10 for _, c in pairs]
+        hi52 = max(all_yields)
+        lo52 = min(all_yields)
+
+        spark = [round(c / 10, 3) for _, c in pairs[-30:]]
+        date_str = datetime.fromtimestamp(last_ts, tz=timezone.utc).strftime("%Y-%m-%d")
+        return {
+            "name": "米10年国債利回り",
+            "last": round(last_yield, 3),
+            "chg_bp": round(chg_bp, 1),
+            "hi52": round(hi52, 3),
+            "lo52": round(lo52, 3),
+            "date": date_str,
+            "spark": spark,
+        }
+    except Exception as e:
+        print(f"US10Y fetch error: {e}")
+        return {}
+
+
 if __name__ == "__main__":
     print("=== TSMC月次売上 ===")
     for r in fetch_tsmc_monthly_revenue():
         print(f"  {r['year']}-{r['month']:02d}: {r['net_revenue_mntd']:,} 百万NTD (YoY {r['yoy_pct']}%)")
     print("\n=== SOX指数 ===")
     print(fetch_sox_index())
+    print("\n=== 米10年国債利回り ===")
+    print(fetch_us10y_yield())
