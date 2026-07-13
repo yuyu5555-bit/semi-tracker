@@ -2524,12 +2524,14 @@ MACRO = [
 
 
 def all_symbols():
-    """全ユニーク銘柄を {sym: (name, market)} で返す。"""
+    """全ユニーク銘柄を {sym: (name, market)} で返す。
+    各エントリは [code, name] または [code, name, note] のどちらでも良い。
+    """
     out = {}
     for m in MACRO:
         for sub in m["subs"]:
-            for s, n in sub["us"]:
-                out[s] = (n, "us")
+            for row in sub["us"]:
+                out[row[0]] = (row[1], "us")
             for row in sub["jp"]:
                 out[row[0]] = (row[1], "jp")
             for row in sub["solo"]:
