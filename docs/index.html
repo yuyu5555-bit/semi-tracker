@@ -419,10 +419,11 @@
 <style>
 .wh-card{padding:6px 8px 10px}
 .wh-head{display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:6px 8px;font-size:10.5px;color:var(--faint);border-bottom:1px solid var(--line)}
-.wh-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;width:100%;background:none;border:none;border-bottom:1px solid var(--line);padding:11px 8px;cursor:pointer;text-align:left;font-family:inherit}
+.wh-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;width:100%;border-bottom:1px solid var(--line);padding:9px 8px}
 .wh-row:last-of-type{border-bottom:none}
-.wh-row:active{background:rgba(110,231,240,.06)}
-.wh-nm{font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wh-main{display:block;min-width:0;background:none;border:none;padding:0;cursor:pointer;text-align:left;font-family:inherit}
+.wh-main:active .wh-nm{opacity:.7}
+.wh-nm{font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .wh-n{font-size:12px;color:#6EE7F0;font-family:var(--dot);min-width:34px;text-align:right}
 .wh-chg{font-size:14px;font-weight:700;min-width:64px;text-align:right}
 .wh-na{color:var(--faint)}
@@ -432,8 +433,9 @@
 .tf-wrap{border:1px solid rgba(110,231,240,.4);background:linear-gradient(180deg,rgba(110,231,240,.07),transparent);border-radius:12px;padding:12px 12px 6px;margin:0 0 14px}
 .tf-title{font-family:var(--dot);font-weight:700;font-size:15px;color:#6EE7F0;margin-bottom:8px}
 .tf-sub{font-size:10.5px;color:var(--faint);font-weight:400}
-.tf-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;width:100%;background:none;border:none;border-top:1px solid var(--line);padding:10px 2px;cursor:pointer;text-align:left;font-family:inherit}
-.tf-nm{font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tf-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;width:100%;border-top:1px solid var(--line);padding:9px 2px}
+.tf-main{display:block;min-width:0;background:none;border:none;padding:0;cursor:pointer;text-align:left;font-family:inherit}
+.tf-nm{font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .tf-tags{display:flex;gap:6px;align-items:center}
 .tf-vol{font-size:10px;color:var(--jp);border:1px solid var(--jp);border-radius:5px;padding:1px 5px;white-space:nowrap}
 .tf-n{font-size:10.5px;color:var(--faint);white-space:nowrap}
@@ -442,8 +444,59 @@
 <style>
 .dk{font-family:var(--dot);font-size:9.5px;border:1px solid;border-radius:5px;padding:1px 6px;flex:none;white-space:nowrap}
 .hl.dl{align-items:flex-start}
-.tf-src{grid-column:1 / -1;font-size:11px;color:var(--dim);margin-top:3px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
-.wh-src{display:block;font-size:10.5px;color:var(--faint);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+.tf-src{display:block;font-size:11px;color:#6EE7F0;margin-top:3px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}
+.wh-src{display:block;font-size:10.5px;color:#6EE7F0;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;text-decoration:none}
+</style>
+<style>
+.ai-card p{margin:0 0 9px;font-size:13.5px;line-height:1.85;color:var(--text)}
+.ai-card p:last-of-type{margin-bottom:0}
+.ai-disc{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);font-size:10.5px;color:var(--faint);line-height:1.7}
+</style>
+<style>
+.sox-card{padding:14px 14px 12px}
+.sox-top{display:flex;align-items:center;gap:14px}
+.sox-main{flex:none}
+.sox-v{font-family:var(--dot);font-size:22px;font-weight:700;color:var(--text)}
+.sox-sub{display:flex;gap:9px;margin-top:4px;font-size:12px}
+.sox-spark{flex:1;min-width:0;height:32px}
+.sox-fh{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);font-size:12.5px;color:var(--dim)}
+.sox-fh b{color:var(--text);font-family:var(--dot)}
+.sox-fh-warn b{color:var(--down)}
+.sox-fh-tag{display:inline-block;margin-left:6px;font-size:10px;color:var(--down);border:1px solid var(--down);border-radius:5px;padding:1px 6px}
+.sox-note{margin-top:9px;font-size:10.5px;color:var(--faint);line-height:1.7}
+</style>
+<style>
+.hl-lang{font-family:var(--dot);font-size:11px;color:var(--faint);margin:0 0 5px 3px;letter-spacing:.5px}
+</style>
+<style>
+.tf-tags2{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.tf-tag{font-size:9.5px;font-family:var(--dot);border-radius:4px;padding:1px 6px;white-space:nowrap}
+.tg-up{background:rgba(240,89,60,.18);color:var(--up)}
+.tg-dn{background:rgba(63,167,214,.18);color:var(--down)}
+.tg-bk{background:rgba(232,176,75,.18);color:var(--jp)}
+.tg-vol{background:rgba(110,231,240,.15);color:#6EE7F0}
+.tg-nw{background:rgba(139,148,168,.15);color:var(--dim)}
+</style>
+<style>
+.ev-row{display:flex;gap:11px;align-items:flex-start;padding:10px 4px;border-bottom:1px solid var(--line);text-decoration:none}
+.ev-row:last-child{border-bottom:none}
+.ev-d{font-family:var(--dot);font-size:12px;color:var(--jp);flex:none;min-width:38px;padding-top:1px}
+.ev-b{min-width:0}
+.ev-b b{display:block;font-size:13px;color:var(--text)}
+.ev-t{display:block;font-size:11px;color:var(--dim);margin-top:2px;line-height:1.5}
+</style>
+<style>
+.ev-h{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.ev-k{font-family:var(--dot);font-size:9px;border:1px solid;border-radius:4px;padding:1px 5px}
+.ev-lv{font-size:9px;color:#F0593C;letter-spacing:-1px}
+.ev-lv2{font-size:9px;color:var(--jp);letter-spacing:-1px}
+</style>
+<style>
+.ev-wd{font-size:9px;color:var(--faint);margin-left:1px}
+.ev-tm{font-size:9.5px;color:var(--faint);margin-left:4px}
+</style>
+<style>
+.ev-est{font-size:9px;color:var(--faint);border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-left:4px}
 </style>
 </head>
 <body>
@@ -983,6 +1036,7 @@ function showStock(sym){
         ${q.market==="jp"
           ? `<a class="navmini extlink" href="https://s.kabutan.jp/stocks/${sym}/" target="_blank" rel="noopener"><span class="navi">📰</span><span>株探</span></a>
              <a class="navmini extlink" href="https://kabutan.jp/stock/chart?code=${sym}" target="_blank" rel="noopener"><span class="navi">📉</span><span>株探チャート</span></a>
+             <a class="navmini extlink" href="https://karauri.net/${sym}/" target="_blank" rel="noopener"><span class="navi">📉</span><span>空売りネット</span></a>
              <a class="navmini extlink" href="https://finance.yahoo.co.jp/quote/${sym}.T" target="_blank" rel="noopener"><span class="navi">🌐</span><span>Yahoo</span></a>`
           : `<a class="navmini extlink" href="https://us.kabutan.jp/stocks/${sym}" target="_blank" rel="noopener"><span class="navi">📰</span><span>株探US</span></a>
              <a class="navmini extlink" href="https://finance.yahoo.com/quote/${sym}" target="_blank" rel="noopener"><span class="navi">🌐</span><span>Yahoo</span></a>
@@ -1390,16 +1444,8 @@ async function takeShot(){
 }
 
 /* ===== 学ぶ(用語辞典) 友達版移植 ===== */
-const GL_THEME={memory:["メモリ・ストレージ","#F55B5B"],optical:["光接続","#F2C23C"],package:["先端パッケージング・基板","#A97BF0"],spe_front:["半導体製造装置(前工程)","#3FA7D6"],spe_back:["半導体製造装置(後工程)","#D6669B"],spe_test:["半導体製造装置(テスト)","#8FBF3F"],compute:["AI半導体・コンピュート","#46D07A"],analog_power:["アナログ・パワー半導体","#F0863C"],passive:["電子部品(MLCC等)","#F072C0"],datacenter:["データセンター","#35CFD6"],materials:["材料・ウエハー(日本優位)","#B9D64A"],subsystem:["装置部品・サブシステム","#6E86F0"],facility:["ファシリティ・商社(国策)","#2FBF95"],metals:["銅・貴金属(川上資源)","#D69A4C"]};
-const GLOSSARY=[
- {en:"HBM",jp:"広帯域メモリ",body:"DRAMを縦に積層してGPUの隣に置く高速メモリ。AI学習の性能はGPU単体でなくメモリ帯域で決まることが多い。",why:"HBM需要↑=DRAM各社の設備投資↑=日本の装置・材料(検査、積層接合、材料)の受注に直結します。",tags:["memory","spe_front"]},
- {en:"CoWoS",jp:"先端パッケージング技術",body:"TSMCの2.5D実装技術。GPUとHBMを1つの基板上で高密度接続する。NVIDIA Blackwellで最新世代を採用。",why:"AI半導体最大のボトルネック。「CoWoS増産」のニュースは基板・封止・切断装置の銘柄に波及します。",tags:["package","compute"]},
- {en:"EUV / DUV",jp:"露光装置",body:"回路を焼き付ける装置。EUVは最先端用(ASML独占)、DUVは旧世代用。",why:"輸出規制の主戦場。MATCH法案のようにDUVまで規制が広がると、中国売上比率の高い日本装置株の業績予想が下がります。",tags:["spe_front"]},
- {en:"2nm",jp:"最先端プロセスノード",body:"回路線幅2ナノメートル世代。ラピダスが27年度量産を目指す。数字が小さいほど高性能・省電力。",why:"「試作成功」「歩留まり改善」のニュースは、国策テーマ全体への資金流入トリガーになります。",tags:["facility","spe_front"]},
- {en:"NAND / SSD",jp:"長期記憶メモリ",body:"データを保存するメモリとその応用製品。キオクシアが日本唯一の専業大手。",why:"AIデータセンターのSSD採用拡大が2026年メモリ“スーパーサイクル”の主因。NAND価格が先行指標になります。",tags:["memory"]},
- {en:"cuLitho",jp:"計算リソグラフィ",body:"NVIDIAとTSMCが共同開発。GPUで露光シミュレーションを高速化し、従来CPU比で20〜50%の工程時間短縮を目指す。",why:"ファブにAIを導入する流れの象徴。検査・計測・シミュレーション装置(レーザーテック・東京精密等)の需要拡大テーマ。",tags:["spe_front","compute"]},
- {en:"MATCH Act",jp:"米半導体輸出規制法案",body:"米議会で審議中の法案。DUV露光装置など旧世代装置の対中輸出規制を拡大し、同盟国(日・蘭)にも同水準の規制を150日以内に求める。",why:"成立・修正案は東京エレクトロン・SCREEN等の中国売上比率と業績予想に直接効く地政学リスク。",tags:["spe_front","materials"]}
-];
+const GL_THEME={memory:["メモリ・ストレージ","#F55B5B"],optical:["光接続","#F2C23C"],package:["先端パッケージング・基板","#A97BF0"],spe_front:["半導体製造装置(前工程)","#3FA7D6"],spe_back:["半導体製造装置(後工程)","#D6669B"],spe_test:["半導体製造装置(テスト)","#8FBF3F"],compute:["ファウンドリ・EDA・指数","#46D07A"],analog_power:["アナログ・パワー半導体","#F0863C"],passive:["電子部品(MLCC等)","#F072C0"],datacenter:["データセンター","#35CFD6"],materials:["材料・ウエハー(日本優位)","#B9D64A"],subsystem:["装置部品・サブシステム","#6E86F0"],facility:["ファシリティ・商社(国策)","#2FBF95"],metals:["銅・貴金属(川上資源)","#D69A4C"]};
+const GLOSSARY=[{"en": "先端パッケージング", "jp": "Advanced Packaging", "body": "複数のチップ(GPU・HBM等)を1つの基板上で高密度に接続する技術の総称。CoWoS/CoPoS/SoIC/FOPLPなどを含む。微細化(前工程)の限界を、繋ぎ方(後工程)の工夫で突破する主戦場。", "why": "AI半導体の性能ボトルネックがここに移っており、封止・基板・切断・検査の日本企業に受注が集中します。", "tags": ["package", "spe_back"]}, {"en": "PLP / FOPLP", "jp": "パネルレベルパッケージング", "body": "従来の丸いウエハー単位でなく、四角い大型パネル単位でパッケージする方式。面積の無駄が減り量産コストが下がる。FOPLP=ファンアウト型のパネル実装。", "why": "CoWoSの供給制約を緩める次世代の量産技術。対応するコータ/デベロッパ/検査装置メーカーに恩恵。", "tags": ["package", "spe_back"]}, {"en": "CoPoS", "jp": "次世代パネル型パッケージ", "body": "CoWoS(ウエハー型)の次に来るとされる、角型パネル基板を使った先端パッケージ。1枚あたりの取り数を増やし、大型AIチップの生産効率を上げる狙い。", "why": "CoWoSの増産余地が頭打ちになる中、CoPoS移行は装置・材料の新たな需要トリガーになります。", "tags": ["package", "spe_back"]}, {"en": "SoIC", "jp": "3D積層パッケージ", "body": "TSMCのチップ同士を垂直に直接接合する3D実装技術。配線が短くなり高速・低消費電力。先端ロジックとキャッシュの積層などに使う。", "why": "次世代AI・HPCの性能を左右する中核技術。ハイブリッドボンディング装置・検査の需要に直結。", "tags": ["package", "spe_back"]}, {"en": "半導体製造装置(前工程)", "jp": "Front-end Equipment", "body": "ウエハーに回路を作り込む工程の装置群。露光(EUV/ArF)、成膜(CVD/ALD)、エッチング、洗浄、CMPなど。微細化の主役。", "why": "ファブ投資(CapEx)増加が最も素直に効くのがこの領域。東京エレクトロン等の受注・業績に直結します。", "tags": ["spe_front"]}, {"en": "半導体製造装置(後工程)", "jp": "Back-end Equipment", "body": "完成したウエハーを切り分け、パッケージし、検査する工程の装置群。ダイシング、ボンディング、モールド、先端パッケージ装置など。", "why": "AIチップの高度化で後工程の付加価値が急上昇。ディスコ等の切断・研削や実装装置に追い風。", "tags": ["spe_back"]}, {"en": "テスト(検査)", "jp": "Test / Inspection", "body": "チップが仕様通り動くか電気的に検査する工程・装置。テスタ、プローブカード、バーンイン、各種検査装置。歩留まり管理の要。", "why": "HBMや先端パッケージは検査項目が激増。アドバンテスト・日本マイクロニクス等のテスト関連に需要集中。", "tags": ["spe_test"]}, {"en": "EUV / DUV", "jp": "露光装置", "body": "回路を焼き付ける装置。EUVは最先端(ASML独占)、DUVは旧世代。回路線幅を決める前工程の心臓部。", "why": "輸出規制の主戦場。規制がDUVまで広がると中国売上比率の高い日本装置株の業績予想に影響します。", "tags": ["spe_front"]}, {"en": "CMP", "jp": "化学機械研磨", "body": "各層を積むたびにウエハー表面を平坦に磨く工程・装置・スラリー(研磨剤)。積層が増えるほど重要度が増す。", "why": "多層化・3D化でCMP回数が増加。装置・スラリー・パッドの消耗品需要が構造的に伸びます。", "tags": ["spe_front", "materials"]}, {"en": "ABF基板", "jp": "パッケージ基板(ABF)", "body": "高性能CPU/GPUのパッケージに使う高多層の樹脂基板。味の素のABFフィルムが世界を独占。設計が複雑なほど高価。", "why": "AIチップの大型化で基板の層数・面積が拡大。イビデン・新光電気やABF材料に恩恵が及びます。", "tags": ["package", "materials"]}, {"en": "シリコンウェハー", "jp": "Silicon Wafer", "body": "半導体の土台となる円盤。信越化学・SUMCOの日本2社で世界シェアの過半。300mmが主流。", "why": "半導体の生産枚数そのものに比例する最も基礎的な需要指標。増産局面では真っ先に効きます。", "tags": ["materials"]}, {"en": "光電融合 / CPO", "jp": "Co-Packaged Optics", "body": "電気配線の限界を超えるため、スイッチやGPUの隣に光エンジンを同居させ光で通信する技術。消費電力とレイテンシを大幅改善。", "why": "次世代データセンターの中核。シリコンフォトニクス・光部品・実装検査の新市場を生みます。", "tags": ["optical", "datacenter"]}, {"en": "MLCC", "jp": "積層セラミックコンデンサ", "body": "電子回路で電気を安定供給する極小部品。1台のサーバー/スマホに数千〜数万個。村田製作所・太陽誘電が強い。", "why": "AIサーバーは電力密度が高く高性能MLCCを大量消費。数量・単価とも伸びる受動部品の代表。", "tags": ["passive"]}, {"en": "超純水", "jp": "Ultrapure Water", "body": "ウエハー洗浄に使う極限まで不純物を除いた水。ファブは大量に消費するため、水処理設備が半導体インフラの一角を担う。", "why": "新ファブ建設の増加で水処理・薬液・ガス供給などファシリティ関連の受注が拡大します。", "tags": ["facility"]}, {"en": "HBM", "jp": "広帯域メモリ", "body": "DRAMを縦に積層しGPUの隣に置く高速メモリ。AI性能はメモリ帯域で決まることが多い。HBM3E→HBM4へ世代移行中。", "why": "HBM需要↑=DRAM各社の投資↑=日本の積層接合・検査・材料の受注に直結します。", "tags": ["memory", "spe_test"]}, {"en": "NAND / SSD", "jp": "長期記憶メモリ", "body": "データを保存するメモリと応用製品。キオクシアが日本唯一の専業大手。AIデータセンターのSSD採用が拡大。", "why": "NAND価格はメモリ市況の先行指標。スーパーサイクルの体温計になります。", "tags": ["memory"]}, {"en": "2nm / GAA", "jp": "最先端プロセスノード", "body": "回路線幅2ナノ世代。トランジスタ構造がFinFETからGAA(ゲートオールアラウンド)へ。ラピダスが国産量産を目指す。", "why": "「試作成功」「歩留まり改善」は国策テーマ全体への資金流入トリガーになります。", "tags": ["facility", "spe_front"]}, {"en": "CoWoS", "jp": "先端パッケージング技術", "body": "TSMCの2.5D実装。GPUとHBMを1基板上で高密度接続。AI半導体最大のボトルネックで増産が追いつかない。", "why": "「CoWoS増産」ニュースは基板・封止・切断・検査の日本銘柄に波及します。", "tags": ["package", "compute"]}, {"en": "cuLitho", "jp": "計算リソグラフィ", "body": "NVIDIAとTSMCが共同開発。GPUで露光計算を高速化し工程時間を短縮。ファブにAIを導入する象徴。", "why": "検査・計測・シミュレーション装置(レーザーテック等)の需要拡大テーマ。", "tags": ["spe_front", "compute"]}, {"en": "MATCH Act", "jp": "米半導体輸出規制法案", "body": "米議会で審議中。旧世代DUV装置などの対中輸出規制を拡大し、同盟国にも同水準を求める内容。", "why": "成立・修正は東京エレクトロン・SCREEN等の中国売上比率と業績予想に直接効く地政学リスク。", "tags": ["spe_front", "materials"]}];
 function glEsc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 function renderLearn(){
   const box=document.getElementById("learnView");
@@ -1427,6 +1473,18 @@ function renderLearn(){
 var WEEKLY={"title": "SKハイニクス米上場が号砲、メモリ主導サイクル最高潮", "body": "WSTS 5月の世界半導体売上は1,206億ドル(前年比+104.1%)で単月過去最高を更新、前月比プラスは15ヶ月連続。SKハイニクスが米ADR上場で約265億ドルを調達しHBM増産へ——メモリテスタ・後工程・材料の裾野に波及する。\nCapExはTSMC 520〜560億ドル、Samsung 110兆ウォンと史上最大の投資合戦で、日本の装置・材料の受注環境は追い風継続。一方、対中規制(MATCH法案)の審議と、2027年の米IT設備投資の持続性には引き続き注意。", "start": "2026-07-06", "end": "2026-07-10"};
 var EVENTS=[{"date": "2026-07-16", "kind": "industry", "title": "TSMC 2Q決算・ガイダンス(見込)"}, {"date": "2026-07-23", "kind": "earnings", "title": "ディスコ 1Q決算"}, {"date": "2026-07-29", "kind": "earnings", "title": "アドバンテスト 1Q決算(15:30)"}, {"date": "2026-07-31", "kind": "earnings", "title": "ルネサス 2Q決算(見込)"}, {"date": "2026-08-04", "kind": "macro", "title": "SIA/WSTS 6月分 月次統計(見込)"}, {"date": "2026-08-06", "kind": "earnings", "title": "東京エレクトロン 1Q決算(見込)"}, {"date": "2026-08-28", "kind": "earnings", "title": "レーザーテック 本決算(見込)"}];
 const EVK={earnings:["決算","var(--jp)"],macro:["マクロ","var(--us)"],industry:["業界","#6EE7F0"],regulation:["規制","var(--up)"]};
+function aiAnalysisHtml(){
+  var ai=(typeof DATA!=="undefined"&&DATA&&DATA.ai_analysis)?DATA.ai_analysis:null;
+  if(!ai||!ai.body){
+    return '<div class="nsec-t" style="margin-top:16px">今日のAI分析</div><div class="mcard"><div class="hm-empty">まだ生成されていません。update-data 実行(朝の対象時刻)後に自動で表示されます。</div></div>';
+  }
+  var gen=(ai.generated_at||"").slice(0,16).replace("T"," ");
+  var body=String(ai.body).split("\n").map(function(p){return p?'<p>'+glEsc(p)+'</p>':'';}).join("");
+  return '<div class="nsec-t" style="margin-top:16px">今日のAI分析 <span class="num" style="color:#6EE7F0;font-size:10px">AUTO</span> <span class="num" style="color:var(--faint);font-size:11px">'+gen+'</span></div>'+
+    '<div class="mcard ai-card">'+body+
+    '<div class="ai-disc">Claudeによる自動分析。投資助言ではありません。断定は避け根拠とリスクを併記させていますが、判断は自己責任でお願いします。</div></div>';
+}
+
 function macroSectionHtml(){
   var ser=MACRO.wsts.series.slice(-8);
   var vmax=Math.max.apply(null,ser.map(function(x){return x.value;}));
@@ -1436,7 +1494,51 @@ function macroSectionHtml(){
     return '<div class="wb"><div class="wv">'+x.value+'</div><div class="wbar" style="height:'+hpct+'%"></div><div class="wm">'+x.month.slice(5)+'月</div></div>';}).join("");
   var yoy=ser[ser.length-1].yoy_pct;
   var cap=MACRO.capex.items.map(function(c){return '<div class="cap"><span class="cap-co">'+glEsc(c.company)+'</span><span class="cap-v">$'+c.value+'B <span class="cap-y '+(c.yoy_pct>=0?"n-up":"n-down")+'">'+nSign(c.yoy_pct)+'%</span></span><span class="cap-n">'+glEsc(c.note)+'</span></div>';}).join("");
-  return '<div class="nsec-t" style="margin-top:16px">市況:WSTS 世界半導体売上(月次)</div>'+
+
+  // SOX指数(自動取得)
+  var SOX=(typeof DATA!=="undefined"&&DATA&&DATA.sox)?DATA.sox:null;
+  var soxHtml="";
+  if(SOX&&SOX.last!=null){
+    var sc=SOX.chg_pct||0;
+    var fh=SOX.from_high_pct;
+    var sparkPts=(SOX.spark||[]).map(function(v,i,arr){var mn=Math.min.apply(null,arr),mx=Math.max.apply(null,arr),r=(mx-mn)||1;
+      return (i/(arr.length-1)*100).toFixed(1)+","+(28-(v-mn)/r*26).toFixed(1);}).join(" ");
+    var fhHtml="";
+    if(fh!=null){
+      var deep=fh<=-8;   // 高値から8%超の調整=「織り込み後の巻き戻し」注意ゾーン
+      fhHtml='<div class="sox-fh'+(deep?" sox-fh-warn":"")+'">'+
+        '52週高値 '+SOX.hi52.toLocaleString()+' から <b>'+fh.toFixed(1)+'%</b>'+
+        (deep?' <span class="sox-fh-tag">織り込み後の調整幅・大</span>':'')+
+        '</div>';
+    }
+    soxHtml='<div class="nsec-t" style="margin-top:16px">市況:SOX指数(PHLX半導体) <span class="num" style="color:#6EE7F0;font-size:10px">AUTO</span></div>'+
+      '<div class="mcard sox-card"><div class="sox-top"><div class="sox-main"><div class="sox-v">'+SOX.last.toLocaleString()+'</div>'+
+      '<div class="sox-sub"><span class="'+(sc>=0?"n-up":"n-down")+'">前日'+nSign(sc)+'%</span>'+
+      (SOX.ytd_pct!=null?'<span class="'+(SOX.ytd_pct>=0?"n-up":"n-down")+'">YTD'+nSign(SOX.ytd_pct)+'%</span>':'')+'</div></div>'+
+      '<svg class="sox-spark" viewBox="0 0 100 28" preserveAspectRatio="none"><polyline points="'+sparkPts+'" fill="none" stroke="'+(sc>=0?"var(--up)":"var(--down)")+'" stroke-width="2"/></svg></div>'+
+      fhHtml+
+      '<div class="sox-note">実需(WSTS・TSMC月次)が強くても、株価は既に織り込んでいる場合があります。高値からの調整幅は「織り込み度合い」の目安です。</div></div>';
+  } else {
+    soxHtml='<div class="nsec-t" style="margin-top:16px">市況:SOX指数(PHLX半導体)</div><div class="mcard"><div class="hm-empty">まだ取得されていません。update-data 実行後に自動反映されます。</div></div>';
+  }
+
+  // TSMC月次売上(自動取得)
+  var TM=(typeof DATA!=="undefined"&&DATA&&DATA.tsmc_monthly)?DATA.tsmc_monthly:[];
+  var tsmcHtml="";
+  if(TM.length){
+    var tm8=[...TM].reverse().slice(-8);
+    var tmax=Math.max.apply(null,tm8.map(function(x){return x.net_revenue_mntd;}));
+    var tbars=tm8.map(function(x){var h2=Math.round(x.net_revenue_mntd/tmax*100);
+      return '<div class="wb"><div class="wv">'+Math.round(x.net_revenue_mntd/1000)+'</div><div class="wbar" style="height:'+h2+'%;background:linear-gradient(180deg,#9D7CF0,rgba(157,124,240,.3))"></div><div class="wm">'+x.month+'月</div></div>';}).join("");
+    var lastY=TM[0].yoy_pct;
+    tsmcHtml='<div class="nsec-t" style="margin-top:16px">市況:TSMC月次売上(億NTD) <span class="num" style="color:#6EE7F0;font-size:10px">AUTO</span> <span class="num" style="color:'+(lastY>=0?"var(--up)":"var(--down)")+';font-size:11px">前年比'+nSign(lastY)+'%</span></div>'+
+      '<div class="mcard"><div class="wsts">'+tbars+'</div></div>';
+  } else {
+    tsmcHtml='<div class="nsec-t" style="margin-top:16px">市況:TSMC月次売上</div><div class="mcard"><div class="hm-empty">まだ取得されていません。update-data 実行後に自動反映されます(TSMC公式IRより毎回取得)。</div></div>';
+  }
+
+  return soxHtml+tsmcHtml+
+    '<div class="nsec-t" style="margin-top:16px">市況:WSTS 世界半導体売上(月次)</div>'+
     '<div class="mcard"><div class="mlab">'+glEsc(MACRO.wsts.label)+'(<span class="num">'+glEsc(MACRO.wsts.unit)+'</span>) 前年比 <span class="'+(yoy>=0?"n-up":"n-down")+'">'+nSign(yoy)+'%</span></div><div class="wsts">'+bars+'</div></div>'+
     '<div class="nsec-t" style="margin-top:16px">市況:主要ファブ CapEx ガイダンス <span class="num" style="color:var(--faint);font-size:11px">'+glEsc(MACRO.capex.as_of)+'</span></div>'+
     '<div class="mcard">'+cap+'</div>'+
@@ -1466,11 +1568,49 @@ function stockChips(codes){
   }).join("")+'</span>';
 }
 
+function eventScheduleHtml(limit){
+  var EV=(typeof CALENDAR!=="undefined"&&CALENDAR&&CALENDAR.events)?CALENDAR.events:((typeof DATA!=="undefined"&&DATA&&DATA.events)?DATA.events:[]);
+  var DS=(typeof DATA!=="undefined"&&DATA&&DATA.disclosures)?DATA.disclosures:[];
+  // 日本企業がTDnetで実際に開示した「決算発表予定日」も同じ表に混ぜる(確定情報)
+  var jp=DS.filter(function(d){return d.kind==="開示予定";}).map(function(d){
+    return {date:d.date,time:"",tz:"",country:"JP",kind:"決算",level:2,
+            title:d.name+" "+d.title,note:"",url:d.url,confirmed:true};
+  });
+  var all=EV.concat(jp);
+  if(!all.length){
+    return '<div class="nsec-t" style="margin-top:16px">半導体イベント</div>'+
+      '<div class="mcard"><div class="hm-empty">TSMC・ASML の公式IRから発表日程を自動取得します。update-data 実行後に表示されます。</div></div>';
+  }
+  all.sort(function(a,b){ return (a.date||"").localeCompare(b.date||"") || (b.level||0)-(a.level||0); });
+  var FLAG={TW:"🇹🇼",US:"🇺🇸",NL:"🇳🇱",JP:"🇯🇵",KR:"🇰🇷"};
+  var KC={"月次":"#5BE39B","決算":"#F0593C","統計":"#3FA7D6","株主総会":"#9D7CF0"};
+  var WD=["日","月","火","水","木","金","土"];
+  var body=all.slice(0,limit||8).map(function(e){
+    var dt=new Date((e.date||"")+"T00:00:00");
+    var dd=(e.date||"").slice(5).replace("-","/");
+    var wd=isNaN(dt)?"":WD[dt.getDay()];
+    var col=KC[e.kind]||"#8B94A8";
+    var stars=e.level>=3?'<span class="ev-lv">★★★</span>':(e.level===2?'<span class="ev-lv2">★★</span>':'');
+    var tm=e.time?('<span class="ev-tm">'+glEsc(e.time)+(e.tz?" "+glEsc(e.tz):"")+'</span>'):'';
+    var est=(e.confirmed===false)?'<span class="ev-est">予定</span>':'';
+    var inner='<span class="ev-d">'+dd+(wd?'<span class="ev-wd">('+wd+')</span>':'')+'</span>'+
+      '<span class="ev-b">'+
+        '<span class="ev-h">'+(FLAG[e.country]||"")+' <span class="ev-k" style="color:'+col+';border-color:'+col+'">'+glEsc(e.kind)+'</span> '+stars+tm+est+'</span>'+
+        '<b>'+glEsc(e.title)+'</b>'+
+        (e.note?'<span class="ev-t">'+glEsc(e.note)+'</span>':'')+
+      '</span>';
+    return e.url?('<a class="ev-row" href="'+encodeURI(e.url)+'" target="_blank" rel="noopener">'+inner+'</a>')
+                :('<div class="ev-row">'+inner+'</div>');
+  }).join("");
+  return '<div class="nsec-t" style="margin-top:16px">半導体イベント <span class="num" style="color:#6EE7F0;font-size:10px">AUTO</span></div>'+
+    '<div class="mcard">'+body+'<div class="wh-note">TSMC公式IR・主要24銘柄の決算日を自動収集(週1更新)。「予定」=発表日未確定の見込み。</div></div>';
+}
+
 function disclosuresHtml(limit,label){
   var DS=(typeof DATA!=="undefined"&&DATA&&DATA.disclosures)?DATA.disclosures:[];
   if(!DS.length) return '<div class="nsec-t" style="margin-top:16px">'+label+'</div><div class="mcard"><div class="hm-empty">保有銘柄の適時開示(決算・業績修正・配当など)を自動取得。update-data 実行後に本物だけが並びます。</div></div>';
   var kc={"決算":"#F0593C","予想修正":"#E8B04B","配当":"#5BE39B","自己株":"#6EE7F0","資本":"#9D7CF0","開示予定":"#8FA0B8","提携・M&A":"#F08CC0"};
-  return '<div class="nsec-t" style="margin-top:16px">'+label+' <span class="num" style="color:var(--faint);font-size:11px">自動・'+DS.length+'件</span></div><div class="mcard">'+
+  return '<div class="nsec-t" style="margin-top:16px">'+label+'</div><div class="mcard">'+
     DS.slice(0,limit).map(function(d){
       var col=kc[d.kind]||"#8B94A8", dd=(d.date||"").slice(5).replace("-","/");
       return '<a class="hl dl" href="'+encodeURI(d.url||"#")+'" target="_blank" rel="noopener">'+
@@ -1479,78 +1619,107 @@ function disclosuresHtml(limit,label){
     }).join("")+'</div>';
 }
 
-function headlinesHtml(limit,label){
-  var HS=(typeof DATA!=="undefined"&&DATA&&DATA.headlines)?DATA.headlines:[];
-  if(!HS.length) return '<div class="nsec-t" style="margin-top:16px">'+label+'</div><div class="mcard"><div class="hm-empty">RSS未取得。update-data 実行後に13媒体の最新見出しが自動で並びます。</div></div>';
+function _isJP(s){ return /[ぁ-んァ-ヶ一-龠]/.test(String(s||"")); }
+function _hlRows(list,limit){
   var seen={},perSrc={},rows=[];
-  for(var i=0;i<HS.length&&rows.length<limit;i++){
-    var x=HS[i]; if(!x||!x.title)continue;
+  for(var i=0;i<list.length&&rows.length<limit;i++){
+    var x=list[i]; if(!x||!x.title)continue;
     var key=String(x.title).toLowerCase().replace(/\s+/g,"").slice(0,26);
     if(seen[key])continue;
     var s=x.source||"";
     if((perSrc[s]||0)>=4)continue;
     seen[key]=1; perSrc[s]=(perSrc[s]||0)+1; rows.push(x);
   }
-  return '<div class="nsec-t" style="margin-top:16px">'+label+' <span class="num" style="color:var(--faint);font-size:11px">自動取得・'+rows.length+'件</span></div><div class="mcard">'+
-    rows.map(function(x){
-      var d=(x.date||"").slice(5).replace("-","/");
-      var mc=matchStocks(x.title);
-      return '<div class="hlrow"><a class="hl" href="'+encodeURI(x.url||"#")+'" target="_blank" rel="noopener">'+
-        '<span class="hl-src">'+glEsc(x.source||"")+'</span>'+
-        '<span class="hl-t">'+glEsc(x.title)+(d?' <span class="hl-d">'+d+'</span>':'')+'</span></a>'+
-        stockChips(mc)+'</div>';
-    }).join("")+'</div>';
+  return rows.map(function(x){
+    var d=(x.date||"").slice(5).replace("-","/");
+    var mc=matchStocks(x.title);
+    return '<div class="hlrow"><a class="hl" href="'+encodeURI(x.url||"#")+'" target="_blank" rel="noopener">'+
+      '<span class="hl-src">'+glEsc(x.source||"")+'</span>'+
+      '<span class="hl-t">'+glEsc(x.title)+(d?' <span class="hl-d">'+d+'</span>':'')+'</span></a>'+
+      stockChips(mc)+'</div>';
+  }).join("");
+}
+function headlinesHtml(limit,label){
+  var HS=(typeof DATA!=="undefined"&&DATA&&DATA.headlines)?DATA.headlines:[];
+  if(!HS.length) return '<div class="nsec-t" style="margin-top:16px">'+label+'</div><div class="mcard"><div class="hm-empty">見出しは取得後に表示されます。</div></div>';
+  var jp=[],en=[];
+  HS.forEach(function(x){ (_isJP(x.title)?jp:en).push(x); });
+  var half=Math.max(4,Math.ceil(limit/2));
+  var out='<div class="nsec-t" style="margin-top:16px">'+label+'</div>';
+  if(jp.length){ out+='<div class="hl-lang">日本語</div><div class="mcard">'+_hlRows(jp,limit)+'</div>'; }
+  if(en.length){ out+='<div class="hl-lang" style="margin-top:10px">英語</div><div class="mcard">'+_hlRows(en,limit)+'</div>'; }
+  return out;
 }
 function newsStockTally(){
   var tally={};
-  function add(c,src){ if(!c)return; if(!tally[c])tally[c]={n:0,src:""}; tally[c].n++; if(!tally[c].src&&src)tally[c].src=src; }
+  function add(c,src,url){ if(!c)return; if(!tally[c])tally[c]={n:0,src:"",url:""}; tally[c].n++; if(!tally[c].src&&src){tally[c].src=src;tally[c].url=url||"";} }
   // RSS見出し(自動)
   var HS=(typeof DATA!=="undefined"&&DATA&&DATA.headlines)?DATA.headlines:[];
-  HS.forEach(function(x){ matchStocks(x.title).forEach(function(c){ add(c,x.title); }); });
+  HS.forEach(function(x){ matchStocks(x.title).forEach(function(c){ add(c,x.title,x.url); }); });
   // 適時開示(自動)
   var DS=(typeof DATA!=="undefined"&&DATA&&DATA.disclosures)?DATA.disclosures:[];
-  DS.forEach(function(d){ add(d.code, d.name+" "+d.title); });
+  DS.forEach(function(d){ add(d.code, d.name+" "+d.title, d.url); });
   return tally;
 }
 function todayFocusHtml(){
-  var tally=newsStockTally(), Q=(typeof DATA!=="undefined"&&DATA&&DATA.quotes)?DATA.quotes:{};
+  var Q=(typeof DATA!=="undefined"&&DATA&&DATA.quotes)?DATA.quotes:{};
+  var tally=newsStockTally();
   var rows=[];
-  Object.keys(tally).forEach(function(c){
+  Object.keys(Q).forEach(function(c){
     var q=Q[c]; if(!q)return;
+    if(q.market!=="jp")return;                       // 日本株だけ
     var chg=(typeof q.chg==="number")?q.chg:0;
-    var surge=(q.volSurge===1)||(typeof q.volRatio==="number"&&q.volRatio>=2);
-    if(Math.abs(chg)>=2.5||surge){
-      rows.push({code:c,name:(CODE2NAME[c]||q.name||c),n:tally[c].n,src:tally[c].src,chg:chg,surge:surge});
-    }
+    var vr=(typeof q.volRatio==="number")?q.volRatio:0;
+    var surge=(q.volSurge>=1)||(vr>=2);
+    var ps=q.patterns||(q.pattern?[q.pattern]:[]);
+    var brk=ps.indexOf("直近高値ブレイク")>=0||ps.indexOf("52週高値更新")>=0;
+    var t=tally[c];
+    // 掲載条件: 急騰急落(±4%) / 出来高急増 / 高値ブレイク / ニュース登場かつ±2%
+    var score=0, tags=[];
+    if(Math.abs(chg)>=8){ score+=100; tags.push(chg>0?"急騰":"急落"); }
+    else if(Math.abs(chg)>=4){ score+=60; tags.push(chg>0?"大幅高":"大幅安"); }
+    if(surge){ score+=40; tags.push("出来高↑"); }
+    if(brk){ score+=35; tags.push("高値ブレイク"); }
+    if(t){ score+=25; tags.push("ニュース"+t.n+"件"); }
+    if(score<40)return;                              // 小さい動きは載せない
+    rows.push({code:c,name:(CODE2NAME[c]||q.name||c),chg:chg,score:score,tags:tags,
+               src:(t?t.src:""),url:(t?t.url:"")});
   });
   if(!rows.length) return '';
-  rows.sort(function(a,b){ return Math.abs(b.chg)-Math.abs(a.chg); });
-  rows=rows.slice(0,6);
+  rows.sort(function(a,b){ if(b.score!==a.score)return b.score-a.score; return Math.abs(b.chg)-Math.abs(a.chg); });
+  rows=rows.slice(0,8);
   var body=rows.map(function(r){
     var dir=r.chg>0?"n-up":(r.chg<0?"n-down":"");
     var arrow=r.chg>0?"▲":(r.chg<0?"▼":"—");
-    return '<button type="button" class="tf-row" onclick="showStock(\''+r.code+'\')">'+
-      '<span class="tf-nm">'+arrow+' '+glEsc(r.name)+'</span>'+
-      '<span class="tf-tags">'+(r.surge?'<span class="tf-vol">出来高↑</span>':'')+'<span class="tf-chg '+dir+'">'+(r.chg>0?"+":"")+r.chg.toFixed(2)+'%</span></span>'+
-      (r.src?'<span class="tf-src">'+glEsc(r.src)+'</span>':'')+'</button>';
+    var tagHtml=r.tags.map(function(t){
+      var cls=(t==="急騰"||t==="大幅高")?"tg-up":(t==="急落"||t==="大幅安")?"tg-dn":(t==="高値ブレイク")?"tg-bk":(t==="出来高↑")?"tg-vol":"tg-nw";
+      return '<span class="tf-tag '+cls+'">'+glEsc(t)+'</span>';
+    }).join("");
+    var srcHtml=r.src?(r.url?'<a class="tf-src" href="'+encodeURI(r.url)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+glEsc(r.src)+' ↗</a>':'<span class="tf-src">'+glEsc(r.src)+'</span>'):'';
+    return '<div class="tf-row">'+
+      '<button type="button" class="tf-main" onclick="showStock(\''+r.code+'\')">'+
+        '<span class="tf-nm">'+arrow+' '+glEsc(r.name)+'</span>'+
+        '<span class="tf-tags2">'+tagHtml+'</span>'+srcHtml+'</button>'+
+      '<span class="tf-chg '+dir+'">'+(r.chg>0?"+":"")+r.chg.toFixed(2)+'%</span></div>';
   }).join("");
-  return '<div class="tf-wrap"><div class="tf-title">⚡ 今日の要注目 <span class="tf-sub">ニュース×急変(±2.5%/出来高)</span></div>'+body+'</div>';
+  return '<div class="tf-wrap"><div class="tf-title">⚡ 今日の要注目 <span class="tf-sub">日本株・急変/出来高/高値ブレイク</span></div>'+body+'</div>';
 }
 
 function weeklyHighlightHtml(){
   var tally=newsStockTally(), Q=(typeof DATA!=="undefined"&&DATA&&DATA.quotes)?DATA.quotes:{};
   var rows=Object.keys(tally).map(function(c){
-    var q=Q[c]||{}; return {code:c, name:(CODE2NAME[c]||q.name||c), n:tally[c].n, src:tally[c].src, chg:(typeof q.chg==="number"?q.chg:null)};
+    var q=Q[c]||{}; return {code:c, name:(CODE2NAME[c]||q.name||c), n:tally[c].n, src:tally[c].src, url:tally[c].url, chg:(typeof q.chg==="number"?q.chg:null)};
   });
   if(!rows.length) return '';
   rows.sort(function(a,b){ if(b.n!==a.n)return b.n-a.n; return Math.abs(b.chg||0)-Math.abs(a.chg||0); });
   rows=rows.slice(0,12);
   var body=rows.map(function(r){
     var chg=(r.chg===null)?'<span class="wh-na">—</span>':'<span class="'+(r.chg>0?"n-up":(r.chg<0?"n-down":""))+'">'+(r.chg>0?"+":"")+r.chg.toFixed(2)+'%</span>';
-    return '<button type="button" class="wh-row" onclick="showStock(\''+r.code+'\')">'+
-      '<span class="wh-nm">'+glEsc(r.name)+(r.src?'<span class="wh-src">'+glEsc(r.src)+'</span>':'')+'</span>'+
+    var srcHtml=r.src?(r.url?'<a class="wh-src" href="'+encodeURI(r.url)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+glEsc(r.src)+' ↗</a>':'<span class="wh-src">'+glEsc(r.src)+'</span>'):'';
+    return '<div class="wh-row">'+
+      '<button type="button" class="wh-main" onclick="showStock(\''+r.code+'\')"><span class="wh-nm">'+glEsc(r.name)+'</span>'+srcHtml+'</button>'+
       '<span class="wh-n">'+r.n+'件</span>'+
-      '<span class="wh-chg">'+chg+'</span></button>';
+      '<span class="wh-chg">'+chg+'</span></div>';
   }).join("");
   return '<div class="nsec-t" style="margin-top:4px">今週のハイライト <span class="num" style="color:var(--faint);font-size:11px">ニュース登場×前日比</span></div>'+
     '<div class="mcard wh-card"><div class="wh-head"><span>銘柄</span><span>登場</span><span>前日比</span></div>'+body+
@@ -1592,13 +1761,13 @@ function renderHome(){
     '<div class="hm-wt">'+glEsc(W.title)+'</div>'+
     '<div class="hm-wb">'+String(W.body).split("\n").map(function(p){return "<p>"+glEsc(p)+"</p>";}).join("")+'</div></div>';
   box.innerHTML='<div class="gl-head"><div class="gl-k">◉ ホーム</div><div class="gl-s">今の相場と、いま出ている材料を一目で。すべて自動更新。</div></div>'+
-    todayFocusHtml()+wk+weeklyHighlightHtml()+disclosuresHtml(6,"適時開示(自動)")+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
+    todayFocusHtml()+aiAnalysisHtml()+wk+weeklyHighlightHtml()+eventScheduleHtml(6)+disclosuresHtml(6,"適時開示")+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
   box.querySelectorAll('[data-news]').forEach(function(el){el.addEventListener("click",function(){pushHistory();view="news";render();window.scrollTo(0,0);});});
 }
 
 /* ===== ニュース + 市況(WSTS/CapEx) 友達版移植 ===== */
-var NEWS=[{"date": "2026-07-08", "sentiment": 2, "title": "SKハイニクス、米ADR上場で約265億ドル調達——HBM増産を加速", "summary": "米国預託証券のNasdaq上場で史上級の調達。初値は公開価格を大きく上回り$170で寄付き。調達資金はHBM製造能力の大幅拡張に充当。", "tags": ["memory", "spe_test"], "chain": ["HBM設備投資の加速", "メモリテスタ・後工程装置の受注拡大", "日本の検査・実装装置に波及"], "stocks": [{"code": "6857", "name": "アドバンテスト", "dir": "up"}, {"code": "6146", "name": "ディスコ", "dir": "up"}, {"code": "6871", "name": "日本マイクロニクス", "dir": "up"}]}, {"date": "2026-07-06", "sentiment": 2, "title": "WSTS 5月売上1,206億ドル・前年比+104%——単月最高を更新", "summary": "SIA発表。前月比+9.2%で15ヶ月連続プラス。米州+132%、アジア太平洋+119%、中国+89%と全地域で大幅成長。AI特需がロジックとメモリを牽引。", "tags": ["memory", "compute"], "chain": ["市況の拡大継続", "装置・材料の受注環境が強含み"], "stocks": [{"code": "8035", "name": "東京エレクトロン", "dir": "up"}, {"code": "285A", "name": "キオクシア", "dir": "up"}]}, {"date": "2026-06-29", "sentiment": 1, "title": "韓国、4,800兆ウォンのAI投資構想——Samsung/SKがDRAM能力倍増へ", "summary": "政財界が合同発表。新ファブ4棟(約5,200億ドル)＋先端パッケージング棟。Yongin/Cheongjuの前倒しも。装置・材料需要には追い風だが、中期の供給過剰リスクも意識される。", "tags": ["spe_front", "materials"], "chain": ["韓国メモリの大増産", "前工程装置・材料の需要増", "中期は供給過剰リスクに注意"], "stocks": [{"code": "8035", "name": "東京エレクトロン", "dir": "up"}, {"code": "4063", "name": "信越化学", "dir": "up"}, {"code": "3436", "name": "SUMCO", "dir": "up"}]}, {"date": "2026-07-09", "sentiment": 1, "title": "ラピダス、2nmウェハーをTSMC比低価格で提供へ——2027年量産時$20,000/枚", "summary": "価格戦略で受注獲得を狙う報道。国策ファウンドリの立ち上がりは国内の装置・材料・検査の投資継続に直結。", "tags": ["facility", "spe_front"], "chain": ["国策2nmの受注拡大期待", "国内ファブ投資の継続", "装置・検査・材料に裾野"], "stocks": [{"code": "8035", "name": "東京エレクトロン", "dir": "up"}, {"code": "6920", "name": "レーザーテック", "dir": "up"}]}, {"date": "2026-07-07", "sentiment": -1, "title": "米MATCH法案の審議継続——対中DUV規制拡大なら装置に逆風", "summary": "旧世代露光装置まで規制対象を広げ、同盟国にも同水準を求める法案。成立すれば中国売上比率の高い日本装置株の業績予想に下押し。", "tags": ["spe_front", "materials"], "chain": ["対中規制の拡大懸念", "中国向け売上の下振れリスク", "装置株のセンチメント悪化"], "stocks": [{"code": "8035", "name": "東京エレクトロン", "dir": "down"}, {"code": "7735", "name": "SCREEN", "dir": "down"}]}];
-var MACRO={"wsts": {"label": "WSTS 世界半導体売上(月次)", "unit": "十億ドル", "series": [{"month": "2025-11", "value": 75.3, "yoy_pct": 29.8}, {"month": "2025-12", "value": 79.6, "yoy_pct": 34.0}, {"month": "2026-01", "value": 82.5, "yoy_pct": 46.1}, {"month": "2026-02", "value": 88.8, "yoy_pct": 61.8}, {"month": "2026-03", "value": 99.5, "yoy_pct": 79.2}, {"month": "2026-04", "value": 110.5, "yoy_pct": 93.9}, {"month": "2026-05", "value": 120.6, "yoy_pct": 104.1}]}, "capex": {"label": "主要ファブ CapEx ガイダンス(2026年)", "as_of": "2026-07時点", "items": [{"company": "TSMC", "value": 54, "yoy_pct": 32, "note": "計画520〜560億ドル(前年409億ドル)。2nm・CoWoS増産"}, {"company": "Samsung", "value": 74, "yoy_pct": 128, "note": "110兆ウォン(半導体CapEx+R&D)。HBM4・先端ファウンドリ"}, {"company": "SK hynix", "value": 20, "yoy_pct": 40, "note": "前年比4割増(SC-IQ推計)。HBM4集中・Yongin前倒し"}, {"company": "Micron", "value": 25, "yoy_pct": 81, "note": "広島含む増産。HBM専用ファブ増設"}, {"company": "Intel", "value": 17, "yoy_pct": -4, "note": "横ばい〜微減。18A立ち上げ優先・投資選別"}]}, "cycle": "2026年市場はWSTS予測で前年比90%増の1兆5,112億ドル——初の1兆ドル超え。AIデータセンター向けのメモリ・ロジックが牽引する拡大フェーズ。業界CapExも約2,000億ドル(+20%)と過去最高で、装置・材料の受注環境は強い。リスクは2027年の米IT投資の持続性、対中規制、韓国大増産による中期の供給過剰。"};
+var NEWS=[{"date": "2026-07-08", "sentiment": 2, "title": "SKハイニクス、米ADR上場で約265億ドル調達——HBM増産を加速", "summary": "米国預託証券のNasdaq上場で史上級の調達。初値は公開価格を大きく上回り$170で寄付き。調達資金はHBM製造能力の大幅拡張に充当。", "tags": ["memory", "spe_test"], "chain": ["HBM設備投資の加速", "メモリテスタ・後工程装置の受注拡大", "日本の検査・実装装置に波及"], "stocks": [{"code": "6857", "name": "アドバンテスト", "dir": "up"}, {"code": "6146", "name": "ディスコ", "dir": "up"}, {"code": "6871", "name": "日本マイクロニクス", "dir": "up"}]}, {"date": "2026-07-06", "sentiment": 2, "title": "WSTS 5月売上1,206億ドル・前年比+104%——単月最高を更新", "summary": "SIA発表。前月比+9.2%で15ヶ月連続プラス。米州+132%、アジア太平洋+119%、中国+89%と全地域で大幅成長。AI特需がロジックとメモリを牽引。", "tags": ["memory"], "chain": ["市況の拡大継続", "装置・材料の受注環境が強含み"], "stocks": [{"code": "8035", "name": "東京エレクトロン", "dir": "up"}, {"code": "285A", "name": "キオクシア", "dir": "up"}]}, {"date": "2026-06-29", "sentiment": 1, "title": "韓国、4,800兆ウォンのAI投資構想——Samsung/SKがDRAM能力倍増へ", "summary": "政財界が合同発表。新ファブ4棟(約5,200億ドル)＋先端パッケージング棟。Yongin/Cheongjuの前倒しも。装置・材料需要には追い風だが、中期の供給過剰リスクも意識される。", "tags": ["spe_front", "materials"], "chain": ["韓国メモリの大増産", "前工程装置・材料の需要増", "中期は供給過剰リスクに注意"], "stocks": [{"code": "8035", "name": "東京エレクトロン", "dir": "up"}, {"code": "4063", "name": "信越化学", "dir": "up"}, {"code": "3436", "name": "SUMCO", "dir": "up"}]}, {"date": "2026-07-09", "sentiment": 1, "title": "ラピダス、2nmウェハーをTSMC比低価格で提供へ——2027年量産時$20,000/枚", "summary": "価格戦略で受注獲得を狙う報道。国策ファウンドリの立ち上がりは国内の装置・材料・検査の投資継続に直結。", "tags": ["facility", "spe_front"], "chain": ["国策2nmの受注拡大期待", "国内ファブ投資の継続", "装置・検査・材料に裾野"], "stocks": [{"code": "8035", "name": "東京エレクトロン", "dir": "up"}, {"code": "6920", "name": "レーザーテック", "dir": "up"}]}, {"date": "2026-07-07", "sentiment": -1, "title": "米MATCH法案の審議継続——対中DUV規制拡大なら装置に逆風", "summary": "旧世代露光装置まで規制対象を広げ、同盟国にも同水準を求める法案。成立すれば中国売上比率の高い日本装置株の業績予想に下押し。", "tags": ["spe_front", "materials"], "chain": ["対中規制の拡大懸念", "中国向け売上の下振れリスク", "装置株のセンチメント悪化"], "stocks": [{"code": "8035", "name": "東京エレクトロン", "dir": "down"}, {"code": "7735", "name": "SCREEN", "dir": "down"}]}];
+var MACRO={"wsts": {"label": "WSTS 世界半導体売上(月次)", "unit": "十億ドル", "series": [{"month": "2025-11", "value": 75.3, "yoy_pct": 29.8}, {"month": "2025-12", "value": 79.6, "yoy_pct": 34.0}, {"month": "2026-01", "value": 82.5, "yoy_pct": 46.1}, {"month": "2026-02", "value": 88.8, "yoy_pct": 61.8}, {"month": "2026-03", "value": 99.5, "yoy_pct": 79.2}, {"month": "2026-04", "value": 110.5, "yoy_pct": 93.9}, {"month": "2026-05", "value": 120.6, "yoy_pct": 104.1}]}, "capex": {"label": "主要ファブ CapEx ガイダンス(2026年)", "as_of": "2026-07時点", "items": [{"company": "TSMC", "value": 54, "yoy_pct": 32, "note": "計画520〜560億ドル(前年409億ドル)。2nm・CoWoS増産"}, {"company": "Samsung", "value": 74, "yoy_pct": 128, "note": "110兆ウォン(半導体CapEx+R&D)。HBM4・先端ファウンドリ"}, {"company": "SK hynix", "value": 20, "yoy_pct": 40, "note": "前年比4割増(SC-IQ推計)。HBM4集中・Yongin前倒し"}, {"company": "Micron", "value": 25, "yoy_pct": 81, "note": "広島含む増産。HBM専用ファブ増設"}, {"company": "Intel", "value": 17, "yoy_pct": -4, "note": "横ばい〜微減。18A立ち上げ優先・投資選別"}, {"company": "キオクシア", "value": 3.0, "yoy_pct": 66, "note": "FY26-28 年平均約4,700億円(前年比+66%)。BiCS 10・北上第2/第3棟。※円建てを$換算(150円/$概算)"}, {"company": "GF", "value": 1.5, "yoy_pct": 100, "note": "2026は売上の15〜20%(前年8%から急増)。シリコンフォトニクス・22FDX需要"}, {"company": "UMC", "value": 7.0, "yoy_pct": 0, "note": "年70億ドル超で成熟ノード能力増強。Intelと12nm FinFET協業"}, {"company": "SMIC", "value": 7.3, "yoy_pct": 0, "note": "2025年並み(監査純資産の20%超)。中国内需・国産化が牽引"}]}, "cycle": "2026年市場はWSTS予測で前年比90%増の1兆5,112億ドル——初の1兆ドル超え。AIデータセンター向けのメモリ・ロジックが牽引する拡大フェーズ。業界CapExも約2,000億ドル(+20%)と過去最高で、装置・材料の受注環境は強い。リスクは2027年の米IT投資の持続性、対中規制、韓国大増産による中期の供給過剰。"};
 function newsAnchor(){ let mx=""; NEWS.forEach(n=>{ if(n.date>mx) mx=n.date; }); return mx||"2026-01-01"; }
 function daysBetween(a,b){ return Math.round((new Date(a+"T00:00:00Z")-new Date(b+"T00:00:00Z"))/86400000); }
 function recentNews(days){ const a=newsAnchor(); return NEWS.filter(n=>{const d=daysBetween(a,n.date); return d>=0 && d<=days;}); }
@@ -1610,9 +1779,9 @@ function nVerdict(s){ return s>=1.5?"強気":s>=.5?"やや強気":s>-.5?"中立"
 function nSign(v){ return (v>0?"+":"")+v; }
 function renderNews(){
   var box=document.getElementById("newsView");
-  box.innerHTML='<div class="gl-head"><div class="gl-k">▤ ニュース</div><div class="gl-s">13媒体の自動ヘッドライン(登場した保有銘柄をハイライト)と、保有銘柄の適時開示(決算・業績修正・配当など)。すべて自動取得。</div></div>'+
+  box.innerHTML='<div class="gl-head"><div class="gl-k">▤ ニュース</div><div class="gl-s">半導体13媒体のヘッドラインと、保有銘柄の適時開示。見出しに出た保有銘柄はハイライトされます。</div></div>'+
     headlinesHtml(72,"自動ヘッドライン")+
-    disclosuresHtml(40,"適時開示");
+    eventScheduleHtml(12)+disclosuresHtml(40,"適時開示");
 }
 
 function syncContent(){
@@ -2091,7 +2260,7 @@ function renderProc(){
 }
 
 // 銘柄ランキング(期間別騰落率＋セクター/市場フィルター)
-let rankSector="all", rankMarket="all", rankSub="all";
+let rankSector="all", rankMarket="all", rankSub="all", rankTag="all";
 let rankAxis="theme", rankStage="front", rankStep="all";
 let rankSignals=new Set();   // 複数選択(AND): po/pullback/bb2p/bb3p/bb2m/bb3m/vol2...
 let rankPatterns=new Set();  // 複数選択(OR): パターン名
@@ -2115,7 +2284,7 @@ const RET_PERIODS=[["1D",1,"1日"],["5D",5,"5日"],["1M",21,"1ヶ月"],["3M",63,
 // SPE(半導体製造装置)のサブテーマを前/中/後の3工程にグルーピング
 function renderRank(){
   if(!DATA)return;
-  chips("#rankAxisChips",[["theme","テーマ"],["proc","工程"]],rankAxis,id=>{rankAxis=id;rankSector="all";rankSub="all";rankStage="front";rankStep="all";render()});
+  chips("#rankAxisChips",[["theme","テーマ"],["proc","工程"],["tag","タグ"],["world","世界シェア"]],rankAxis,id=>{rankAxis=id;rankSector="all";rankSub="all";rankStage="front";rankStep="all";rankTag="all";render()});
   const secLabel=document.getElementById("rankSectorLabel");
   const subWrap=document.getElementById("rankSubChips");
   let secSet=null;
@@ -2138,6 +2307,36 @@ function renderRank(){
       const m=(DATA.macro||[]).find(x=>x.key===rankSector);
       const sub=m&&m.subs.find(s=>s.name===rankSub);
       if(sub) secSet=new Set(allSubCodes(sub));
+    }
+  } else if(rankAxis==="world"){
+    secLabel.textContent="日本(・海外)が世界シェアを握る技術で絞る";
+    const worldMap={}; // タグ(世界シェア文言) -> [code,...]
+    Object.entries(DATA.quotes||{}).forEach(([c,q])=>{
+      (q.tags||[]).filter(t=>t.includes("世界")).forEach(t=>{
+        (worldMap[t]=worldMap[t]||[]).push(c);
+      });
+    });
+    const opts=[["all","すべて("+Object.values(worldMap).flat().length+"件)"]]
+      .concat(Object.keys(worldMap).sort((a,b)=>worldMap[b].length-worldMap[a].length)
+        .map(t=>[t, t+" ("+worldMap[t].length+")"]));
+    chips("#rankSectorChips",opts,rankTag,id=>{rankTag=id;render()});
+    subWrap.style.display="none"; subWrap.innerHTML="";
+    if(rankTag!=="all"){
+      secSet=new Set(worldMap[rankTag]||[]);
+    } else {
+      secSet=new Set(Object.values(worldMap).flat());
+    }
+  } else if(rankAxis==="tag"){
+    secLabel.textContent="タグで絞る(CoWoS・HBM・後工程など)";
+    // quotes の tags から実際に使われているタグを集計(銘柄数の多い順)
+    const cnt={};
+    Object.values(DATA.quotes||{}).forEach(q=>(q.tags||[]).forEach(t=>{cnt[t]=(cnt[t]||0)+1;}));
+    const top=Object.entries(cnt).filter(([t,n])=>n>=3).sort((a,b)=>b[1]-a[1]).slice(0,28);
+    const tagOpts=[["all","すべて"]].concat(top.map(([t,n])=>[t,t+" ("+n+")"]));
+    chips("#rankSectorChips",tagOpts,rankTag,id=>{rankTag=id;render()});
+    subWrap.style.display="none"; subWrap.innerHTML="";
+    if(rankTag!=="all"){
+      secSet=new Set(Object.keys(DATA.quotes||{}).filter(c=>((DATA.quotes[c].tags)||[]).includes(rankTag)));
     }
   } else {
     secLabel.textContent="工程ステージで絞る(フロー図の大分類)";
@@ -2185,7 +2384,10 @@ function renderRank(){
     const q=DATA.quotes[s];
     if(rankMarket!=="all"&&q.market!==rankMarket)return false;
     if(secSet&&!secSet.has(s))return false;
-    if(rankPatterns.size>0&&!rankPatterns.has(q.pattern))return false;
+    if(rankPatterns.size>0){
+      const ps=q.patterns||(q.pattern?[q.pattern]:[]);
+      if(![...rankPatterns].some(p=>ps.includes(p)))return false;
+    }
     if(!matchSignal(q))return false;
     return true;
   }).map(s=>({sym:s,name:DATA.quotes[s].name,market:DATA.quotes[s].market,pattern:DATA.quotes[s].pattern,po:DATA.quotes[s].po,pullback:DATA.quotes[s].pullback,chg:DATA.quotes[s].chg}))
@@ -2381,6 +2583,7 @@ function procSteps(stageKey){
   });
 }
 
+var CALENDAR=null;   // 半導体イベントカレンダー(週1更新の calendar.json)
 async function load(){
   try{
     const r=await fetch("data.json?t="+Date.now()); DATA=await r.json();
@@ -2388,6 +2591,11 @@ async function load(){
   }catch(e){
     $("#list").innerHTML='<div class="loading">data.json が読めません。<br>update_data.py を実行して docs/data.json を生成してください。</div>';
   }
+  // イベントカレンダーは別ファイル(週1更新)。無くても本体は動く。
+  try{
+    const rc=await fetch("calendar.json?t="+Date.now());
+    if(rc.ok) CALENDAR=await rc.json();
+  }catch(e){ CALENDAR=null; }
   render();
 }
 load();

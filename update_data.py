@@ -9,7 +9,7 @@ Stooq の無料CSVから日足を取得し、直近約1年分の日足(date,clos
 実行: python update_data.py
 """
 import csv, io, json, os, sys, time, urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from themes import MACRO, all_symbols
 try:
     from tags import TAGS as STOCK_TAGS
@@ -657,43 +657,46 @@ def main():
                         else:
                             tri_pre = True    # 三角ブレイクリーチ(収束中・上放れ前)
 
-            # 高値更新中(52週高値の98.5%以上)
-            if hi52 and cur >= hi52 * 0.985:
-                pattern = "52週高値更新"
-            elif flag:
-                pattern = "フラッグブレイク"
-            elif gyaku:
-                pattern = "逆三尊・底打ち"
-            elif santen:
-                pattern = "三尊・天井注意"
-            elif triple_bottom:
-                pattern = "トリプルボトム"
-            elif triple_top:
-                pattern = "トリプルトップ"
-            elif double_bottom:
-                pattern = "ダブルボトム"
-            elif double_top:
-                pattern = "ダブルトップ"
-            elif tri_post:
-                pattern = "三角ブレイク"
-            # ブレイク: 直近3ヶ月(=63営業日, 前日まで)の高値を当日終値が上抜け(＋出来高増で確度UP)
-            elif (hi3m := (max(closes[-64:-1]) if len(closes) >= 64 else max(closes[:-1]))) and cur > hi3m and vol_up:
-                pattern = "直近高値ブレイク"
-            # リーチ: 直近3ヶ月高値の2%以内に接近・未突破
+            # ===== パターン判定(2026-07 修正) =====
+            # 旧実装は「52週高値更新」が最優先のelif連鎖で、直近高値ブレイクが
+            # ほぼ拾えていなかった(実データで1件のみ)。かつ vol_up 必須が厳しすぎた。
+            # → 高値ブレイク系を先に判定し、vol_up は必須にしない(出来高増は付帯情報に)。
+            #    複数該当を patterns(配列)にも保持し、フィルタの取りこぼしを無くす。
+            hi3m = (max(closes[-64:-1]) if len(closes) >= 64 else max(closes[:-1]))
+            patterns = []
+
+            # --- 高値ブレイク系(最優先・出来高は問わない) ---
+            if hi3m and cur > hi3m:
+                patterns.append("直近高値ブレイク")
             elif hi3m and hi3m * 0.98 <= cur <= hi3m:
-                pattern = "直近高値ブレイクリーチ"
-            elif tri_pre:
-                pattern = "三角ブレイクリーチ"
-            # CWH(カップウィズハンドル): PineScript移植の9ファクター判定
-            # ②カップ形成中="CWH形成中" / ③ハンドル押し目・④上抜け="CWH押し目/抜け"
-            elif (cwh_state := detect_cwh(closes, highs, lows, vols)) is not None:
-                if cwh_state in ("handle", "breakout"):
-                    pattern = "CWH押し目/抜け"
-                else:  # forming
-                    pattern = "CWH形成中"
-            # 新安値
-            elif lo52 and cur <= lo52 * 1.02:
-                pattern = "52週安値圏"
+                patterns.append("直近高値ブレイクリーチ")
+            if hi52 and cur >= hi52 * 0.985:
+                patterns.append("52週高値更新")
+            # --- チャート形状系 ---
+            if flag: patterns.append("フラッグブレイク")
+            if gyaku: patterns.append("逆三尊・底打ち")
+            if santen: patterns.append("三尊・天井注意")
+            if triple_bottom: patterns.append("トリプルボトム")
+            if triple_top: patterns.append("トリプルトップ")
+            if double_bottom: patterns.append("ダブルボトム")
+            if double_top: patterns.append("ダブルトップ")
+            if tri_post: patterns.append("三角ブレイク")
+            elif tri_pre: patterns.append("三角ブレイクリーチ")
+            cwh_state = detect_cwh(closes, highs, lows, vols)
+            if cwh_state in ("handle", "breakout"):
+                patterns.append("CWH押し目/抜け")
+            elif cwh_state == "forming":
+                patterns.append("CWH形成中")
+            if lo52 and cur <= lo52 * 1.02:
+                patterns.append("52週安値圏")
+
+            # 代表パターン(単一表示用)= 優先順で先頭を選ぶ
+            _prio = ["直近高値ブレイク", "52週高値更新", "フラッグブレイク",
+                     "逆三尊・底打ち", "三尊・天井注意", "トリプルボトム",
+                     "トリプルトップ", "ダブルボトム", "ダブルトップ",
+                     "三角ブレイク", "直近高値ブレイクリーチ", "三角ブレイクリーチ",
+                     "CWH押し目/抜け", "CWH形成中", "52週安値圏"]
+            pattern = next((p for p in _prio if p in patterns), None)
         quotes[sym] = {
             "name": name, "market": market,
             "last": daily[-1][1], "lastDate": daily[-1][0],
@@ -717,7 +720,8 @@ def main():
             "lo52": round(lo52, 2) if lo52 else None,  # 52週安値(終値ベース)
             "hiAll": round(hi_all, 2) if hi_all else None,  # 取得全期間の高値(参考値)
             "signal": signal,       # 押し目/調整中/過熱/25日線付近
-            "pattern": pattern,     # 直近高値ブレイク/52週高値更新/三角ブレイク/CWH等
+            "pattern": pattern,     # 代表パターン(単一表示用)
+            "patterns": patterns,   # 該当パターン全て(フィルタ取りこぼし防止)
             "po": perfect_order,    # パーフェクトオーダー(日足・強気)
             "poBear": perfect_order_bear,  # 逆パーフェクトオーダー(弱気)
             "pullback": pullback,   # 押し目(5日線/25日線/75日線)
@@ -798,6 +802,36 @@ def main():
         print(f"disclosures skip: {_e}")
         _disclosures = []
 
+    try:
+        from generate_ai_analysis import generate_daily_analysis as _gen_ai
+        _target_hour = os.environ.get("AI_ANALYSIS_HOUR_JST")
+        _jst_hour = datetime.now(timezone.utc).astimezone(
+            timezone(timedelta(hours=9))
+        ).hour
+        if _target_hour is None or str(_jst_hour) == str(_target_hour):
+            _ai_analysis = _gen_ai(quotes, datetime.now(timezone.utc).isoformat(timespec="seconds"))
+            print("AI分析:", "生成OK" if _ai_analysis else "スキップ")
+        else:
+            _ai_analysis = {}
+            try:
+                with open("docs/data.json", encoding="utf-8") as _f:
+                    _ai_analysis = json.load(_f).get("ai_analysis", {}) or {}
+            except Exception:
+                pass
+            print(f"AI分析: 対象時間外(JST {_jst_hour}時、対象は{_target_hour}時)のためスキップ — 前回の分析を維持")
+    except Exception as _e:
+        print(f"AI分析 skip: {_e}")
+        _ai_analysis = {}
+
+    try:
+        from fetch_market_indicators import fetch_tsmc_monthly_revenue, fetch_sox_index
+        _tsmc_monthly = fetch_tsmc_monthly_revenue()
+        _sox = fetch_sox_index()
+        print(f"市況指標: TSMC月次{len(_tsmc_monthly)}件 / SOX {'取得OK' if _sox else '取得失敗'}")
+    except Exception as _e:
+        print(f"市況指標 skip: {_e}")
+        _tsmc_monthly, _sox = [], {}
+
     out = {
         "updated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "failed": failed, "macro": MACRO, "quotes": quotes,
@@ -807,6 +841,9 @@ def main():
         "headlines": _headlines,
         "content": _content,
         "disclosures": _disclosures,
+        "ai_analysis": _ai_analysis,
+        "tsmc_monthly": _tsmc_monthly,
+        "sox": _sox,
     }
     os.makedirs("docs", exist_ok=True)
     with open("docs/data.json", "w", encoding="utf-8") as f:
