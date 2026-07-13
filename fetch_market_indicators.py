@@ -22,59 +22,98 @@ def _http_get(url: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# TSMC 月次売上(公式IR: investor.tsmc.com)
+# TSMC 月次売上 — SEC EDGAR経由(公式・確実なソース)
 # ---------------------------------------------------------------------------
+# 背景: investor.tsmc.com の月次売上ページはJavaScriptで描画されており、
+# 単純なHTML取得(urllib)では数字が取れないことが判明した(2026-07)。
+# 代わりにTSMCが米SEC(証券取引委員会)へ提出する Form 6-K(月次売上報告)を使う。
+# これはSECの公式API(静的JSON・認証不要)から確実に一覧取得でき、
+# 本文もシンプルな静的HTMLなので安定してパースできる。
+SEC_TSM_CIK = "0001046179"  # TSMCのSEC CIK番号(固定)
+SEC_SUBMISSIONS = f"https://data.sec.gov/submissions/CIK{SEC_TSM_CIK}.json"
+SEC_UA = {"User-Agent": "semi-tracker research contact@example.com"}  # SECはUser-Agent必須
+
 MONTH_MAP = {
-    "Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6,
-    "Jul": 7, "Aug": 8, "Sep": 9, "Sept": 9, "Oct": 10, "Nov": 11, "Dec": 12,
+    "January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6,
+    "July": 7, "August": 8, "September": 9, "October": 10, "November": 11, "December": 12,
 }
 
 
-def fetch_tsmc_monthly_revenue(years: list[int] | None = None) -> list[dict]:
-    """TSMC IR公式ページの月次売上表(HTML)をパースして返す。
+def _get_sec(url: str) -> str:
+    req = urllib.request.Request(url, headers=SEC_UA)
+    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+        return r.read().decode("utf-8", errors="ignore")
+
+
+def fetch_tsmc_monthly_revenue(max_months: int = 8) -> list[dict]:
+    """SEC EDGARからTSMCのForm 6-K(月次売上報告)を取得し、直近分をパースして返す。
     返り値: [{year, month, net_revenue_mntd, yoy_pct}, ...] (新しい順)
     """
-    if years is None:
-        this_year = datetime.now(timezone.utc).year
-        years = [this_year, this_year - 1]
+    try:
+        data = json.loads(_get_sec(SEC_SUBMISSIONS))
+    except Exception as e:
+        print(f"SEC submissions fetch error: {e}")
+        return []
+
+    recent = data.get("filings", {}).get("recent", {})
+    forms = recent.get("form", [])
+    dates = recent.get("filingDate", [])
+    accessions = recent.get("accessionNumber", [])
+    docs = recent.get("primaryDocument", [])
+
+    candidates = []
+    for i, form in enumerate(forms):
+        if form != "6-K":
+            continue
+        candidates.append((dates[i], accessions[i], docs[i]))
+    candidates.sort(reverse=True)  # 新しい提出日順
 
     out = []
-    for y in years:
-        url = f"https://investor.tsmc.com/english/monthly-revenue/{y}"
+    checked = 0
+    for filing_date, accession, doc in candidates:
+        if checked >= max_months + 6:  # 売上以外の6-Kも混じるため少し多めに見る
+            break
+        checked += 1
+        acc_nodash = accession.replace("-", "")
+        url = f"https://www.sec.gov/Archives/edgar/data/{int(SEC_TSM_CIK)}/{acc_nodash}/{doc}"
         try:
-            html = _http_get(url)
-        except Exception as e:
-            print(f"TSMC {y} fetch error: {e}")
+            html = _get_sec(url)
+        except Exception:
             continue
 
-        # 表の行を抽出。TSMC IRページの実際のHTML構造は現時点で未検証のため、
-        # HTML(<td>区切り)・素のテキスト表記の両方を試す形にしてある。
-        # ここが崩れて0件になっても、他のデータ更新には影響しない(呼び出し側で握りつぶす)。
-        patterns = [
-            # パターンA: HTMLタグ区切り(<td>月</td>...<td>数字</td>...<td>%</td>)
-            r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s*'
-            r'(?:</td>|<[^>]+>)*\s*([\d,]{3,})\s*(?:</td>|<[^>]+>)*\s*([\d.]+)%',
-            # パターンB: 素のテキスト/マークダウン的な表記(| 区切りやスペース区切り)
-            r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s*[|>]?\s*([\d,]{3,})\s*[|]?\s*([\d.]+)%',
-        ]
-        rows = []
-        for pat in patterns:
-            found = re.findall(pat, html, re.S)
-            if found:
-                rows = found
-                break
-        for mon_str, rev_str, yoy_str in rows:
-            month = MONTH_MAP.get(mon_str)
-            if not month:
-                continue
-            try:
-                rev = int(rev_str.replace(",", ""))
-                yoy = float(yoy_str)
-            except ValueError:
-                continue
-            out.append({"year": y, "month": month, "net_revenue_mntd": rev, "yoy_pct": yoy})
+        # タイトルから対象月を特定: 例 "TSMC May 2026 Revenue Report"
+        m_title = re.search(
+            r"TSMC\s+(January|February|March|April|May|June|July|August|"
+            r"September|October|November|December)\s+(\d{4})\s+Revenue Report",
+            html,
+        )
+        if not m_title:
+            continue  # 月次売上報告以外の6-K(決算・その他開示)はスキップ
+        month = MONTH_MAP[m_title.group(1)]
+        year = int(m_title.group(2))
 
-    # 重複排除(年月キー) + 新しい順ソート
+        # Net Revenue行から当月実績とYoY%を抽出(表がテキスト化されても崩れにくいよう緩めに)
+        m_rev = re.search(
+            r"Net Revenue[^\d\-]*?([\d,]{6,})[^\d\-]*?([\d,]{6,})[^\d\-]*?"
+            r"(-?[\d.]+)[^\d\-]*?([\d,]{6,})[^\d\-]*?(-?[\d.]+)",
+            html,
+        )
+        if not m_rev:
+            continue
+        try:
+            net_revenue = int(m_rev.group(1).replace(",", ""))
+            yoy_pct = float(m_rev.group(5))
+        except ValueError:
+            continue
+
+        out.append({
+            "year": year, "month": month,
+            "net_revenue_mntd": net_revenue, "yoy_pct": yoy_pct,
+        })
+        if len(out) >= max_months:
+            break
+
+    # 重複排除 + 新しい順
     seen, dedup = set(), []
     for r in sorted(out, key=lambda r: (r["year"], r["month"]), reverse=True):
         key = (r["year"], r["month"])
@@ -82,7 +121,7 @@ def fetch_tsmc_monthly_revenue(years: list[int] | None = None) -> list[dict]:
             continue
         seen.add(key)
         dedup.append(r)
-    return dedup[:14]  # 直近14ヶ月分あれば十分
+    return dedup
 
 
 # ---------------------------------------------------------------------------
