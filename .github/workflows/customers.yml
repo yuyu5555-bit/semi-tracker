@@ -21,7 +21,9 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Fetch major customers from IRBANK
+      - name: Fetch major customers from EDINET
+        env:
+          EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
         run: python fetch_customers.py
 
       - name: Commit customers
