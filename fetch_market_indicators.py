@@ -12,7 +12,16 @@ import urllib.request
 from datetime import datetime, timezone
 
 TIMEOUT = 25
-UA = {"User-Agent": "Mozilla/5.0 (semi-tracker data fetcher)"}
+# bot判定を避けるため、実ブラウザに近いヘッダー一式を送る(2026-07)。
+UA = {
+    "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                   "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"),
+    "Accept": ("text/html,application/xhtml+xml,application/xml;q=0.9,"
+               "image/avif,image/webp,*/*;q=0.8"),
+    "Accept-Language": "en-US,en;q=0.9,ja;q=0.8",
+    "Accept-Encoding": "identity",
+    "Connection": "keep-alive",
+}
 
 
 def _http_get(url: str) -> str:
