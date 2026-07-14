@@ -16,11 +16,21 @@
 from __future__ import annotations
 import json
 import re
+import urllib.error
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
 
 TIMEOUT = 20
-UA = {"User-Agent": "Mozilla/5.0 (semi-tracker calendar fetcher)"}
+# bot判定を避けるため、実ブラウザに近いヘッダー一式を送る(2026-07)。
+UA = {
+    "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                   "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"),
+    "Accept": ("text/html,application/xhtml+xml,application/xml;q=0.9,"
+               "image/avif,image/webp,*/*;q=0.8"),
+    "Accept-Language": "en-US,en;q=0.9,ja;q=0.8",
+    "Accept-Encoding": "identity",
+    "Connection": "keep-alive",
+}
 TSMC_CAL = "https://investor.tsmc.com/english/financial-calendar"
 YF_SUMMARY = ("https://query1.finance.yahoo.com/v10/finance/quoteSummary/{sym}"
               "?modules=calendarEvents")
@@ -135,9 +145,15 @@ def fetch_earnings_dates() -> list[dict]:
                f"{sym}?range=1y&interval=1d&events=earnings")
         try:
             raw = _get(url)
+        except urllib.error.HTTPError as e:
+            stat["http_error"] += 1
+            if stat["http_error"] <= 3:
+                print(f"    [HTTP失敗] {sym}: HTTP {e.code} {e.reason}")
+            continue
         except Exception as e:
             stat["http_error"] += 1
-            print(f"    [HTTP失敗] {sym}: {type(e).__name__}: {e}")
+            if stat["http_error"] <= 3:
+                print(f"    [HTTP失敗] {sym}: {type(e).__name__}: {e}")
             continue
 
         try:
