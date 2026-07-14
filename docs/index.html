@@ -1960,7 +1960,7 @@ function renderHome(){
     '<div class="hm-wt">'+glEsc(W.title)+'</div>'+
     '<div class="hm-wb">'+String(W.body).split("\n").map(function(p){return "<p>"+glEsc(p)+"</p>";}).join("")+'</div></div>';
   box.innerHTML='<div class="gl-head"><div class="gl-k">◉ ホーム</div><div class="gl-s">今の相場と、いま出ている材料を一目で。すべて自動更新。</div></div>'+
-    todayFocusHtml()+wk+weeklyHighlightHtml()+eventScheduleHtml(6)+disclosuresHtml(6,"適時開示")+buyerChipsHtml()+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
+    todayFocusHtml()+wk+weeklyHighlightHtml()+eventScheduleHtml(6)+disclosuresHtml(6,"適時開示")+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
   box.querySelectorAll('[data-news]').forEach(function(el){el.addEventListener("click",function(){pushHistory();view="news";render();window.scrollTo(0,0);});});
 }
 
