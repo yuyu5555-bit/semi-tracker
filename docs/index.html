@@ -1619,7 +1619,8 @@ function buyerExposure(){
   return map;
 }
 function irbankUrl(code,edinet){
-  return edinet ? ("https://irbank.net/"+edinet+"/customers") : ("https://irbank.net/"+code);
+  // IRBANKは証券コードでもアクセスできる。原典(有報)確認用のリンク。
+  return "https://irbank.net/"+code+"/customers";
 }
 function showBuyerStocks(buyer){
   var map=buyerExposure(), rows=map[buyer]||[];
