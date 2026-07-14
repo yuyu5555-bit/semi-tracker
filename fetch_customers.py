@@ -20,12 +20,25 @@ import csv
 import io
 import json
 import re
+import time
+import urllib.error
 import urllib.request
 import zipfile
 from datetime import datetime, timezone
 
 TIMEOUT = 30
-UA = {"User-Agent": "Mozilla/5.0 (semi-tracker customer fetcher)"}
+# IRBANKはbot判定が厳しく、最小限のUser-Agentだけでは403で弾かれる(2026-07実測)。
+# 実ブラウザに近いヘッダー一式を送る。
+UA = {
+    "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                   "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"),
+    "Accept": ("text/html,application/xhtml+xml,application/xml;q=0.9,"
+               "image/avif,image/webp,*/*;q=0.8"),
+    "Accept-Language": "ja,en-US;q=0.9,en;q=0.8",
+    "Accept-Encoding": "identity",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+}
 EDINET_CODELIST = ("https://disclosure2dl.edinet-fsa.go.jp/searchdocument/codelist/Edinetcode.zip")
 
 
@@ -132,10 +145,18 @@ def fetch_customers(codes: list[str], code_map: dict[str, str]) -> dict[str, lis
         url = f"https://irbank.net/{edinet}/customers"
         try:
             md = _get(url)
+        except urllib.error.HTTPError as e:
+            ng += 1
+            if ng <= 3:  # 最初の数件だけ詳細を出す(ログが溢れないように)
+                print(f"    [顧客] {code}: HTTP {e.code} {e.reason} / URL={url}")
+            continue
         except Exception as e:
             ng += 1
-            print(f"    [顧客] {code}: 取得失敗 {type(e).__name__}")
+            if ng <= 3:
+                print(f"    [顧客] {code}: {type(e).__name__}: {e}")
             continue
+
+        time.sleep(1.2)  # IRBANKへの負荷軽減(レート制限対策)
         items = _parse_customers(md)
         if items:
             for it in items:
