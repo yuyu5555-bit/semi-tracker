@@ -502,6 +502,19 @@
 .fstep-news{display:inline-block;margin:0 0 8px 46px;font-size:11px;color:#0B0E15;background:#F0863C;border:none;border-radius:6px;padding:3px 10px;cursor:pointer;font-weight:700;font-family:var(--dot)}
 .fstep-news:active{transform:translateY(1px)}
 </style>
+<style>
+.bx-row{display:flex;flex-wrap:wrap;gap:7px}
+.bx-chip{font-size:12px;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 11px;cursor:pointer;font-family:inherit}
+.bx-chip b{color:#6EE7F0;font-family:var(--dot)}
+.bx-chip:active{background:rgba(110,231,240,.1)}
+.cx-a{display:block;font-size:10.5px;color:var(--faint);margin-top:2px}
+.cx-r{margin-left:6px;color:var(--jp)}
+</style>
+<style>
+.bx-lab{font-family:var(--dot);font-size:11px;color:var(--faint);margin:0 0 6px 2px;letter-spacing:.5px}
+.cx-ir{font-size:10px;color:#6EE7F0;border:1px solid #6EE7F0;border-radius:5px;padding:2px 6px;text-decoration:none;margin-left:8px;white-space:nowrap}
+.wh-row{grid-template-columns:1fr auto auto}
+</style>
 </head>
 <body>
 <div class="rainbow"></div>
@@ -1019,6 +1032,19 @@ function showStock(sym){
       <div class="techhint">${techHint(q)}</div>
     </div>
     ${(themes.length||(q.tags||[]).length)?`<div class="themebox">
+      ${(function(){
+        var cs=custOf(sym);
+        if(!cs.length) return "";
+        return '<div class="techtitle">主要顧客(有報)</div>'+
+          '<div class="mcard" style="margin-bottom:10px">'+cs.map(function(it){
+            var k=custKeyOf(it.customer);
+            var ratio=(it.ratio_pct!=null)?(' <span class="cx-r">売上比'+it.ratio_pct+'%</span>'):'';
+            var btn=k?('<button type="button" class="bx-chip" style="margin-top:6px" onclick="hideSheet();showBuyerStocks(\''+String(k).replace(/'/g,"")+'\')">'+glEsc(k)+'の関連銘柄を見る</button>'):'';
+            var ir='<a class="cx-ir" style="margin-left:0;margin-top:6px;display:inline-block" href="'+irbankUrl(sym,it.edinet)+'" target="_blank" rel="noopener">IRBANKで見る ↗</a>';
+            return '<div style="padding:6px 0"><div style="font-size:13px;color:var(--text)">'+glEsc(it.customer)+'</div>'+
+              '<div class="cx-a">'+it.amount_oku.toLocaleString()+'億円 ('+it.year+'年)'+ratio+'</div>'+btn+' '+ir+'</div>';
+          }).join("")+'</div>';
+      })()}
       <div class="techtitle">属するテーマ/タグ(${themes.length+(q.tags||[]).length})</div>
       ${themes.map(t=>`<button class="themechip2" onclick="gotoTheme(${t.mi})">${t.label} ›</button>`).join("")}
       ${(q.tags||[]).map(t=>`<button class="tagchip" onclick="searchTagFromSheet('${t.replace(/'/g,"\\'")}')">#${t}</button>`).join("")}
@@ -1488,6 +1514,158 @@ function aiAnalysisHtml(){
     '<div class="ai-disc">Claudeによる自動分析。投資助言ではありません。断定は避け根拠とリスクを併記させていますが、判断は自己責任でお願いします。</div></div>';
 }
 
+
+/* ===== 主要顧客(有報ベース) ===== */
+function custOf(code){
+  var C=(typeof CUSTOMERS!=="undefined"&&CUSTOMERS&&CUSTOMERS.customers)?CUSTOMERS.customers:null;
+  return (C&&C[code])?C[code]:[];
+}
+function custKeyOf(name){
+  // 顧客名を正規化(表記ゆれ・法人格を除去して短い名前に)
+  var raw=String(name||"").trim();
+  var n=raw.toLowerCase();
+  var MAP=[
+    // --- 海外 ---
+    ["TSMC",["taiwan semiconductor","tsmc"]],
+    ["ASML",["asml"]],
+    ["Applied Materials",["applied materials"]],
+    ["Lam Research",["lam research"]],
+    ["KLA",["kla"]],
+    ["Teradyne",["teradyne"]],
+    ["Intel",["intel","インテル"]],
+    ["Samsung",["samsung","サムスン","三星"]],
+    ["SK hynix",["sk hynix","hynix","ハイニックス"]],
+    ["Micron",["micron","マイクロン"]],
+    ["NVIDIA",["nvidia"]],
+    ["AMD",["advanced micro devices","amd"]],
+    ["Broadcom",["broadcom"]],
+    ["Qualcomm",["qualcomm"]],
+    ["Apple",["apple"]],
+    ["Meta",["meta platforms","facebook"]],
+    ["Google",["google","alphabet"]],
+    ["Amazon",["amazon"]],
+    ["Microsoft",["microsoft"]],
+    ["Arm",["arm ltd","arm limited","arm holdings"]],
+    ["Foxconn(鴻海)",["hon hai","foxconn","鴻海"]],
+    ["UMC",["united microelectronics","umc"]],
+    ["SMIC",["semiconductor manufacturing international","smic"]],
+    ["GlobalFoundries",["globalfoundries"]],
+    ["BOE",["boe technology","京東方"]],
+    ["LG",["lg display","lg electronics","lg化学","lg chem"]],
+    ["Infineon",["infineon"]],
+    ["STMicro",["stmicroelectronics"]],
+    ["TI",["texas instruments"]],
+    ["Western Digital",["western digital"]],
+    ["Seagate",["seagate"]],
+    ["Tesla",["tesla"]],
+    ["Dell",["dell"]],
+    ["HP",["hewlett","hp inc"]],
+    // --- 日本 ---
+    ["キオクシア",["キオクシア","kioxia"]],
+    ["東京エレクトロン",["東京エレクトロン","tokyo electron"]],
+    ["ソニー",["ソニー","sony"]],
+    ["ルネサス",["ルネサス","renesas"]],
+    ["キヤノン",["キヤノン","canon"]],
+    ["ニコン",["ニコン","nikon"]],
+    ["デンソー",["デンソー","denso"]],
+    ["トヨタ",["トヨタ","toyota"]],
+    ["日立",["日立","hitachi"]],
+    ["三菱電機",["三菱電機","mitsubishi electric"]],
+    ["パナソニック",["パナソニック","panasonic"]],
+    ["村田製作所",["村田製作所","murata"]],
+    ["京セラ",["京セラ","kyocera"]],
+    ["東芝",["東芝","toshiba"]],
+    ["富士通",["富士通","fujitsu"]],
+    ["NEC",["日本電気","nec corporation"]],
+    ["シャープ",["シャープ","sharp"]],
+    ["信越化学",["信越化学","shin-etsu"]],
+    ["SCREEN",["screen","スクリーン"]],
+    ["ディスコ",["ディスコ","disco"]],
+    ["アドバンテスト",["アドバンテスト","advantest"]],
+    ["ラピダス",["ラピダス","rapidus"]],
+    ["JASM",["jasm","japan advanced semiconductor"]],
+  ];
+  for(var i=0;i<MAP.length;i++){
+    var key=MAP[i][0], kws=MAP[i][1];
+    for(var j=0;j<kws.length;j++){ if(n.indexOf(kws[j])>=0) return key; }
+  }
+  // マップに無い顧客も捨てず、法人格を除いた名前をそのまま使う
+  var s=raw.replace(/株式会社|㈱|\(株\)|Co\.,?\s*Ltd\.?|Corporation|Corp\.?|Inc\.?|Limited|Ltd\.?|L\.L\.C\.?|LLC|,\s*$/gi,"").trim();
+  return s||raw;
+}
+function custIsJP(key){
+  // 顧客が日本企業かどうか(表示を海外/日本で分けるため)
+  return /[ぁ-んァ-ヶ一-龠]/.test(String(key||""));
+}
+function buyerExposure(){
+  // 顧客キー -> [{code,name,amount_oku,ratio_pct,year,chg,edinet}] (金額降順)
+  var C=(typeof CUSTOMERS!=="undefined"&&CUSTOMERS&&CUSTOMERS.customers)?CUSTOMERS.customers:null;
+  if(!C) return {};
+  var map={};
+  Object.keys(C).forEach(function(code){
+    (C[code]||[]).forEach(function(it){
+      var key=custKeyOf(it.customer);
+      if(!key)return;
+      var q=(DATA.quotes||{})[code]||{};
+      (map[key]=map[key]||[]).push({
+        code:code, name:(CODE2NAME[code]||q.name||code),
+        amount_oku:it.amount_oku, ratio_pct:it.ratio_pct, year:it.year,
+        edinet:it.edinet||"",
+        chg:(typeof q.chg==="number"?q.chg:null)
+      });
+    });
+  });
+  Object.keys(map).forEach(function(k){ map[k].sort(function(a,b){return (b.amount_oku||0)-(a.amount_oku||0);}); });
+  return map;
+}
+function irbankUrl(code,edinet){
+  return edinet ? ("https://irbank.net/"+edinet+"/customers") : ("https://irbank.net/"+code);
+}
+function showBuyerStocks(buyer){
+  var map=buyerExposure(), rows=map[buyer]||[];
+  var body=rows.length?rows.map(function(r){
+    var chg=(r.chg===null)?'<span class="wh-na">—</span>'
+      :'<span class="'+(r.chg>0?"n-up":(r.chg<0?"n-down":""))+'">'+(r.chg>0?"+":"")+r.chg.toFixed(2)+'%</span>';
+    var ratio=(r.ratio_pct!=null)?('<span class="cx-r">売上比'+r.ratio_pct+'%</span>'):'';
+    return '<div class="wh-row">'+
+      '<button type="button" class="wh-main" onclick="hideSheet();showStock(\''+r.code+'\')">'+
+        '<span class="wh-nm">'+glEsc(r.name)+'</span>'+
+        '<span class="cx-a">'+r.amount_oku.toLocaleString()+'億円 ('+r.year+'年)'+ratio+'</span></button>'+
+      '<span class="wh-chg">'+chg+'</span>'+
+      '<a class="cx-ir" href="'+irbankUrl(r.code,r.edinet)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">IR↗</a>'+
+      '</div>';
+  }).join(""):'<div class="hm-empty">この顧客への依存が有報で開示されている銘柄はありません。</div>';
+  $("#sheet").innerHTML=
+    '<div class="sheethead"><span class="nm">'+glEsc(buyer)+' が主要顧客の銘柄</span>'+
+      '<button class="close" onclick="hideSheet()">✕</button></div>'+
+    '<div class="gl-s" style="margin:6px 0 10px">有価証券報告書「主要な顧客ごとの情報」より。'+glEsc(buyer)+'の決算・受注動向で影響を受けやすい銘柄です。IR↗でIRBANKの原典へ。</div>'+
+    '<div class="mcard">'+body+'</div>'+
+    '<button class="closebtn" onclick="hideSheet()">← 閉じる</button>';
+  $("#sheet").scrollTop=0;
+  $("#overlay").classList.add("show");
+}
+function buyerChipsHtml(){
+  var map=buyerExposure();
+  var keys=Object.keys(map);
+  if(!keys.length) return '';
+  var jp=[], ov=[];
+  keys.forEach(function(k){ (custIsJP(k)?jp:ov).push(k); });
+  function sortByN(a,b){ return map[b].length-map[a].length; }
+  jp.sort(sortByN); ov.sort(sortByN);
+  function chips(list){
+    return list.map(function(k){
+      return '<button type="button" class="bx-chip" onclick="showBuyerStocks(\''+k.replace(/'/g,"\\'")+'\')">'+
+        glEsc(k)+' <b>'+map[k].length+'</b></button>';
+    }).join("");
+  }
+  var out='<div class="nsec-t" style="margin-top:16px">顧客別 影響銘柄 <span class="num" style="color:#6EE7F0;font-size:10px">AUTO</span></div>'+
+    '<div class="mcard"><div class="gl-s" style="margin-bottom:9px">決算・受注ニュースが出た時、どの日本株に効くかを有報の顧客データから逆引き。数字=該当銘柄数。</div>';
+  if(ov.length) out+='<div class="bx-lab">海外</div><div class="bx-row">'+chips(ov)+'</div>';
+  if(jp.length) out+='<div class="bx-lab" style="margin-top:10px">日本</div><div class="bx-row">'+chips(jp)+'</div>';
+  out+='</div>';
+  return out;
+}
+
 function macroSectionHtml(){
   var ser=MACRO.wsts.series.slice(-8);
   var vmax=Math.max.apply(null,ser.map(function(x){return x.value;}));
@@ -1781,7 +1959,7 @@ function renderHome(){
     '<div class="hm-wt">'+glEsc(W.title)+'</div>'+
     '<div class="hm-wb">'+String(W.body).split("\n").map(function(p){return "<p>"+glEsc(p)+"</p>";}).join("")+'</div></div>';
   box.innerHTML='<div class="gl-head"><div class="gl-k">◉ ホーム</div><div class="gl-s">今の相場と、いま出ている材料を一目で。すべて自動更新。</div></div>'+
-    todayFocusHtml()+wk+weeklyHighlightHtml()+eventScheduleHtml(6)+disclosuresHtml(6,"適時開示")+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
+    todayFocusHtml()+wk+weeklyHighlightHtml()+eventScheduleHtml(6)+disclosuresHtml(6,"適時開示")+buyerChipsHtml()+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
   box.querySelectorAll('[data-news]').forEach(function(el){el.addEventListener("click",function(){pushHistory();view="news";render();window.scrollTo(0,0);});});
 }
 
@@ -2673,6 +2851,7 @@ function procSteps(stageKey){
 }
 
 var CALENDAR=null;   // 半導体イベントカレンダー(週1更新の calendar.json)
+var CUSTOMERS=null;  // 主要顧客(有報ベース・年1更新の customers.json)
 async function load(){
   try{
     const r=await fetch("data.json?t="+Date.now()); DATA=await r.json();
@@ -2685,6 +2864,11 @@ async function load(){
     const rc=await fetch("calendar.json?t="+Date.now());
     if(rc.ok) CALENDAR=await rc.json();
   }catch(e){ CALENDAR=null; }
+  // 主要顧客(有報ベース・年1更新)。無くても本体は動く。
+  try{
+    const rk=await fetch("customers.json?t="+Date.now());
+    if(rk.ok) CUSTOMERS=await rk.json();
+  }catch(e){ CUSTOMERS=null; }
   render();
 }
 load();
