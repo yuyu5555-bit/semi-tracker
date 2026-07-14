@@ -138,58 +138,83 @@ def _read_csv_from_zip(raw: bytes) -> str:
 
 
 def _parse_customers_from_csv(text: str) -> list[dict]:
-    """CSVから「主要な顧客ごとの情報」のテキストブロックを見つけ、顧客と金額を抽出。"""
-    # 該当する要素IDを含む行を探す(会計基準により若干名前が違うため部分一致)
+    """CSVから「主要な顧客ごとの情報」テキストブロックを見つけ、顧客と金額を抽出。
+
+    EDINETのCSV(type=5)は UTF-16 のタブ区切りで、列は概ね:
+      要素ID / 項目名 / コンテキストID / 相対年度 / 連結・個別 / 期間・時点 / ユニットID / 単位 / 値
+    値の列(最後)に、有報本文のHTMLがそのまま入っている。
+    """
     block = ""
     for line in text.split("\n"):
-        if "MainCustomers" in line or "主要な顧客ごとの情報" in line:
-            # タブ区切り: 要素ID / 項目名 / ... / 値
-            cells = line.split("\t")
-            # 一番長いセル(HTML本文)を値とみなす
-            cand = max(cells, key=len) if cells else ""
-            if len(cand) > len(block):
-                block = cand
+        if "MainCustomers" not in line and "主要な顧客" not in line:
+            continue
+        cells = line.rstrip("\r").split("\t")
+        if len(cells) < 2:
+            continue
+        # 値は最終列に入るのが基本だが、念のため一番長いセルを本文とみなす
+        cand = max(cells, key=len)
+        if len(cand) > len(block):
+            block = cand
     if not block:
         return []
 
-    # HTMLタグを除去して平文化
-    plain = re.sub(r"<[^>]+>", " ", block)
-    plain = (plain.replace("&nbsp;", " ").replace("&amp;", "&")
-             .replace("&lt;", "<").replace("&gt;", ">"))
-    plain = re.sub(r"\s+", " ", plain)
+    # HTMLを平文化。表のセル区切りを保持するため、tdの境界を区切り文字に変換する。
+    t = block
+    t = re.sub(r"</t[dh]>", "\t", t, flags=re.I)   # セル区切り → タブ
+    t = re.sub(r"</tr>", "\n", t, flags=re.I)      # 行区切り → 改行
+    t = re.sub(r"<[^>]+>", "", t)                  # 残りのタグを除去
+    t = (t.replace("&nbsp;", " ").replace("&amp;", "&")
+         .replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", '"'))
 
-    # 「顧客名 ... 金額(百万円 or 千円)」のパターンを拾う
     out = []
-    # 例: "Taiwan Semiconductor Manufacturing Company,Ltd. 34,482 半導体製造装置"
-    for m in re.finditer(
-        r"([A-Za-z][A-Za-z0-9 .,&'\-()]{4,60}|[^\s\d]{2,30}(?:株式会社|会社|Ltd|Inc|Corp)?)"
-        r"\s+([\d,]{3,})\s*(?:百万円|千円|百万)?",
-        plain,
-    ):
-        name = m.group(1).strip(" ・,")
-        if len(name) < 3:
+    for row in t.split("\n"):
+        cells = [c.strip() for c in row.split("\t") if c.strip()]
+        if len(cells) < 2:
             continue
-        # 明らかに顧客名でないもの(見出し語)を除外
-        if any(w in name for w in ("主要", "顧客", "情報", "売上高", "セグメント", "相手先", "名称", "合計")):
+        # 行の中から「顧客名らしいセル」と「金額らしいセル」を拾う
+        name = None
+        amount = None
+        ratio = None
+        for c in cells:
+            # 金額: カンマ区切りの3桁以上の数字
+            if amount is None and re.fullmatch(r"[\d,]{3,}", c):
+                try:
+                    amount = int(c.replace(",", ""))
+                except ValueError:
+                    pass
+                continue
+            # 比率: 12.3 のような小数(％表記含む)
+            if ratio is None and re.fullmatch(r"\d{1,2}\.\d+%?", c):
+                try:
+                    ratio = float(c.rstrip("%"))
+                except ValueError:
+                    pass
+                continue
+            # 顧客名: 数字だけでない、ある程度の長さの文字列
+            if name is None and len(c) >= 3 and not re.fullmatch(r"[\d,.\s%△▲-]+", c):
+                name = c
+        if not name or amount is None:
             continue
-        try:
-            amount = int(m.group(2).replace(",", ""))
-        except ValueError:
+        # 見出し行を除外
+        if any(w in name for w in ("相手先", "顧客", "名称", "売上高", "金額", "合計",
+                                   "セグメント", "区分", "当連結", "前連結", "主要")):
             continue
-        if amount < 100:  # ノイズ除去
+        if amount < 100:
             continue
-        out.append({"customer": name, "amount_raw": amount})
+        out.append({"customer": name, "amount_raw": amount, "ratio_pct": ratio})
 
-    # 重複排除(同じ顧客名は金額最大のものを残す)
-    best: dict[str, int] = {}
+    # 同じ顧客名は金額最大のものを残す
+    best = {}
     for it in out:
         n = it["customer"]
-        if n not in best or it["amount_raw"] > best[n]:
-            best[n] = it["amount_raw"]
-    # 金額降順・上位のみ
-    items = sorted(best.items(), key=lambda kv: -kv[1])[:6]
-    return [{"customer": n, "amount_oku": round(v / 100, 1), "year": None, "ratio_pct": None}
-            for n, v in items]
+        if n not in best or it["amount_raw"] > best[n]["amount_raw"]:
+            best[n] = it
+    items = sorted(best.values(), key=lambda x: -x["amount_raw"])[:6]
+    return [{"customer": x["customer"],
+             "amount_oku": round(x["amount_raw"] / 100, 1),   # 百万円 → 億円
+             "year": None,
+             "ratio_pct": x.get("ratio_pct")}
+            for x in items]
 
 
 def fetch_customers(docids: dict[str, str], key: str) -> dict[str, list[dict]]:
@@ -223,8 +248,15 @@ def fetch_customers(docids: dict[str, str], key: str) -> dict[str, list[dict]]:
                 it["sec"] = sec
             result[sec] = items
             ok += 1
+            if ok <= 5:  # 最初の5社だけ、何が抽出できたかログに出す
+                names = [x["customer"] for x in items]
+                print(f"    [顧客] {sec}: {names}")
         else:
             empty += 1
+            if empty <= 2:
+                # 顧客ブロック自体が見つかったかを診断
+                has_block = ("MainCustomers" in text) or ("主要な顧客" in text)
+                print(f"    [顧客] {sec}: 抽出0件 / 顧客ブロックの存在: {has_block}")
         time.sleep(0.4)  # EDINETへの負荷軽減
 
     print(f"    [顧客] 取得成功 {ok}社 / 顧客情報なし {empty}社 / 失敗 {ng}社")
