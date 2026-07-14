@@ -827,13 +827,7 @@ def main():
         from fetch_market_indicators import (
             fetch_tsmc_monthly_revenue, fetch_sox_index, fetch_us10y_yield,
         )
-        _prev_tsmc = []
-        try:
-            with open("docs/data.json", encoding="utf-8") as _f:
-                _prev_tsmc = json.load(_f).get("tsmc_monthly", []) or []
-        except Exception:
-            pass
-        _tsmc_monthly = fetch_tsmc_monthly_revenue(previous=_prev_tsmc)
+        _tsmc_monthly = fetch_tsmc_monthly_revenue()
         _sox = fetch_sox_index()
         _us10y = fetch_us10y_yield()
         print(f"市況指標: TSMC月次{len(_tsmc_monthly)}件 / SOX {'取得OK' if _sox else '取得失敗'} / 米10年金利 {'取得OK' if _us10y else '取得失敗'}")
