@@ -100,9 +100,14 @@ def fetch_tsmc_monthly_revenue(max_months: int = 8, previous: list[dict] | None 
     for url in TSMC_LIST_URLS:
         try:
             html = _http_get(url)
-            ids += _find_revenue_report_ids(html)
+            found = _find_revenue_report_ids(html)
+            has_kw = "Revenue Report" in html
+            print(f"    [TSMC月次] {url}")
+            print(f"      HTML {len(html)}文字 / 'Revenue Report'の文字列: "
+                  f"{'あり' if has_kw else 'なし(JS描画の可能性)'} / 記事ID抽出: {len(found)}件")
+            ids += found
         except Exception as e:
-            print(f"TSMC list fetch error ({url}): {e}")
+            print(f"    [TSMC月次] HTTP失敗 ({url}): {type(e).__name__}: {e}")
 
     seen, uniq_ids = set(), []
     for i in ids:
@@ -122,6 +127,9 @@ def fetch_tsmc_monthly_revenue(max_months: int = 8, previous: list[dict] | None 
             scraped.append(parsed)
         if len(scraped) >= max_months:
             break
+
+    print(f"    [TSMC月次] 記事から抽出できた月次データ: {len(scraped)}件 "
+          f"(前回引き継ぎ: {len(previous or [])}件)")
 
     # 前回結果とマージ(同じ年月は今回の値で上書き) → 実行を重ねるほど履歴が充実
     merged = {(r["year"], r["month"]): r for r in (previous or [])}

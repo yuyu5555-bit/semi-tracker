@@ -84,9 +84,14 @@ def _classify_tsmc(title: str):
 def fetch_tsmc_events() -> list[dict]:
     try:
         html = _get(TSMC_CAL)
+        print(f"    [TSMC] HTML取得成功: {len(html)}文字")
     except Exception as e:
-        print(f"TSMC calendar error: {e}")
+        print(f"    [TSMC] HTTP失敗: {type(e).__name__}: {e}")
         return []
+    # 日付らしき文字列が本文に含まれるか(JS描画なら含まれない)
+    date_hits = len(re.findall(r"\d{4}-\d{2}-\d{2}", html))
+    print(f"    [TSMC] 本文中の日付パターン: {date_hits}件"
+          + ("(0件=JavaScript描画のため静的HTMLに数字が無い)" if date_hits == 0 else ""))
     out = []
     for m in re.finditer(
         r"(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2}):\d{2}.*?\*(TSMC[^*]{3,120}?)\*",
@@ -112,49 +117,80 @@ def fetch_tsmc_events() -> list[dict]:
 # 2) Yahoo Finance: 主要銘柄の決算日
 # ---------------------------------------------------------------------------
 def fetch_earnings_dates() -> list[dict]:
-    """主要銘柄の次回決算日を取得。
+    """主要銘柄の次回決算日を取得(診断ログ付き)。
 
-    実装メモ(2026-07):
-      quoteSummary エンドポイントは環境によってブロックされることがあるため、
-      株価取得で実績のある chart エンドポイントを使う。
-      chart API は ?events=earnings を付けると、その銘柄の決算日
-      (過去分と、判明していれば次回分)を events.earnings に返す。
+    2026-07: 0件が続いたため、何が起きているかを必ずログに出すようにした。
+    - HTTPが失敗したのか
+    - 接続はできたが events.earnings が空なのか
+    - 未来の決算日が無いだけなのか
+    をログで区別できるようにする。
     """
     out = []
     now = datetime.now(timezone.utc).date()
+    stat = {"http_error": 0, "no_result": 0, "no_earnings": 0, "no_future": 0, "ok": 0}
+    first_dump_done = False
+
     for sym, name, country, level, note in WATCH:
         url = ("https://query1.finance.yahoo.com/v8/finance/chart/"
                f"{sym}?range=1y&interval=1d&events=earnings")
         try:
             raw = _get(url)
-            data = json.loads(raw)
-            res = (data.get("chart", {}).get("result") or [None])[0]
-            if not res:
-                continue
-            earnings = (res.get("events") or {}).get("earnings") or {}
-            # 未来の決算日だけを拾う
-            future = []
-            for _k, ev in earnings.items():
-                ts = ev.get("earningsDate") or ev.get("date")
-                if not ts:
-                    continue
-                d = datetime.fromtimestamp(ts, tz=timezone.utc).date()
-                if d >= now:
-                    future.append(d)
-            if not future:
-                continue
-            d = min(future)
-            out.append({
-                "date": d.strftime("%Y-%m-%d"), "time": "", "tz": "",
-                "country": country, "kind": "決算", "level": level,
-                "title": f"{name} 決算", "note": note,
-                "url": f"https://finance.yahoo.com/quote/{sym}",
-                "confirmed": True,
-            })
         except Exception as e:
-            print(f"earnings {sym}: {e}")
+            stat["http_error"] += 1
+            print(f"    [HTTP失敗] {sym}: {type(e).__name__}: {e}")
             continue
+
+        try:
+            data = json.loads(raw)
+        except Exception as e:
+            stat["http_error"] += 1
+            print(f"    [JSON解析失敗] {sym}: {e} / 先頭200字: {raw[:200]!r}")
+            continue
+
+        res = (data.get("chart", {}).get("result") or [None])[0]
+        if not res:
+            stat["no_result"] += 1
+            if not first_dump_done:
+                print(f"    [result無し] {sym} / レスポンス先頭300字: {raw[:300]!r}")
+                first_dump_done = True
+            continue
+
+        earnings = (res.get("events") or {}).get("earnings") or {}
+        if not earnings:
+            stat["no_earnings"] += 1
+            if not first_dump_done:
+                keys = list(res.keys())
+                ev_keys = list((res.get("events") or {}).keys())
+                print(f"    [earnings無し] {sym} / res keys={keys} / events keys={ev_keys}")
+                first_dump_done = True
+            continue
+
+        future = []
+        for _k, ev in earnings.items():
+            ts = ev.get("earningsDate") or ev.get("date")
+            if not ts:
+                continue
+            d = datetime.fromtimestamp(ts, tz=timezone.utc).date()
+            if d >= now:
+                future.append(d)
+        if not future:
+            stat["no_future"] += 1
+            continue
+
+        d = min(future)
+        stat["ok"] += 1
+        out.append({
+            "date": d.strftime("%Y-%m-%d"), "time": "", "tz": "",
+            "country": country, "kind": "決算", "level": level,
+            "title": f"{name} 決算", "note": note,
+            "url": f"https://finance.yahoo.com/quote/{sym}",
+            "confirmed": True,
+        })
+
     print(f"  → 決算日を取得できた銘柄: {len(out)}/{len(WATCH)}")
+    print(f"    内訳: 成功{stat['ok']} / HTTP失敗{stat['http_error']} / "
+          f"result無し{stat['no_result']} / earnings無し{stat['no_earnings']} / "
+          f"未来日程無し{stat['no_future']}")
     return out
 
 

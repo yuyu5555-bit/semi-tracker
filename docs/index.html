@@ -1822,12 +1822,13 @@ function showStepNews(stageKey,idx){
       '<span class="hl-t">'+glEsc(x.title)+(d?' <span class="hl-d">'+d+'</span>':'')+'</span></a>'+
       (chips?'<span class="hl-stk">'+chips+'</span>':'')+'</div>';
   }).join(""):'<div class="hm-empty">この工程の銘柄が登場するニュースは今週ありません。</div>';
-  const sheet=document.getElementById("sheet");
-  sheet.innerHTML='<div class="sheet-in"><div class="sheet-h"><div class="sheet-t">'+glEsc(step.name)+' の関連ニュース</div>'+
-    '<button class="sheet-x" onclick="hideSheet()">✕</button></div>'+
-    '<div class="mcard">'+body+'</div>'+
-    '<button class="closebtn" onclick="hideSheet()">← 閉じる</button></div>';
-  sheet.classList.add("on"); document.body.style.overflow="hidden";
+  $("#sheet").innerHTML=
+    '<div class="sheethead"><span class="nm">'+glEsc(step.name)+' の関連ニュース</span>'+
+      '<button class="close" onclick="hideSheet()">✕</button></div>'+
+    '<div class="mcard" style="margin-top:10px">'+body+'</div>'+
+    '<button class="closebtn" onclick="hideSheet()">← 閉じる</button>';
+  $("#sheet").scrollTop=0;
+  $("#overlay").classList.add("show");
 }
 function nVerdict(s){ return s>=1.5?"強気":s>=.5?"やや強気":s>-.5?"中立":s>-1.5?"やや弱気":"弱気"; }
 function nSign(v){ return (v>0?"+":"")+v; }
