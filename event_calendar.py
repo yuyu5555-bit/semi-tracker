@@ -112,35 +112,49 @@ def fetch_tsmc_events() -> list[dict]:
 # 2) Yahoo Finance: 主要銘柄の決算日
 # ---------------------------------------------------------------------------
 def fetch_earnings_dates() -> list[dict]:
+    """主要銘柄の次回決算日を取得。
+
+    実装メモ(2026-07):
+      quoteSummary エンドポイントは環境によってブロックされることがあるため、
+      株価取得で実績のある chart エンドポイントを使う。
+      chart API は ?events=earnings を付けると、その銘柄の決算日
+      (過去分と、判明していれば次回分)を events.earnings に返す。
+    """
     out = []
+    now = datetime.now(timezone.utc).date()
     for sym, name, country, level, note in WATCH:
+        url = ("https://query1.finance.yahoo.com/v8/finance/chart/"
+               f"{sym}?range=1y&interval=1d&events=earnings")
         try:
-            raw = _get(YF_SUMMARY.format(sym=sym))
+            raw = _get(url)
             data = json.loads(raw)
-            res = (data.get("quoteSummary", {}).get("result") or [None])[0]
+            res = (data.get("chart", {}).get("result") or [None])[0]
             if not res:
                 continue
-            ce = res.get("calendarEvents") or {}
-            earnings = ce.get("earnings") or {}
-            dates = earnings.get("earningsDate") or []
-            if not dates:
+            earnings = (res.get("events") or {}).get("earnings") or {}
+            # 未来の決算日だけを拾う
+            future = []
+            for _k, ev in earnings.items():
+                ts = ev.get("earningsDate") or ev.get("date")
+                if not ts:
+                    continue
+                d = datetime.fromtimestamp(ts, tz=timezone.utc).date()
+                if d >= now:
+                    future.append(d)
+            if not future:
                 continue
-            ts = dates[0].get("raw")
-            if not ts:
-                continue
-            d = datetime.fromtimestamp(ts, tz=timezone.utc).date()
-            # 日付が確定か推定か(Yahooは複数候補を返す場合、確定していない)
-            confirmed = len(dates) == 1
+            d = min(future)
             out.append({
                 "date": d.strftime("%Y-%m-%d"), "time": "", "tz": "",
                 "country": country, "kind": "決算", "level": level,
                 "title": f"{name} 決算", "note": note,
                 "url": f"https://finance.yahoo.com/quote/{sym}",
-                "confirmed": confirmed,
+                "confirmed": True,
             })
         except Exception as e:
             print(f"earnings {sym}: {e}")
             continue
+    print(f"  → 決算日を取得できた銘柄: {len(out)}/{len(WATCH)}")
     return out
 
 
@@ -148,7 +162,16 @@ def fetch_earnings_dates() -> list[dict]:
 def build_event_calendar(days_ahead: int = 60) -> list[dict]:
     today = date.today()
     end = today + timedelta(days=days_ahead)
-    events = fetch_tsmc_events() + fetch_earnings_dates()
+
+    print("[1/2] TSMC公式カレンダーを取得中...")
+    tsmc = fetch_tsmc_events()
+    print(f"  → TSMC: {len(tsmc)}件")
+
+    print("[2/2] 主要銘柄の決算日を取得中...")
+    earnings = fetch_earnings_dates()
+
+    events = tsmc + earnings
+    print(f"合計 {len(events)}件(期間フィルタ前)")
 
     up = []
     seen = set()
