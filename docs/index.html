@@ -2013,7 +2013,7 @@ function nVerdict(s){ return s>=1.5?"強気":s>=.5?"やや強気":s>-.5?"中立"
 function nSign(v){ return (v>0?"+":"")+v; }
 function renderNews(){
   var box=document.getElementById("newsView");
-  box.innerHTML='<div class="gl-head"><div class="gl-k">▤ ニュース</div><div class="gl-s">半導体13媒体のヘッドラインと、保有銘柄の適時開示。見出しに出た保有銘柄はハイライトされます。</div></div>'+
+  box.innerHTML='<div class="gl-head"><div class="gl-k">▤ ニュース</div><div class="gl-s">半導体18媒体のヘッドラインと、保有銘柄の適時開示。見出しに出た保有銘柄はハイライトされます。</div></div>'+
     headlinesHtml(72,"自動ヘッドライン")+
     eventScheduleHtml(12)+disclosuresHtml(40,"適時開示");
 }

@@ -140,70 +140,93 @@ def _read_csv_from_zip(raw: bytes) -> str:
 def _parse_customers_from_csv(text: str) -> list[dict]:
     """CSVから「主要な顧客ごとの情報」テキストブロックを見つけ、顧客と金額を抽出。
 
-    EDINETのCSV(type=5)は UTF-16 のタブ区切りで、列は概ね:
-      要素ID / 項目名 / コンテキストID / 相対年度 / 連結・個別 / 期間・時点 / ユニットID / 単位 / 値
-    値の列(最後)に、有報本文のHTMLがそのまま入っている。
+    厳格化(2026-07): 会計方針の長文などから会計用語(当連結会計年度 等)を
+    誤って拾っていたため、
+      1) 顧客テーブル専用の要素ID(MainCustomers かつ TextBlock)に限定
+      2) 顧客名は「法人格・企業名らしい形」のものだけ採用
+      3) 会計用語を明示的に除外
     """
     block = ""
     for line in text.split("\n"):
-        if "MainCustomers" not in line and "主要な顧客" not in line:
+        # 顧客テーブルのテキストブロックだけを対象にする
+        if "MainCustomers" not in line:
+            continue
+        if "TextBlock" not in line and "Table" not in line:
             continue
         cells = line.rstrip("\r").split("\t")
         if len(cells) < 2:
             continue
-        # 値は最終列に入るのが基本だが、念のため一番長いセルを本文とみなす
         cand = max(cells, key=len)
         if len(cand) > len(block):
             block = cand
     if not block:
         return []
 
-    # HTMLを平文化。表のセル区切りを保持するため、tdの境界を区切り文字に変換する。
+    # 表構造を保って平文化
     t = block
-    t = re.sub(r"</t[dh]>", "\t", t, flags=re.I)   # セル区切り → タブ
-    t = re.sub(r"</tr>", "\n", t, flags=re.I)      # 行区切り → 改行
-    t = re.sub(r"<[^>]+>", "", t)                  # 残りのタグを除去
+    t = re.sub(r"</t[dh]>", "\t", t, flags=re.I)
+    t = re.sub(r"</tr>", "\n", t, flags=re.I)
+    t = re.sub(r"<[^>]+>", "", t)
     t = (t.replace("&nbsp;", " ").replace("&amp;", "&")
          .replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", '"'))
+
+    # 会計用語・見出し(顧客名ではないもの)
+    NG_WORDS = (
+        "連結会計年度", "事業年度", "会計期間", "決算", "セグメント", "区分",
+        "相手先", "顧客", "名称", "売上高", "売上", "金額", "合計", "主要",
+        "減価償却", "償却", "残高", "減損", "損失", "利益", "百万円", "千円",
+        "単位", "注記", "該当事項", "みなし", "取得", "及び", "内、", "台湾",
+        "当期", "前期", "増加", "減少", "その他", "計", "％", "%",
+    )
+
+    def looks_like_company(s: str) -> bool:
+        # 企業名らしい形か: 法人格を含む / アルファベット主体の社名 / カタカナ社名
+        if any(w in s for w in ("株式会社", "㈱", "(株)", "有限会社",
+                                "Ltd", "Inc", "Corp", "Co.", "LLC", "GmbH",
+                                "Limited", "Company", "Holdings", "S.A.")):
+            return True
+        # アルファベット比率が高い(海外企業名)
+        alpha = sum(c.isascii() and c.isalpha() for c in s)
+        if alpha >= 4 and alpha >= len(s) * 0.5:
+            return True
+        # 全部カタカナ(3文字以上)の社名
+        if len(s) >= 3 and re.fullmatch(r"[ァ-ヶー・\s]+", s):
+            return True
+        return False
 
     out = []
     for row in t.split("\n"):
         cells = [c.strip() for c in row.split("\t") if c.strip()]
         if len(cells) < 2:
             continue
-        # 行の中から「顧客名らしいセル」と「金額らしいセル」を拾う
-        name = None
-        amount = None
-        ratio = None
+        name = amount = ratio = None
         for c in cells:
-            # 金額: カンマ区切りの3桁以上の数字
             if amount is None and re.fullmatch(r"[\d,]{3,}", c):
                 try:
                     amount = int(c.replace(",", ""))
                 except ValueError:
                     pass
                 continue
-            # 比率: 12.3 のような小数(％表記含む)
             if ratio is None and re.fullmatch(r"\d{1,2}\.\d+%?", c):
                 try:
                     ratio = float(c.rstrip("%"))
                 except ValueError:
                     pass
                 continue
-            # 顧客名: 数字だけでない、ある程度の長さの文字列
-            if name is None and len(c) >= 3 and not re.fullmatch(r"[\d,.\s%△▲-]+", c):
+            if name is None and len(c) >= 3 and not re.fullmatch(r"[\d,.\s%△▲\-()]+", c):
                 name = c
         if not name or amount is None:
             continue
-        # 見出し行を除外
-        if any(w in name for w in ("相手先", "顧客", "名称", "売上高", "金額", "合計",
-                                   "セグメント", "区分", "当連結", "前連結", "主要")):
+        # 会計用語を含むものは除外
+        if any(w in name for w in NG_WORDS):
+            continue
+        # 企業名らしい形でなければ除外
+        if not looks_like_company(name):
             continue
         if amount < 100:
             continue
         out.append({"customer": name, "amount_raw": amount, "ratio_pct": ratio})
 
-    # 同じ顧客名は金額最大のものを残す
     best = {}
     for it in out:
         n = it["customer"]
@@ -211,7 +234,7 @@ def _parse_customers_from_csv(text: str) -> list[dict]:
             best[n] = it
     items = sorted(best.values(), key=lambda x: -x["amount_raw"])[:6]
     return [{"customer": x["customer"],
-             "amount_oku": round(x["amount_raw"] / 100, 1),   # 百万円 → 億円
+             "amount_oku": round(x["amount_raw"] / 100, 1),
              "year": None,
              "ratio_pct": x.get("ratio_pct")}
             for x in items]

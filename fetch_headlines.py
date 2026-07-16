@@ -49,6 +49,23 @@ FEEDS: list[tuple[str, str, bool]] = [
         _gnews("半導体 when:7d site:nikkei.com", hl="ja", gl="JP", ceid="JP:ja"),
         True,
     ),
+    # --- 海外通信社: 日本語版(Google Newsが各社の日本語記事を配信) ---
+    (
+        "Bloomberg日本",
+        _gnews("半導体 when:7d site:bloomberg.co.jp", hl="ja", gl="JP", ceid="JP:ja"),
+        True,
+    ),
+    (
+        "ロイター",
+        _gnews("半導体 when:7d site:jp.reuters.com", hl="ja", gl="JP", ceid="JP:ja"),
+        True,
+    ),
+    (
+        "CNBC",
+        _gnews("semiconductor when:7d site:cnbc.com", hl="en-US", gl="US", ceid="US:en"),
+        True,
+    ),
+    # --- 海外通信社: 英語版(速報性・網羅性のため残す) ---
     (
         "Bloomberg",
         _gnews("semiconductor when:7d site:bloomberg.com", hl="en-US", gl="US", ceid="US:en"),
@@ -60,15 +77,11 @@ FEEDS: list[tuple[str, str, bool]] = [
         True,
     ),
     (
-        "CNBC",
-        _gnews("semiconductor when:7d site:cnbc.com", hl="en-US", gl="US", ceid="US:en"),
-        True,
-    ),
-    (
         "WSJ",
         _gnews("semiconductor when:7d site:wsj.com", hl="en-US", gl="US", ceid="US:en"),
         True,
     ),
+    # --- 日本語メディア ---
     (
         "日刊工業",
         _gnews("半導体 when:7d site:nikkan.co.jp", hl="ja", gl="JP", ceid="JP:ja"),
@@ -77,6 +90,21 @@ FEEDS: list[tuple[str, str, bool]] = [
     (
         "東洋経済",
         _gnews("半導体 when:7d site:toyokeizai.net", hl="ja", gl="JP", ceid="JP:ja"),
+        True,
+    ),
+    (
+        "ダイヤモンド",
+        _gnews("半導体 when:7d site:diamond.jp", hl="ja", gl="JP", ceid="JP:ja"),
+        True,
+    ),
+    (
+        "PC Watch",
+        _gnews("半導体 when:7d site:pc.watch.impress.co.jp", hl="ja", gl="JP", ceid="JP:ja"),
+        True,
+    ),
+    (
+        "マイナビ",
+        _gnews("半導体 when:7d site:news.mynavi.jp", hl="ja", gl="JP", ceid="JP:ja"),
         True,
     ),
     (
