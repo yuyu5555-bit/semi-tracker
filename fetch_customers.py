@@ -22,6 +22,7 @@ TSMC決算・ASML決算などのイベント時に、影響を受ける銘柄を
 出力: docs/customers.json
 """
 from __future__ import annotations
+import csv
 import io
 import json
 import os
@@ -137,112 +138,190 @@ def _read_csv_from_zip(raw: bytes) -> str:
             return f.read().decode("utf-16", errors="ignore")
 
 
-def _parse_customers_from_csv(text: str) -> list[dict]:
-    """CSVから「主要な顧客ごとの情報」テキストブロックを見つけ、顧客と金額を抽出。
+# 匿名化された顧客表記（TSMC等の実名特定には使えないので除外）
+_ANON = ("A社", "B社", "C社", "D社", "E社", "F社", "甲", "乙", "丙",
+         "当社", "同社", "一部の顧客", "特定の顧客")
 
-    厳格化(2026-07): 会計方針の長文などから会計用語(当連結会計年度 等)を
-    誤って拾っていたため、
-      1) 顧客テーブル専用の要素ID(MainCustomers かつ TextBlock)に限定
-      2) 顧客名は「法人格・企業名らしい形」のものだけ採用
-      3) 会計用語を明示的に除外
+
+def _rows_from_csv(text: str) -> list[list[str]]:
+    """EDINET CSV(TAB区切り)を、引用符で囲まれた"複数行の値"まで正しく解釈して行配列に。
+
+    ★ここが現行バグの核心★
+      旧実装は text.split("\n") で素朴に行分割していたが、EDINETの実CSVでは
+      「主要な顧客ごとの情報」のHTML(表)が値セルに入り、その中に改行を含むため
+      CSV仕様どおりダブルクォートで囲まれている。素朴分割だと表が複数の物理行に
+      割れ、顧客名の<tr>行を取り逃して抽出0件になっていた。csvモジュールで解釈すれば
+      引用符内の改行が1つのセルとして保持される。
     """
-    block = ""
-    for line in text.split("\n"):
-        # 顧客テーブルのテキストブロックだけを対象にする
-        if "MainCustomers" not in line:
+    return list(csv.reader(io.StringIO(text), delimiter="\t", quotechar='"'))
+
+
+def _clean_cell(s: str) -> str:
+    s = re.sub(r"<[^>]+>", "", s)
+    s = (s.replace("&nbsp;", " ").replace("&#160;", " ").replace("&amp;", "&")
+         .replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", '"'))
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _find_customer_value_cells(rows: list[list[str]]) -> list[tuple[str, str, str]]:
+    """顧客テキストブロックの値セル(HTML)を列挙。要素IDの表記ゆれに対応。
+
+    要素IDは会社/タクソノミ年度で揺れる:
+      ...InformationAboutMajorCustomersTextBlock
+      ...InformationForEachOfMainCustomersTextBlock  など
+    → 「要素IDに Customer を含み Block を含む」または「項目名に 主要な顧客」で拾う。
+    返り値: [(要素ID, 項目名, 値セルHTML), ...]
+    """
+    out = []
+    for r in rows:
+        if not r:
             continue
-        if "TextBlock" not in line and "Table" not in line:
+        eid = r[0]
+        eid_l = eid.lower()
+        item = r[1] if len(r) > 1 else ""
+        is_cust = (("customer" in eid_l and "block" in eid_l)
+                   or "主要な顧客" in item
+                   or "主要な顧客ごとの情報" in "\t".join(r))
+        if not is_cust:
             continue
-        cells = line.rstrip("\r").split("\t")
-        if len(cells) < 2:
-            continue
-        cand = max(cells, key=len)
-        if len(cand) > len(block):
-            block = cand
-    if not block:
+        val = max(r, key=len)  # 値セル(いちばん長いセル=HTMLブロック)
+        out.append((eid, item, val))
+    return out
+
+
+def _parse_html_table(html: str) -> list[list[str]]:
+    """値セルのHTMLを <tr>=行 / <td>,<th>=セル として2次元配列に。"""
+    rows = []
+    for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.I | re.S):
+        cells = re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", tr, re.I | re.S)
+        rows.append([_clean_cell(c) for c in cells])
+    return rows
+
+
+def _looks_like_company(s: str) -> bool:
+    if s in _ANON:
+        return False
+    if any(w in s for w in ("株式会社", "㈱", "(株)", "（株）", "有限会社", "合同会社",
+                            "Ltd", "Inc", "Corp", "Co.", "LLC", "GmbH", "N.V.",
+                            "Limited", "Company", "Holdings", "S.A.", "PLC",
+                            "Electronics", "Semiconductor", "Technolog")):
+        return True
+    alpha = sum(c.isascii() and c.isalpha() for c in s)
+    if alpha >= 4 and alpha >= len(s) * 0.5:  # 海外社名(英字主体)
+        return True
+    if len(s) >= 4 and re.fullmatch(r"[ァ-ヶー・\s]+", s):  # カタカナ社名
+        return True
+    return False
+
+
+def _unit_divisor(html: str) -> int:
+    """表ヘッダ等の単位表記から、円→億円 の除数を決める。
+    有報のセグメント情報はほぼ百万円。念のため千円/円も見る。
+    """
+    if "百万円" in html:
+        return 100          # 百万円 → 億円
+    if "千円" in html:
+        return 100_000      # 千円 → 億円
+    if re.search(r"[（(]円[）)]", html):
+        return 100_000_000  # 円 → 億円
+    return 100              # 既定: 百万円扱い
+
+
+def _parse_customers_from_csv(text: str) -> list[dict]:
+    """CSVから「主要な顧客ごとの情報」ブロックを見つけ、顧客名と金額を抽出。
+
+    2026-07 修正:
+      1) csvモジュールで引用符つき複数行の値を正しく1セルとして取得(核心バグ修正)
+      2) 要素ID判定を MajorCustomers 等の表記ゆれに対応
+      3) 値セルHTMLを表として解釈し、行ごとに(社名/金額/割合)を取り出す
+      4) 匿名顧客(A社/B社等)や記載省略は自然に0件になる
+    """
+    if not text:
+        return []
+    rows = _rows_from_csv(text)
+    cells = _find_customer_value_cells(rows)
+    if not cells:
         return []
 
-    # 表構造を保って平文化
-    t = block
-    t = re.sub(r"</t[dh]>", "\t", t, flags=re.I)
-    t = re.sub(r"</tr>", "\n", t, flags=re.I)
-    t = re.sub(r"<[^>]+>", "", t)
-    t = (t.replace("&nbsp;", " ").replace("&amp;", "&")
-         .replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", '"'))
-
-    # 会計用語・見出し(顧客名ではないもの)
-    NG_WORDS = (
-        "連結会計年度", "事業年度", "会計期間", "決算", "セグメント", "区分",
-        "相手先", "顧客", "名称", "売上高", "売上", "金額", "合計", "主要",
-        "減価償却", "償却", "残高", "減損", "損失", "利益", "百万円", "千円",
-        "単位", "注記", "該当事項", "みなし", "取得", "及び", "内、", "台湾",
-        "当期", "前期", "増加", "減少", "その他", "計", "％", "%",
-    )
-
-    def looks_like_company(s: str) -> bool:
-        # 企業名らしい形か: 法人格を含む / アルファベット主体の社名 / カタカナ社名
-        if any(w in s for w in ("株式会社", "㈱", "(株)", "有限会社",
-                                "Ltd", "Inc", "Corp", "Co.", "LLC", "GmbH",
-                                "Limited", "Company", "Holdings", "S.A.")):
-            return True
-        # アルファベット比率が高い(海外企業名)
-        alpha = sum(c.isascii() and c.isalpha() for c in s)
-        if alpha >= 4 and alpha >= len(s) * 0.5:
-            return True
-        # 全部カタカナ(3文字以上)の社名
-        if len(s) >= 3 and re.fullmatch(r"[ァ-ヶー・\s]+", s):
-            return True
-        return False
-
     out = []
-    for row in t.split("\n"):
-        cells = [c.strip() for c in row.split("\t") if c.strip()]
-        if len(cells) < 2:
-            continue
-        name = amount = ratio = None
-        for c in cells:
-            if amount is None and re.fullmatch(r"[\d,]{3,}", c):
-                try:
-                    amount = int(c.replace(",", ""))
-                except ValueError:
-                    pass
+    for _eid, _item, html in cells:
+        div = _unit_divisor(html)
+        for tr in _parse_html_table(html):
+            name = amount = ratio = None
+            for c in tr:
+                if amount is None and re.fullmatch(r"[\d,]{2,}", c):
+                    try:
+                        amount = int(c.replace(",", ""))
+                    except ValueError:
+                        pass
+                    continue
+                if ratio is None and re.fullmatch(r"\d{1,2}(\.\d+)?%?", c):
+                    try:
+                        ratio = float(c.rstrip("%"))
+                    except ValueError:
+                        pass
+                    continue
+                if (name is None and len(c) >= 2
+                        and not re.fullmatch(r"[\d,.\s%△▲\-（）()]+", c)):
+                    name = c
+            if not name or amount is None:
                 continue
-            if ratio is None and re.fullmatch(r"\d{1,2}\.\d+%?", c):
-                try:
-                    ratio = float(c.rstrip("%"))
-                except ValueError:
-                    pass
+            if not _looks_like_company(name):
                 continue
-            if name is None and len(c) >= 3 and not re.fullmatch(r"[\d,.\s%△▲\-()]+", c):
-                name = c
-        if not name or amount is None:
-            continue
-        # 会計用語を含むものは除外
-        if any(w in name for w in NG_WORDS):
-            continue
-        # 企業名らしい形でなければ除外
-        if not looks_like_company(name):
-            continue
-        if amount < 100:
-            continue
-        out.append({"customer": name, "amount_raw": amount, "ratio_pct": ratio})
+            oku = round(amount / div, 1)
+            if oku < 1:  # 1億円未満は主要顧客として扱わない
+                continue
+            out.append({"customer": name, "amount_oku": oku, "ratio_pct": ratio})
 
     best = {}
     for it in out:
         n = it["customer"]
-        if n not in best or it["amount_raw"] > best[n]["amount_raw"]:
+        if n not in best or it["amount_oku"] > best[n]["amount_oku"]:
             best[n] = it
-    items = sorted(best.values(), key=lambda x: -x["amount_raw"])[:6]
-    return [{"customer": x["customer"],
-             "amount_oku": round(x["amount_raw"] / 100, 1),
-             "year": None,
-             "ratio_pct": x.get("ratio_pct")}
+    items = sorted(best.values(), key=lambda x: -x["amount_oku"])[:6]
+    return [{"customer": x["customer"], "amount_oku": x["amount_oku"],
+             "year": None, "ratio_pct": x.get("ratio_pct")}
             for x in items]
+
+
+def _diagnose_customer_block(text: str, sec: str) -> None:
+    """本番ログに"実際の顧客ブロックの生構造"を出す診断。
+    これを1回本番で走らせれば、モックと実物のズレが一目で分かる。
+    """
+    # 1) 生テキスト: キーワード周辺をそのまま(改行は ⏎ で可視化)
+    hit_kw = None
+    for kw in ("主要な顧客", "MajorCustomers", "MainCustomers", "Customer"):
+        idx = text.find(kw)
+        if idx >= 0:
+            hit_kw = kw
+            snip = text[max(0, idx - 80): idx + 1400]
+            snip = snip.replace("\r", "").replace("\n", " ⏎ ")
+            print(f"    [診断:{sec}] キーワード '{kw}' 検出 @ {idx}")
+            print(f"      生テキスト(先頭1400字): {snip[:1400]}")
+            break
+    if hit_kw is None:
+        print(f"    [診断:{sec}] 顧客キーワードがCSV本文に見当たらない")
+
+    # 2) CSV構造: 顧客関連の"行"を、要素ID・項目名・値の先頭とともに
+    try:
+        rows = _rows_from_csv(text)
+    except Exception as e:
+        print(f"    [診断:{sec}] csv解析で例外: {type(e).__name__}: {e}")
+        return
+    cells = _find_customer_value_cells(rows)
+    print(f"    [診断:{sec}] 顧客ブロック該当セル: {len(cells)}件 / CSV総行数 {len(rows)}")
+    for i, (eid, item, val) in enumerate(cells[:2]):
+        vis = val.replace("\r", "").replace("\n", " ⏎ ")
+        print(f"      #{i} 要素ID={eid!r} 項目名={item!r}")
+        print(f"          値HTML(先頭900字)= {vis[:900]}")
+        tbl = _parse_html_table(val)
+        print(f"          表として解釈した行: {len(tbl)}行 / 例(先頭3行)={tbl[:3]}")
 
 
 def fetch_customers(docids: dict[str, str], key: str) -> dict[str, list[dict]]:
     result: dict[str, list[dict]] = {}
     ok = ng = empty = 0
+    diag_done = 0
     for i, (sec, doc) in enumerate(sorted(docids.items())):
         url = (f"{API_BASE}/documents/{doc}?type=5"
                f"&Subscription-Key={urllib.parse.quote(key)}")
@@ -266,20 +345,23 @@ def fetch_customers(docids: dict[str, str], key: str) -> dict[str, list[dict]]:
             continue
 
         items = _parse_customers_from_csv(text)
+        # --- 診断: 最初の数社は、抽出できてもできなくても生構造をログに出す ---
+        # 本番の実CSV構造をこの1回で確定させるため。慣れたら DIAG_LIMIT=0 で消せる。
+        DIAG_LIMIT = 6
+        if diag_done < DIAG_LIMIT and (not items or diag_done < 3):
+            _diagnose_customer_block(text, sec)
+            diag_done += 1
+
         if items:
             for it in items:
                 it["sec"] = sec
             result[sec] = items
             ok += 1
-            if ok <= 5:  # 最初の5社だけ、何が抽出できたかログに出す
+            if ok <= 8:  # 抽出できた社の顧客名をログに
                 names = [x["customer"] for x in items]
                 print(f"    [顧客] {sec}: {names}")
         else:
             empty += 1
-            if empty <= 2:
-                # 顧客ブロック自体が見つかったかを診断
-                has_block = ("MainCustomers" in text) or ("主要な顧客" in text)
-                print(f"    [顧客] {sec}: 抽出0件 / 顧客ブロックの存在: {has_block}")
         time.sleep(0.4)  # EDINETへの負荷軽減
 
     print(f"    [顧客] 取得成功 {ok}社 / 顧客情報なし {empty}社 / 失敗 {ng}社")
