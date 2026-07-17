@@ -204,7 +204,11 @@ def _looks_like_company(s: str) -> bool:
     if any(w in s for w in ("株式会社", "㈱", "(株)", "（株）", "有限会社", "合同会社",
                             "Ltd", "Inc", "Corp", "Co.", "LLC", "GmbH", "N.V.",
                             "Limited", "Company", "Holdings", "S.A.", "PLC",
-                            "Electronics", "Semiconductor", "Technolog")):
+                            "Electronics", "Semiconductor", "Technolog",
+                            # 日本語社名の手掛かり(セグメント名には出ない語に限定)
+                            "グループ", "ホールディングス", "電力", "製作所",
+                            "電機", "重工", "銀行", "商事", "自動車", "製鉄",
+                            "鉱業", "電子", "精機", "通信", "ガス")):
         return True
     alpha = sum(c.isascii() and c.isalpha() for c in s)
     if alpha >= 4 and alpha >= len(s) * 0.5:  # 海外社名(英字主体)
@@ -212,6 +216,82 @@ def _looks_like_company(s: str) -> bool:
     if len(s) >= 4 and re.fullmatch(r"[ァ-ヶー・\s]+", s):  # カタカナ社名
         return True
     return False
+
+
+# 「記載を省略」型(=載せる顧客が無い。空が正常)を示す言い回し
+_OMIT_MARKERS = (
+    "記載を省略", "占める相手先はない", "占める相手先がない",
+    "占める特定の顧客", "10％以上を占める外部顧客がいない",
+    "10%以上を占める外部顧客がいない", "該当事項なし", "該当事項はありません",
+    "顧客がいないため",
+)
+
+# ベタ文字列中の見出し・ラベル(顧客名ではない)。長い順に消す。
+_CUST_LABELS = (
+    "主要な顧客ごとの情報", "顧客の名称又は氏名", "顧客の名称若しくは氏名",
+    "相手先の名称又は氏名", "関連するセグメント名", "顧客の名称", "相手先の名称",
+    "名称又は氏名", "セグメント名", "相手先", "氏名", "名称", "売上高",
+    "（単位：百万円）", "(単位：百万円)", "単位：百万円",
+    "（単位:百万円）", "(単位:百万円)",
+)
+
+
+def _strip_labels(s: str) -> str:
+    for w in _CUST_LABELS:
+        s = s.replace(w, "")
+    # 先頭の見出し番号・全角/半角スペース・記号を落とす
+    return s.strip("　 　.．・:：0123456789０-９\t\r\n")
+
+
+def _parse_plaintext_customers(plain: str, default_div: int) -> list[dict]:
+    """区切り文字の無いベタ文字列(EDINETの実データはこれが多い)から、
+    「主要な顧客ごとの情報」区画ごとに"先頭1社"を確実に取る。
+
+    2社目以降はグルー文字列で社名とセグメント名の境界が曖昧になり誤爆するため、
+    ここでは取りにいかない(取り逃しは許容・ゴミは出さない)。表形式の会社は
+    _parse_html_table 側が複数社に対応する。前期/当期など複数区画は個別に処理し、
+    同名は最大額で寄せる(=当期側が残る)。
+    """
+    out = []
+    for m in re.finditer("主要な顧客ごとの情報", plain):
+        start = m.end()
+        # 区画の終端: 次の見出し/年度/区画のうち最も手前(無ければ+320字)
+        ends = []
+        for marker in ("【", "当連結会計年度", "前連結会計年度",
+                       "報告セグメント", "主要な顧客ごとの情報", "関連情報"):
+            j = plain.find(marker, start + 3)
+            if j != -1:
+                ends.append(j)
+        end = min(ends) if ends else start + 320
+        window = plain[start:min(end, start + 320)]
+
+        # 省略型はスキップ(=顧客が無い。空が正常)
+        if any(w in window for w in _OMIT_MARKERS):
+            continue
+
+        clean = _strip_labels(window)
+        # 先頭の金額を探す(3桁以上、％表記や年号は除外)
+        am = re.search(r"(?<![\d,])([1-9]\d{0,2}(?:,\d{3})+|\d{3,})(?!\s*[％%])"
+                       r"(?!\s*年)(?!\s*月)(?!\s*日)", clean)
+        if not am:
+            continue
+        name = _strip_labels(clean[:am.start()])
+        # 社名の妥当性(先頭区画は位置で信頼できるが、最低限のノイズ除去)
+        if len(name) < 2 or len(name) > 40:
+            continue
+        if any(w in name for w in ("記載", "省略", "該当", "情報", "セグメント",
+                                    "単位", "注）", "(注", "百万円")):
+            continue
+        try:
+            amount = int(am.group(1).replace(",", ""))
+        except ValueError:
+            continue
+        div = _unit_divisor(window) or default_div
+        oku = round(amount / div, 1)
+        if oku < 1:
+            continue
+        out.append({"customer": name, "amount_oku": oku, "ratio_pct": None})
+    return out
 
 
 def _unit_divisor(html: str) -> int:
@@ -246,6 +326,7 @@ def _parse_customers_from_csv(text: str) -> list[dict]:
     out = []
     for _eid, _item, html in cells:
         div = _unit_divisor(html)
+        # (a) HTML表として解釈できる会社(表形式の有報)
         for tr in _parse_html_table(html):
             name = amount = ratio = None
             for c in tr:
@@ -269,9 +350,13 @@ def _parse_customers_from_csv(text: str) -> list[dict]:
             if not _looks_like_company(name):
                 continue
             oku = round(amount / div, 1)
-            if oku < 1:  # 1億円未満は主要顧客として扱わない
+            if oku < 1:
                 continue
             out.append({"customer": name, "amount_oku": oku, "ratio_pct": ratio})
+
+        # (b) 区切りの無いベタ文字列(実データはこちらが多い)
+        plain = _clean_cell(html)
+        out.extend(_parse_plaintext_customers(plain, div))
 
     best = {}
     for it in out:
@@ -392,13 +477,29 @@ def main():
 
     customers = fetch_customers(docids, key)
 
+    # ── 空上書き防止ガード ───────────────────────────────────────
+    # 抽出が0社/極端に少ない回に当たっても、既存の customers.json を壊さない。
+    # ルール: 今回の社数 < 既存の社数 なら書き換えない(=既存を維持)。
+    # 年1更新のデータなので「減らさない」で十分安全。増えた時だけ更新される。
+    prev_customers = {}
+    try:
+        with open("docs/customers.json", encoding="utf-8") as _pf:
+            prev_customers = json.load(_pf).get("customers", {}) or {}
+    except Exception:
+        prev_customers = {}
+    if len(customers) < len(prev_customers):
+        print(f"[顧客] 空上書き防止: 今回 {len(customers)}社 < 既存 {len(prev_customers)}社 "
+              f"→ customers.json は書き換えず既存を維持")
+        # 参考ログだけ出して終了(ファイルは触らない=gitに差分が出ない)
+        return
+
     out = {
         "updated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "customers": customers,
     }
     with open("docs/customers.json", "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
-    print(f"docs/customers.json 更新: {len(customers)}社")
+    print(f"docs/customers.json 更新: {len(customers)}社(前回 {len(prev_customers)}社)")
 
     # 確認用: TSMCを顧客に持つ銘柄
     tsmc = [(c, i) for c, its in customers.items() for i in its
