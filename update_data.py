@@ -225,6 +225,29 @@ def _latest_date(series):
     return series[-1][0] if series else None
 
 
+def _apply_no_regress_guard(quotes: dict, prev_quotes: dict) -> int:
+    """逆行ガード(銘柄単位・フリーズしない設計)。
+
+    Stooqの無料CSVは最新1本がフリッカーする(stooq.com/stooq.pl の2ホスト・
+    キャッシュ反映のズレ)。取得が1日短い回に当たると、今回のquotesの最新日付が
+    前回保存分より古くなる。無防備だと古い足で上書き=「昨日の値段に逆戻り」。
+
+    ルール:
+      ・今回の最新日付 >= 前回 → 今回を採用(通常。だから絶対にフリーズしない)
+      ・今回の最新日付 <  前回 → 前回の"新しい系列"をそのまま維持(逆行のみ阻止)
+    戻り値: 逆行を止めて前回を維持した銘柄数。
+    """
+    kept = 0
+    for sym, q in list(quotes.items()):
+        new_d = q.get("lastDate")
+        pq = prev_quotes.get(sym)
+        old_d = pq.get("lastDate") if pq else None
+        if pq and new_d and old_d and old_d > new_d:
+            quotes[sym] = pq       # 前回の方が新しい=今回は逆行 → 前回を維持
+            kept += 1
+    return kept
+
+
 def fetch_daily(sym, market):
     # 1) Stooq を試す
     out = fetch_stooq(sym, market)
@@ -744,6 +767,18 @@ def main():
             "weekly": _aggregate_ohlc(daily, "W"),
             "monthly": _aggregate_ohlc(daily, "M"),
         }
+
+    # ── 逆行ガード: Stooqのフリッカーで今回が1日短くても、前回の新しい株価を守る ──
+    # (linkage/工程/AI分析の前に適用 → 下流も逆行してない株価で計算される)
+    try:
+        with open("docs/data.json", encoding="utf-8") as _pf:
+            _prev_quotes = json.load(_pf).get("quotes") or {}
+    except Exception:
+        _prev_quotes = {}
+    _kept = _apply_no_regress_guard(quotes, _prev_quotes)
+    if _kept:
+        print(f"逆行ガード: {_kept}銘柄で前回の新しい株価を維持"
+              f"(今回のStooq取得が古かったため上書きを防止)")
 
     # 連動分析(テーマ+2%→翌日日本株)
     linkage = {}
