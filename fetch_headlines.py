@@ -67,11 +67,6 @@ FEEDS: list[tuple[str, str, bool]] = [
     ),
     # --- 海外通信社: 英語版(速報性・網羅性のため残す) ---
     (
-        "Bloomberg",
-        _gnews("semiconductor when:7d site:bloomberg.com", hl="en-US", gl="US", ceid="US:en"),
-        True,
-    ),
-    (
         "Reuters",
         _gnews("semiconductor when:7d site:reuters.com", hl="en-US", gl="US", ceid="US:en"),
         True,
@@ -95,11 +90,6 @@ FEEDS: list[tuple[str, str, bool]] = [
     (
         "ダイヤモンド",
         _gnews("半導体 when:7d site:diamond.jp", hl="ja", gl="JP", ceid="JP:ja"),
-        True,
-    ),
-    (
-        "PC Watch",
-        _gnews("半導体 when:7d site:pc.watch.impress.co.jp", hl="ja", gl="JP", ceid="JP:ja"),
         True,
     ),
     (
