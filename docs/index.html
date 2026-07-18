@@ -138,6 +138,7 @@
   #viewChips .chip[data-id="ret"].on{background:#E0433C;border-color:#E0433C;color:#fff}
   #viewChips .chip[data-id="flow"].on{background:var(--us);border-color:var(--us);color:#fff}
   #viewChips .chip[data-id="link"].on{background:#3B82C4;border-color:#3B82C4;color:#fff}
+  #viewChips .chip[data-id="semimap"].on{background:#A855C7;border-color:#A855C7;color:#fff}
   /* 工程別ビュー(騰落率のグループ平均モードで使用) */
   .pcstage{width:100%;display:flex;align-items:center;gap:9px;padding:11px 10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:6px;cursor:pointer;text-align:left;color:var(--text)}
   .pcstage.open{border-color:#E0863C}
@@ -639,6 +640,8 @@
     <div class="chips chips-wrap" id="procPeriodChips"></div>
     <div id="procList"></div>
   </div>
+
+  <div id="semimapView" style="display:none"></div>
 
   <div class="note" id="note">
     出典: Stooq 日足(終値ベース)。平日に自動更新(東証引け後・NY引け後)。年初来始値=0%。<br>
@@ -1838,6 +1841,58 @@ function _hlRows(list,limit){
       stockChips(mc)+'</div>';
   }).join("");
 }
+// ===== ニュースのページ送り(番号が大きいほど古い) =====
+var newsPage=0;
+function newsGoPage(p){
+  newsPage=p; render();
+  var el=document.getElementById("newsHlTop");
+  if(el&&el.scrollIntoView) el.scrollIntoView({block:"start"});
+}
+// スライス済みの行をそのまま描画(件数制限・媒体上限なし=アーカイブ用)
+function _hlRowsAll(list){
+  return list.map(function(x){
+    var d=(x.date||"").slice(5).replace("-","/");
+    var mc=matchStocks(x.title);
+    return '<div class="hlrow"><a class="hl" href="'+encodeURI(x.url||"#")+'" target="_blank" rel="noopener">'+
+      '<span class="hl-src">'+glEsc(x.source||"")+'</span>'+
+      '<span class="hl-t">'+glEsc(x.title)+(d?' <span class="hl-d">'+d+'</span>':'')+'</span></a>'+
+      stockChips(mc)+'</div>';
+  }).join("");
+}
+function newsPagerHtml(pages){
+  if(pages<=1) return '';
+  var b='<div class="bx-row" style="margin-top:12px;gap:6px;flex-wrap:wrap;align-items:center">';
+  if(newsPage>0) b+='<button type="button" class="bx-chip" onclick="newsGoPage('+(newsPage-1)+')">← 新しい</button>';
+  for(var p=0;p<pages;p++){
+    var on=(p===newsPage);
+    b+='<button type="button" class="bx-chip" onclick="newsGoPage('+p+')" style="'+(on?'background:#6EE7F0;color:#0B0E15;font-weight:700':'')+'">'+(p+1)+'</button>';
+  }
+  if(newsPage<pages-1) b+='<button type="button" class="bx-chip" onclick="newsGoPage('+(newsPage+1)+')">古い →</button>';
+  b+='</div>';
+  return b;
+}
+function headlinesPagedHtml(perPage,label){
+  var HS=(typeof DATA!=="undefined"&&DATA&&DATA.headlines)?DATA.headlines.slice():[];
+  if(!HS.length) return '<div class="nsec-t" id="newsHlTop" style="margin-top:16px">'+label+'</div><div class="mcard"><div class="hm-empty">見出しは取得後に表示されます。</div></div>';
+  HS.sort(function(a,b){ return String(b.date||"").localeCompare(String(a.date||"")); });   // 日付降順
+  var seen={},uniq=[];
+  for(var i=0;i<HS.length;i++){
+    var x=HS[i]; if(!x||!x.title) continue;
+    var k=String(x.title).toLowerCase().replace(/\s+/g,"").slice(0,26);
+    if(seen[k]) continue; seen[k]=1; uniq.push(x);
+  }
+  var pages=Math.max(1,Math.ceil(uniq.length/perPage));
+  if(newsPage>=pages) newsPage=pages-1;
+  if(newsPage<0) newsPage=0;
+  var win=uniq.slice(newsPage*perPage,(newsPage+1)*perPage);
+  var jp=[],en=[]; win.forEach(function(x){ (_isJP(x.title)?jp:en).push(x); });
+  var out='<div class="nsec-t" id="newsHlTop" style="margin-top:16px">'+label+
+    ' <span class="num" style="color:var(--dim);font-size:11px">'+(newsPage+1)+'/'+pages+'ページ</span></div>';
+  if(jp.length){ out+='<div class="hl-lang">日本語</div><div class="mcard">'+_hlRowsAll(jp)+'</div>'; }
+  if(en.length){ out+='<div class="hl-lang" style="margin-top:10px">英語</div><div class="mcard">'+_hlRowsAll(en)+'</div>'; }
+  out+=newsPagerHtml(pages);
+  return out;
+}
 function headlinesHtml(limit,label){
   var HS=(typeof DATA!=="undefined"&&DATA&&DATA.headlines)?DATA.headlines:[];
   if(!HS.length) return '<div class="nsec-t" style="margin-top:16px">'+label+'</div><div class="mcard"><div class="hm-empty">見出しは取得後に表示されます。</div></div>';
@@ -2014,7 +2069,7 @@ function nSign(v){ return (v>0?"+":"")+v; }
 function renderNews(){
   var box=document.getElementById("newsView");
   box.innerHTML='<div class="gl-head"><div class="gl-k">▤ ニュース</div><div class="gl-s">半導体18媒体のヘッドラインと、保有銘柄の適時開示。見出しに出た保有銘柄はハイライトされます。</div></div>'+
-    headlinesHtml(72,"自動ヘッドライン")+
+    headlinesPagedHtml(24,"自動ヘッドライン")+
     eventScheduleHtml(12)+disclosuresHtml(40,"適時開示");
 }
 
@@ -2029,10 +2084,10 @@ function syncContent(){
 }
 function render(){
   syncContent();
-  chips("#viewChips",[["home","ホーム"],["news","ニュース"],["theme","テーマ"],["rank","銘柄分析"],["ret","騰落率"],["vol","前日比・出来高"],["flow","フロー図"],["link","連動"],["learn","学ぶ"]],view,id=>{pushHistory();view=id;render()});
-  const tv=document.getElementById("themeView"),vv=document.getElementById("volView"),lv=document.getElementById("linkView"),pv=document.getElementById("procView"),rv=document.getElementById("rankView"),fv=document.getElementById("flowView"),etv=document.getElementById("retView"),lrv=document.getElementById("learnView"),nwv=document.getElementById("newsView"),hmv=document.getElementById("homeView");
+  chips("#viewChips",[["home","ホーム"],["news","ニュース"],["theme","テーマ"],["rank","銘柄分析"],["ret","騰落率"],["vol","前日比・出来高"],["flow","フロー図"],["link","連動"],["semimap","半導体マップ"],["learn","学ぶ"]],view,id=>{pushHistory();view=id;render()});
+  const tv=document.getElementById("themeView"),vv=document.getElementById("volView"),lv=document.getElementById("linkView"),pv=document.getElementById("procView"),rv=document.getElementById("rankView"),fv=document.getElementById("flowView"),etv=document.getElementById("retView"),lrv=document.getElementById("learnView"),nwv=document.getElementById("newsView"),hmv=document.getElementById("homeView"),smv=document.getElementById("semimapView");
   const chartBox=document.getElementById("chartTitle").parentElement;
-  const hideAll=()=>{tv.style.display="none";vv.style.display="none";lv.style.display="none";pv.style.display="none";rv.style.display="none";fv.style.display="none";etv.style.display="none";lrv.style.display="none";nwv.style.display="none";hmv.style.display="none";chartBox.style.display="none";};
+  const hideAll=()=>{tv.style.display="none";vv.style.display="none";lv.style.display="none";pv.style.display="none";rv.style.display="none";fv.style.display="none";etv.style.display="none";lrv.style.display="none";nwv.style.display="none";hmv.style.display="none";smv.style.display="none";chartBox.style.display="none";};
   if(view==="rank"){
     hideAll();rv.style.display="block";
     renderRank();
@@ -2072,6 +2127,12 @@ function render(){
   if(view==="learn"){
     hideAll();lrv.style.display="block";
     renderLearn();
+    return;
+  }
+  if(view==="semimap"){
+    hideAll();smv.style.display="block";
+    renderSemimap();
+    if(DATA) document.getElementById("updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
     return;
   }
   if(view==="flow"){
@@ -2406,6 +2467,64 @@ function icebergViz(){
     <div class="ice-talk pixel"><span class="ice-heart">♥</span>* どれか1つ かけても AIは とまる。</div>
   </div>`;
 }
+// ===== 半導体マップ(米国主役→日本株の波及・画像2ベース) =====
+// 各社: id, us(株価参照する米ティッカー/無ければ空), name, theme(注目点), prod(製品・工程),
+//       cat(日本株の主な分類), jp[](波及先の日本株コード)。コードは画像2から転記。
+var SEMIMAP=[
+ {id:"NVDA",us:"NVDA",name:"NVIDIA",theme:"AI・GPU需要の拡大／AIサーバー・データセンター投資／次世代GPU(Blackwell等)",prod:"GPU・AIチップ・DC向け半導体",cat:"半導体テスト・検査 / 先端パッケージ・基板 / 製造装置・ロボット",jp:["6857","6146","4062","6315","6323","6590","6227"]},
+ {id:"TSM",us:"TSM",name:"TSMC",theme:"先端ロジック投資(3nm/2nm)／設備投資の増加／月次売上・稼働率",prod:"先端ロジック製造ファウンドリー",cat:"製造装置(前工程/後工程) / 真空・ガス・洗浄・搬送",jp:["7735","6920","6146","6323","6857","8035","6728","6361"]},
+ {id:"COWOS",us:"TSM",name:"TSMC (CoWoS)",theme:"CoWoS増産・先端パッケージ拡大／HBM・AIチップ実装需要／パッケージ技術革新",prod:"先端パッケージング(CoWoS・SoIC・HBM)",cat:"先端パッケージ装置 / ハイブリッドボンダー / パネルレベル・実装",jp:["6590","6227","6728","7717","6315","6266","6855"]},
+ {id:"HYNIX",us:"",name:"SK hynix",theme:"HBM需要の拡大／DRAM市況・在庫動向／設備投資計画",prod:"HBM・DRAMメモリ製造",cat:"成膜装置(CVD/ALD) / プローブカード / メモリ材料・基板",jp:["6525","6871","6855","4971","4062"]},
+ {id:"MU",us:"MU",name:"Micron",theme:"DRAM/NAND投資／HBM供給拡大／メモリ市況回復",prod:"DRAM・NAND・HBM",cat:"成膜・エッチング装置 / プローブカード / メモリ材料",jp:["6525","6871","6855","8035","4971"]},
+ {id:"SAMSUNG",us:"",name:"Samsung",theme:"メモリ(HBM/DRAM/NAND)投資／ファウンドリー投資／先端プロセス開発",prod:"メモリ製造・ファウンドリー",cat:"製造装置(前工程) / 成膜・エッチング装置 / メモリ材料",jp:["6525","8035","7735","6871","6855"]},
+ {id:"ASML",us:"ASML",name:"ASML",theme:"EUV露光装置の需要／先端ロジック投資の先行指標／受注・出荷動向",prod:"EUV/DUV露光装置・リソグラフィ",cat:"露光装置関連 / 検査・計測装置 / 洗浄・搬送装置",jp:["6920","8035","7735","6323"]},
+ {id:"LRCX",us:"LRCX",name:"Lam Research",theme:"エッチング・成膜需要／DRAM・NAND投資と連動／受注・ガイダンス",prod:"エッチング装置・成膜装置",cat:"エッチング装置 / 成膜装置 / ガス・部材",jp:["6525","8035","6728","3433"]},
+ {id:"AMAT",us:"AMAT",name:"Applied Materials",theme:"成膜・CMP・洗浄装置需要／ロジック・メモリ投資に連動／受注・ガイダンス",prod:"成膜装置・CMP・洗浄装置",cat:"成膜・CMP装置 / 洗浄・真空装置 / ガス・部材",jp:["6525","8035","6323","6361","6728"]},
+ {id:"TER",us:"TER",name:"Teradyne",theme:"テスト装置需要の先行指標／半導体・自動車・産業機器向け／受注・ガイダンス",prod:"半導体テスト装置・検査システム",cat:"テスト装置 / 検査・計測装置",jp:["6857","7729"]},
+ {id:"FORM",us:"FORM",name:"FormFactor",theme:"プローブカード需要／メモリ・ロジック両方に関連／受注・ガイダンス",prod:"プローブカード・テストソリューション",cat:"プローブカード / テスト関連部材",jp:["6871","6855"]},
+ {id:"GLW",us:"GLW",name:"Corning",theme:"光ファイバー・光ケーブル需要／データ通信・AIインフラ拡大／受注・ガイダンス",prod:"光ファイバー・光ケーブル・通信インフラ向け材料",cat:"光ファイバー・光ケーブル / 通信インフラ材料",jp:["5803","5801","5802"]},
+];
+
+function renderSemimap(){
+  var host=document.getElementById("semimapView");
+  if(!host) return;
+  if(!DATA||!DATA.quotes){host.innerHTML='<div class="loading">データ読み込み中…</div>';return;}
+  var intro='<div class="charttitle" style="margin:10px 4px 12px;line-height:1.6">'+
+    '海外の主役(米国株)が動いた時、<b>資金がどの日本株に波及するか</b>の対応マップ。<br>'+
+    '<span style="color:var(--dim)">日本株チップをタップで詳細へ。数字=本日の前日比。右上の「グループ平均」で今どこに資金が来ているかが分かる。まず米国主役の株価・ニュース・決算を見て、強いテーマの波及先を追う。</span></div>';
+  var cards=SEMIMAP.map(function(m){
+    var uq=m.us?DATA.quotes[m.us]:null;
+    var uchg=uq?uq.chg:null;
+    var uchgHtml=(m.us&&uchg!=null)?'<span class="num" style="color:'+col(uchg)+';font-size:12px;margin-left:8px">'+fmt(uchg)+'</span>':'';
+    var vals=m.jp.map(function(c){var q=DATA.quotes[c];return q?q.chg:null;}).filter(function(v){return v!=null;});
+    var avg=vals.length?vals.reduce(function(a,b){return a+b;},0)/vals.length:null;
+    var avgHtml=(avg!=null)?'<span class="num" style="color:'+col(avg)+'">'+fmt(avg)+'</span>':'<span class="wh-na">—</span>';
+    var chips=m.jp.map(function(c){
+      var q=DATA.quotes[c];
+      var nm=(q&&q.name)||CODE2NAME[c]||c;
+      var chg=q?q.chg:null;
+      return '<button class="fchip" onclick="showStock(\''+c+'\')">'+
+        '<span class="num" style="color:var(--jp);font-weight:700">'+c+'</span>'+
+        '<span class="fchip-nm">'+glEsc(nm)+'</span>'+
+        '<span class="num" style="color:'+col(chg)+';font-size:10.5px">'+fmt(chg)+'</span></button>';
+    }).join("");
+    var usTag=m.us?('<span class="num" style="color:var(--us);font-weight:700">'+m.us+'</span> '):'';
+    return '<div class="fstage" style="border-color:var(--us);margin-bottom:12px">'+
+      '<div class="fstage-h" style="background:var(--panel2);display:flex;justify-content:space-between;align-items:center">'+
+        '<span class="fstage-name" style="color:var(--us)">'+usTag+glEsc(m.name)+uchgHtml+'</span>'+
+        '<span style="font-size:11px;color:var(--dim)">波及グループ平均 '+avgHtml+'</span>'+
+      '</div>'+
+      '<div class="fstage-desc" style="padding:8px 10px 0"><b>注目</b> '+glEsc(m.theme)+'<br><b>製品/工程</b> '+glEsc(m.prod)+'</div>'+
+      '<div class="fstep-body" style="padding:8px 10px 10px">'+
+        '<div class="frole"><span class="frole-label">波及先の日本株</span><div class="fchips">'+chips+'</div></div>'+
+        '<div style="margin-top:6px;font-size:11px;color:var(--dim)">分類: '+glEsc(m.cat)+'</div>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+  host.innerHTML=intro+cards+
+    '<div class="gl-s" style="margin:4px 4px 22px;color:var(--dim)">※対応は代表例。実際には各社とも複数テーマにまたがる。有報の10%開示とは別物(こちらは供給関係ベースの整理)。投資判断は自己責任で。</div>';
+}
+
 function renderFlow(){
   if(!DATA||!DATA.flow){document.getElementById("flowList").innerHTML='<div class="loading">フローデータがありません。</div>';return;}
   const html=DATA.flow.map(stage=>{
