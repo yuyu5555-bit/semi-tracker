@@ -3,8 +3,11 @@
 """RSS から半導体関連ヘッドラインを取得し data/headlines.json を生成する。
 
 媒体(2026-07 時点):
-  - 日経 / Bloomberg / CNBC / WSJ / Reuters / 日刊工業 / 東洋経済: Google News(各 site: 指定)
-  - ITmedia / EE Times Japan / 日経xTECH / DigiTimes / SemiEngineering / Tom's Hardware: 直接 RSS
+  - Google News(各 site: 指定): 日経 / Bloomberg日本 / ロイター / CNBC / Reuters /
+    WSJ / 日刊工業 / 東洋経済 / ダイヤモンド / マイナビ
+  - 直接 RSS: XenoSpectrum半導体 / XenoSpectrum AI / 日経xTECH / ITmedia /
+    EE Times Japan / DigiTimes / SemiEngineering / Tom's Hardware
+  ※Bloombergは日本語版(bloomberg.co.jp)のみ。PC Watchは除外済み。
 
 依存は標準ライブラリのみ(update_prices.py と同方針)。
 
@@ -52,7 +55,8 @@ FEEDS: list[tuple[str, str, bool]] = [
     # --- 海外通信社: 日本語版(Google Newsが各社の日本語記事を配信) ---
     (
         "Bloomberg日本",
-        _gnews("半導体 when:7d site:bloomberg.co.jp", hl="ja", gl="JP", ceid="JP:ja"),
+        _gnews("(半導体 OR TSMC OR エヌビディア OR メモリ OR 半導体株) site:bloomberg.co.jp",
+               hl="ja", gl="JP", ceid="JP:ja"),
         True,
     ),
     (
@@ -96,6 +100,17 @@ FEEDS: list[tuple[str, str, bool]] = [
         "マイナビ",
         _gnews("半導体 when:7d site:news.mynavi.jp", hl="ja", gl="JP", ceid="JP:ja"),
         True,
+    ),
+    # --- XenoSpectrum(半導体・AI特化の日本語ニュース。WordPressのタグ/トピック別RSS) ---
+    (
+        "XenoSpectrum半導体",
+        "https://xenospectrum.com/tag/semiconductor/feed/",
+        False,  # タグで既に半導体に絞られているのでキーワード必須にしない
+    ),
+    (
+        "XenoSpectrum AI",
+        "https://xenospectrum.com/topics/ai/feed/",
+        False,  # AIトピックで絞られている
     ),
     (
         "日経xTECH",
