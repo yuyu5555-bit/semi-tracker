@@ -28,7 +28,7 @@ from pathlib import Path
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 OUT_PATH = DATA_DIR / "headlines.json"
 KEEP_DAYS = 14
-MAX_ITEMS = 72
+MAX_ITEMS = 150   # ニュースのページ送り用に保存件数を拡大(旧72→150)
 UA = (
     "Mozilla/5.0 (compatible; semi-tracker; +https://github.com/yuyu5555-bit/semi-tracker)"
 )
