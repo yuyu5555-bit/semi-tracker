@@ -493,7 +493,13 @@ def main() -> int:
 def fetch_headlines(max_items: int = MAX_ITEMS) -> list[dict]:
     """RSS を取得し、半導体フィルタ済みの最新ヘッドラインを返す。"""
     items, notes = fetch_all()
+    # update-data のログで媒体ごとの取得件数を確認できるようにする(2026-07)。
+    # 「XenoSpectrum半導体: 12件」「Bloomberg日本: 失敗 (...)」のように出る。
+    print("  [ニュース] 媒体別取得件数:")
+    for n in notes:
+        print(f"    {n}")
     trimmed = dedupe_and_trim(items, today=date.today())[:max_items]
+    print(f"  [ニュース] 重複除去・{KEEP_DAYS}日フィルタ後: {len(trimmed)}件を保存")
     return [
         {"source": r["source"], "title": r["title"], "url": r["url"], "date": r["date"]}
         for r in trimmed
