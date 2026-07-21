@@ -138,6 +138,7 @@
   #viewChips .chip[data-id="ret"].on{background:#E0433C;border-color:#E0433C;color:#fff}
   #viewChips .chip[data-id="flow"].on{background:var(--us);border-color:var(--us);color:#fff}
   #viewChips .chip[data-id="link"].on{background:#3B82C4;border-color:#3B82C4;color:#fff}
+  #viewChips .chip[data-id="cust"].on{background:#C9902B;border-color:#C9902B;color:#0B0E15}
   /* 工程別ビュー(騰落率のグループ平均モードで使用) */
   .pcstage{width:100%;display:flex;align-items:center;gap:9px;padding:11px 10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:6px;cursor:pointer;text-align:left;color:var(--text)}
   .pcstage.open{border-color:#E0863C}
@@ -504,9 +505,19 @@
 </style>
 <style>
 .bx-row{display:flex;flex-wrap:wrap;gap:7px}
-.bx-chip{font-size:12px;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 11px;cursor:pointer;font-family:inherit}
-.bx-chip b{color:#6EE7F0;font-family:var(--dot)}
-.bx-chip:active{background:rgba(110,231,240,.1)}
+.bx-chip{font-size:12px;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 11px;cursor:pointer;font-family:inherit;transition:transform .08s,border-color .12s}
+.bx-chip:hover{border-color:rgba(110,231,240,.55)}
+.bx-chip b{color:#6EE7F0;font-family:var(--dot);margin-left:3px}
+.bx-chip:active{background:rgba(110,231,240,.1);transform:scale(.97)}
+/* 件数で視覚的に強弱をつける(主役を目立たせ、1件の長い裾を沈める) */
+.bx-chip.bx-hi{background:linear-gradient(135deg,rgba(110,231,240,.20),rgba(110,231,240,.05));border-color:rgba(110,231,240,.55);font-weight:700;font-size:13px;padding:7px 13px}
+.bx-chip.bx-hi b{color:#8FF0F7}
+.bx-chip.bx-mid{border-color:rgba(110,231,240,.32)}
+.bx-chip.bx-lo{opacity:.6;font-size:11px;padding:5px 9px}
+.bx-chip.bx-lo b{color:var(--dim)}
+.bx-lab{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--dim);margin:2px 0 9px;display:flex;align-items:center;gap:7px}
+.bx-lab::before{content:"";width:3px;height:13px;border-radius:2px;background:#6EE7F0;display:inline-block}
+.bx-lab.jp::before{background:var(--jp)}
 .cx-a{display:block;font-size:10.5px;color:var(--faint);margin-top:2px}
 .cx-r{margin-left:6px;color:var(--jp)}
 </style>
@@ -1594,9 +1605,12 @@ function custKeyOf(name){
   var s=raw.replace(/株式会社|㈱|\(株\)|Co\.,?\s*Ltd\.?|Corporation|Corp\.?|Inc\.?|Limited|Ltd\.?|L\.L\.C\.?|LLC|,\s*$/gi,"").trim();
   return s||raw;
 }
+// 日本企業だがキーがラテン表記のもの(文字種判定では海外に化けるため明示)
+var JP_LATIN_CUST_KEYS={"SCREEN":1,"NEC":1,"JASM":1};
 function custIsJP(key){
-  // 顧客が日本企業かどうか(表示を海外/日本で分けるため)
-  return /[ぁ-んァ-ヶ一-龠]/.test(String(key||""));
+  key=String(key||"");
+  if(JP_LATIN_CUST_KEYS[key]) return true;
+  return /[ぁ-んァ-ヶ一-龠]/.test(key);
 }
 function buyerExposure(){
   // 顧客キー -> [{code,name,amount_oku,ratio_pct,year,chg,edinet}] (金額降順)
@@ -1656,14 +1670,16 @@ function buyerChipsHtml(){
   jp.sort(sortByN); ov.sort(sortByN);
   function chips(list){
     return list.map(function(k){
-      return '<button type="button" class="bx-chip" onclick="showBuyerStocks(\''+k.replace(/'/g,"\\'")+'\')">'+
-        glEsc(k)+' <b>'+map[k].length+'</b></button>';
+      var n=map[k].length;
+      var tier=n>=5?" bx-hi":(n>=2?" bx-mid":" bx-lo");
+      return '<button type="button" class="bx-chip'+tier+'" onclick="showBuyerStocks(\''+k.replace(/'/g,"\\'")+'\')">'+
+        glEsc(k)+' <b>'+n+'</b></button>';
     }).join("");
   }
   var out='<div class="nsec-t" style="margin-top:16px">顧客別 影響銘柄 <span class="num" style="color:#6EE7F0;font-size:10px">AUTO</span></div>'+
-    '<div class="mcard"><div class="gl-s" style="margin-bottom:9px">決算・受注ニュースが出た時、どの日本株に効くかを有報の顧客データから逆引き。数字=該当銘柄数。</div>';
+    '<div class="mcard"><div class="gl-s" style="margin-bottom:11px">決算・受注ニュースが出た時、どの日本株に効くかを有報の顧客データから逆引き。数字=該当銘柄数。</div>';
   if(ov.length) out+='<div class="bx-lab">海外</div><div class="bx-row">'+chips(ov)+'</div>';
-  if(jp.length) out+='<div class="bx-lab" style="margin-top:10px">日本</div><div class="bx-row">'+chips(jp)+'</div>';
+  if(jp.length) out+='<div class="bx-lab jp" style="margin-top:14px">日本</div><div class="bx-row">'+chips(jp)+'</div>';
   out+='</div>';
   return out;
 }
