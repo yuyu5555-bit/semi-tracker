@@ -56,22 +56,27 @@ def _api_key() -> str:
     return key
 
 
-def collect_yuho_docids(key: str, target_secs: set[str], days_back: int = 400) -> dict[str, str]:
-    """書類一覧APIを日付ループで叩き、対象銘柄の有報docIDを集める。
-    返り値: {証券コード4桁: docID}  (同じ会社は最新のものを採用)
+def collect_yuho_docids(key: str, target_secs: set[str],
+                        days_back: int = 800, per_company: int = 3) -> dict[str, list[str]]:
+    """書類一覧APIを日付ループで叩き、対象銘柄の有報docIDを"新しい順に最大per_company件"集める。
+    返り値: {証券コード4桁: [docID(新しい順), ...]}
+
+    2026-07 修正(取りこぼしの根治):
+      1) 日付フィルタを撤廃 → 平日は全部見る。決算期は会社ごとに様々で
+         (3月期=6月提出 / 2月期=5月提出 / 6月期=9月提出 / 12月期=3月提出 …)、
+         月末縛りだと5/22提出(ローツェ等)を丸ごと取り逃していた。
+      2) 早期終了を撤廃 → 全期間を見て各社の複数期を集める。
+         (旧実装は全社が1件揃うと止まり、9月提出(AIメカ等)まで遡れていなかった)
+      3) 各社 最新 per_company 件を返し、パース側が"新しい順に見て最初に顧客が
+         取れた期"を採用できるようにする(最新にあれば最新、無ければ過去へ自動フォールバック)。
     """
-    found: dict[str, tuple[str, str]] = {}  # sec -> (submitDate, docID)
+    found: dict[str, list[tuple[str, str]]] = {}  # sec -> [(submitDateTime, docID), ...]
     today = date.today()
     checked = hit_days = 0
 
     for i in range(days_back):
         d = today - timedelta(days=i)
-        # 有報は平日にしか提出されない
-        if d.weekday() >= 5:
-            continue
-        # 6〜7月(3月期の有報)と、それ以外の月末付近を重点的に見る
-        # 全部見ると400リクエストになるので、有報が出る可能性が高い日に絞る
-        if not (d.month in (6, 7) or d.day >= 25 or d.day <= 5):
+        if d.weekday() >= 5:      # 有報は平日提出。土日だけ省く
             continue
 
         url = (f"{API_BASE}/documents.json?date={d:%Y-%m-%d}&type=2"
@@ -103,25 +108,29 @@ def collect_yuho_docids(key: str, target_secs: set[str], days_back: int = 400) -
             sec4 = sec[:4] if len(sec) == 5 and sec.endswith("0") else sec
             if sec4 not in target_secs:
                 continue
-            sub = r.get("submitDateTime") or ""
             doc = r.get("docID") or ""
             if not doc:
                 continue
-            prev = found.get(sec4)
-            if prev is None or sub > prev[0]:
-                found[sec4] = (sub, doc)
+            sub = r.get("submitDateTime") or ""
+            lst = found.setdefault(sec4, [])
+            if doc not in [x[1] for x in lst]:
+                lst.append((sub, doc))
                 day_hit += 1
         if day_hit:
             hit_days += 1
-        time.sleep(0.25)  # EDINETへの負荷軽減
+        time.sleep(0.2)  # EDINETへの負荷軽減
 
-        # 対象を全部見つけたら早期終了
-        if len(found) >= len(target_secs):
-            break
+    out: dict[str, list[str]] = {}
+    multi = 0
+    for sec, lst in found.items():
+        lst.sort(key=lambda x: x[0], reverse=True)   # 提出日時の新しい順
+        out[sec] = [doc for _sub, doc in lst[:per_company]]
+        if len(out[sec]) >= 2:
+            multi += 1
 
     print(f"    [顧客] 書類一覧: {checked}日分を確認 / 有報が見つかった日 {hit_days}日 "
-          f"/ 対象銘柄の有報 {len(found)}件")
-    return {sec: doc for sec, (_sub, doc) in found.items()}
+          f"/ 対象銘柄 {len(out)}社(うち複数期あり {multi}社)")
+    return out
 
 
 def _read_csv_from_zip(raw: bytes) -> str:
@@ -403,53 +412,88 @@ def _diagnose_customer_block(text: str, sec: str) -> None:
         print(f"          表として解釈した行: {len(tbl)}行 / 例(先頭3行)={tbl[:3]}")
 
 
-def fetch_customers(docids: dict[str, str], key: str) -> dict[str, list[dict]]:
+DEBUG_SECS = {"6323", "6227"}   # 詳細ダンプする銘柄(ローツェ・AIメカ)
+
+
+def fetch_customers(docids_multi: dict[str, list[str]], key: str,
+                    debug_secs: set[str] = DEBUG_SECS) -> dict[str, list[dict]]:
+    """各社の有報を"新しい順"にパースし、主要顧客が取れた最初の期を採用する。
+    最新にあれば最新で確定(過去は見ない)、最新が空なら過去期へ自動フォールバック。
+    """
     result: dict[str, list[dict]] = {}
     ok = ng = empty = 0
-    diag_done = 0
-    for i, (sec, doc) in enumerate(sorted(docids.items())):
-        url = (f"{API_BASE}/documents/{doc}?type=5"
-               f"&Subscription-Key={urllib.parse.quote(key)}")
-        try:
-            raw = _get(url)
-        except urllib.error.HTTPError as e:
-            ng += 1
-            if ng <= 3:
-                print(f"    [顧客] {sec}: 書類取得 HTTP {e.code} {e.reason}")
-            continue
-        except Exception as e:
-            ng += 1
-            if ng <= 3:
-                print(f"    [顧客] {sec}: {type(e).__name__}: {e}")
-            continue
+    latest_only = 0     # 最新期で取れた社数
+    used_fallback = 0   # 最新が空で過去期で取れた社数
+    empty_diag = 0
 
-        try:
-            text = _read_csv_from_zip(raw)
-        except Exception as e:
-            ng += 1
-            continue
+    for sec, docs in sorted(docids_multi.items()):
+        dbg = sec in debug_secs
+        got = None
+        got_period = -1
+        for pi, doc in enumerate(docs):
+            url = (f"{API_BASE}/documents/{doc}?type=5"
+                   f"&Subscription-Key={urllib.parse.quote(key)}")
+            try:
+                raw = _get(url)
+            except urllib.error.HTTPError as e:
+                ng += 1
+                if ng <= 3:
+                    print(f"    [顧客] {sec}: 書類取得 HTTP {e.code} {e.reason}")
+                continue
+            except Exception as e:
+                ng += 1
+                if ng <= 3:
+                    print(f"    [顧客] {sec}: {type(e).__name__}: {e}")
+                continue
+            try:
+                text = _read_csv_from_zip(raw)
+            except Exception:
+                continue
 
-        items = _parse_customers_from_csv(text)
-        # --- 診断: 最初の数社は、抽出できてもできなくても生構造をログに出す ---
-        # 本番の実CSV構造をこの1回で確定させるため。慣れたら DIAG_LIMIT=0 で消せる。
-        DIAG_LIMIT = 6
-        if diag_done < DIAG_LIMIT and (not items or diag_done < 3):
-            _diagnose_customer_block(text, sec)
-            diag_done += 1
+            items = _parse_customers_from_csv(text)
 
-        if items:
-            for it in items:
+            if dbg:
+                has = ("主要な顧客" in text)
+                print(f"    [顧客診断] {sec} 期{pi}(doc={doc}): 抽出{len(items)}件 / "
+                      f"顧客ブロック{'あり' if has else 'なし'} / "
+                      f"顧客={[x['customer'] for x in items]}")
+                _diagnose_customer_block(text, sec)
+
+            if items and got is None:
+                got = items
+                got_period = pi
+                if not dbg:
+                    break     # 通常は最初のヒットで確定(過去は見ない)
+            time.sleep(0.35)
+
+        if got:
+            for it in got:
                 it["sec"] = sec
-            result[sec] = items
+            result[sec] = got
             ok += 1
-            if ok <= 8:  # 抽出できた社の顧客名をログに
-                names = [x["customer"] for x in items]
-                print(f"    [顧客] {sec}: {names}")
+            if got_period == 0:
+                latest_only += 1
+            else:
+                used_fallback += 1
+            if ok <= 10 or got_period > 0:
+                tag = "最新" if got_period == 0 else f"過去{got_period}期前"
+                print(f"    [顧客] {sec}: [{tag}] {[x['customer'] for x in got]}")
         else:
             empty += 1
-        time.sleep(0.4)  # EDINETへの負荷軽減
+            if empty_diag < 3 and not dbg and docs:
+                try:
+                    _dtxt = _read_csv_from_zip(_get(
+                        f"{API_BASE}/documents/{docs[0]}?type=5"
+                        f"&Subscription-Key={urllib.parse.quote(key)}"))
+                    _diagnose_customer_block(_dtxt, sec)
+                    empty_diag += 1
+                except Exception:
+                    pass
+        time.sleep(0.2)
 
-    print(f"    [顧客] 取得成功 {ok}社 / 顧客情報なし {empty}社 / 失敗 {ng}社")
+    print(f"    [顧客] 取得成功 {ok}社(最新期 {latest_only}社 / 過去期フォールバック {used_fallback}社) "
+          f"/ 顧客情報なし {empty}社 / 失敗 {ng}社")
+    print(f"    [顧客] ※もし旧実装(最新期のみ)なら {latest_only}社だった → 遡りで +{used_fallback}社")
     return result
 
 
