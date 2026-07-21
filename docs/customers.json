@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-21T05:49:31+00:00",
+ "updated": "2026-07-21T06:26:56+00:00",
  "customers": {
   "1942": [
    {
@@ -28,10 +28,35 @@
     "sec": "1980"
    }
   ],
+  "2737": [
+   {
+    "customer": "NEW H3C INFORMATION TECHNOLOGIES CO., LTD.",
+    "amount_oku": 778.8,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "2737"
+   }
+  ],
+  "2962": [
+   {
+    "customer": "Wuhan Raycus Fiber Laser Technologies Co., Ltd.",
+    "amount_oku": 8.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "2962"
+   }
+  ],
   "3433": [
    {
     "customer": "東京エレクトロン株式会社グループ",
     "amount_oku": 155.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "3433"
+   },
+   {
+    "customer": "(単体)アプライド・マテリアルズグループ",
+    "amount_oku": 54.9,
     "year": null,
     "ratio_pct": null,
     "sec": "3433"
@@ -46,10 +71,60 @@
     "sec": "3436"
    }
   ],
+  "3445": [
+   {
+    "customer": "Sony Semiconductor Solutions Corporation",
+    "amount_oku": 151.3,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "3445"
+   },
+   {
+    "customer": "Taiwan Semiconductor Manufacturing Co., Ltd.",
+    "amount_oku": 136.2,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "3445"
+   }
+  ],
+  "3891": [
+   {
+    "customer": "王子エフテックス㈱",
+    "amount_oku": 119.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "3891"
+   }
+  ],
+  "3905": [
+   {
+    "customer": "またはナウナウジャパン株式会社",
+    "amount_oku": 304.8,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "3905"
+   }
+  ],
+  "4021": [
+   {
+    "customer": "SINTECH International Trading(Shanghai)Co., Ltd",
+    "amount_oku": 299.2,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4021"
+   }
+  ],
   "4022": [
    {
     "customer": "丸善薬品産業株式会社",
     "amount_oku": 80.1,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4022"
+   },
+   {
+    "customer": "Taiwan Semiconductor Manufacturing Co.,Ltd.",
+    "amount_oku": 66.1,
     "year": null,
     "ratio_pct": null,
     "sec": "4022"
@@ -62,12 +137,26 @@
     "year": null,
     "ratio_pct": null,
     "sec": "4028"
+   },
+   {
+    "customer": "及び無機化学事業長瀬産業株式会社",
+    "amount_oku": 151.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4028"
    }
   ],
   "4047": [
    {
-    "customer": "Samsung Electronics Co., Ltd",
+    "customer": "Samsung Electronics Co., Ltd.",
     "amount_oku": 143.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4047"
+   },
+   {
+    "customer": "キオクシア株式会社",
+    "amount_oku": 123.4,
     "year": null,
     "ratio_pct": null,
     "sec": "4047"
@@ -75,15 +164,22 @@
   ],
   "4062": [
    {
-    "customer": "NVIDIA Corp",
+    "customer": "NVIDIA Corp.",
     "amount_oku": 1224.7,
     "year": null,
     "ratio_pct": null,
     "sec": "4062"
    },
    {
-    "customer": "Intel Corp",
+    "customer": "Intel Corp.",
     "amount_oku": 767.1,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4062"
+   },
+   {
+    "customer": "Advanced Micro Devices Inc.",
+    "amount_oku": 407.1,
     "year": null,
     "ratio_pct": null,
     "sec": "4062"
@@ -107,6 +203,15 @@
     "sec": "4109"
    }
   ],
+  "4187": [
+   {
+    "customer": "ＪＳＲ株式会社",
+    "amount_oku": 52.6,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4187"
+   }
+  ],
   "4366": [
    {
     "customer": "三木産業㈱",
@@ -121,15 +226,54 @@
     "year": null,
     "ratio_pct": null,
     "sec": "4366"
+   },
+   {
+    "customer": "住友化学㈱",
+    "amount_oku": 41.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4366"
+   },
+   {
+    "customer": "東京応化工業㈱",
+    "amount_oku": 17.2,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4366"
+   }
+  ],
+  "4368": [
+   {
+    "customer": "またはFUJIFILM Electronic Materials Taiwan Co., Ltd.",
+    "amount_oku": 106.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4368"
    }
   ],
   "4369": [
    {
-    "customer": "（千円）TOPCO Scientific Co., Ltd",
+    "customer": "(千円)TOPCO Scientific Co., Ltd.",
     "amount_oku": 52.9,
     "year": null,
     "ratio_pct": null,
     "sec": "4369"
+   },
+   {
+    "customer": "Changxin Xinqiao Memory Technologies, Inc.",
+    "amount_oku": 25.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4369"
+   }
+  ],
+  "4462": [
+   {
+    "customer": "AMPOC Far-East Co., Ltd.",
+    "amount_oku": 32.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4462"
    }
   ],
   "4626": [
@@ -141,6 +285,15 @@
     "sec": "4626"
    }
   ],
+  "4966": [
+   {
+    "customer": "欣興電子股份有限公司",
+    "amount_oku": 95.1,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4966"
+   }
+  ],
   "4980": [
    {
     "customer": "日東電工株式会社",
@@ -150,10 +303,44 @@
     "sec": "4980"
    }
   ],
+  "5208": [
+   {
+    "customer": "味の素ファインテクノ株式会社",
+    "amount_oku": 43.3,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "5208"
+   }
+  ],
+  "5217": [
+   {
+    "customer": "Applied Materials, Inc.",
+    "amount_oku": 62.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "5217"
+   }
+  ],
+  "5384": [
+   {
+    "customer": "長瀬産業㈱17,375日 本 TAIWAN SEMICONDUCTOR MANUFACTURING CO., LTD.",
+    "amount_oku": 120.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "5384"
+   },
+   {
+    "customer": "長瀬産業㈱16,599日 本 TAIWAN SEMICONDUCTOR MANUFACTURING CO., LTD.",
+    "amount_oku": 100.1,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "5384"
+   }
+  ],
   "5631": [
    {
-    "customer": "防衛装備庁",
-    "amount_oku": 304.7,
+    "customer": "丸紅テクノシステム(株)",
+    "amount_oku": 275.2,
     "year": null,
     "ratio_pct": null,
     "sec": "5631"
@@ -177,9 +364,107 @@
     "sec": "6055"
    }
   ],
+  "6146": [
+   {
+    "customer": "Taiwan Semiconductor Manufacturing Company Ltd.",
+    "amount_oku": 482.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6146"
+   }
+  ],
+  "6227": [
+   {
+    "customer": "MIC-TECH(SHANGHAI) CORP.",
+    "amount_oku": 74.2,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6227"
+   },
+   {
+    "customer": "MARKETECH INTERNATIONAL CORP.",
+    "amount_oku": 66.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6227"
+   }
+  ],
+  "6235": [
+   {
+    "customer": "Largan Precision Co., Ltd",
+    "amount_oku": 58.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6235"
+   },
+   {
+    "customer": "Zhejiang Sunny Optics Co., Ltd.",
+    "amount_oku": 37.1,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6235"
+   }
+  ],
+  "6254": [
+   {
+    "customer": "SAMSUNG AUSTIN SEMICONDUCTOR,L.L.C.",
+    "amount_oku": 524.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6254"
+   },
+   {
+    "customer": ",800 日本SAMSUNG AUSTIN SEMICONDUCTOR,L.L.C.",
+    "amount_oku": 100.8,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6254"
+   },
+   {
+    "customer": "米国SK Hynix Inc.",
+    "amount_oku": 68.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6254"
+   }
+  ],
+  "6258": [
+   {
+    "customer": "General Motors LLC",
+    "amount_oku": 165.8,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6258"
+   }
+  ],
+  "6264": [
+   {
+    "customer": "日本発条株式会社",
+    "amount_oku": 28.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6264"
+   },
+   {
+    "customer": "東京エレクトロン宮城株式会社",
+    "amount_oku": 16.8,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6264"
+   }
+  ],
+  "6266": [
+   {
+    "customer": "Taiwan Semiconductor Manufacturing Co Ltd",
+    "amount_oku": 109.2,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6266"
+   }
+  ],
   "6278": [
    {
-    "customer": "Wus Printed Circuit(Kunshan)Co.,Ltd",
+    "customer": "Wus Printed Circuit(Kunshan)Co.,Ltd.",
     "amount_oku": 57.0,
     "year": null,
     "ratio_pct": null,
@@ -188,16 +473,46 @@
   ],
   "6323": [
    {
-    "customer": "Applied Materials,Inc",
+    "customer": "Applied Materials,Inc.",
     "amount_oku": 240.2,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6323"
+   },
+   {
+    "customer": "Taiwan Semiconductor Manufacturing Company, Ltd.",
+    "amount_oku": 195.2,
     "year": null,
     "ratio_pct": null,
     "sec": "6323"
    }
   ],
+  "6327": [
+   {
+    "customer": "広東盈華電子材料有限公司",
+    "amount_oku": 22.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6327"
+   },
+   {
+    "customer": "ELITE MATERIAL (PENANG) SDN.BHD.",
+    "amount_oku": 8.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6327"
+   },
+   {
+    "customer": "MGC ELECTROTECHNO (THAILAND) CO.,LTD.",
+    "amount_oku": 7.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6327"
+   }
+  ],
   "6336": [
    {
-    "customer": "SHANGHAI SUN-WA TECHNOS CO.,LTD",
+    "customer": "SHANGHAI SUN-WA TECHNOS CO.,LTD.",
     "amount_oku": 22.9,
     "year": null,
     "ratio_pct": null,
@@ -222,13 +537,54 @@
     "sec": "6340"
    }
   ],
-  "6363": [
+  "6368": [
    {
-    "customer": "当連結会計年度に、販売実績の総販売実績に対する割合が",
-    "amount_oku": 1.0,
+    "customer": "Taiwan Semiconductor Manufacturing Company, Ltd.",
+    "amount_oku": 448.2,
     "year": null,
     "ratio_pct": null,
-    "sec": "6363"
+    "sec": "6368"
+   }
+  ],
+  "6383": [
+   {
+    "customer": "Taiwan Semiconductor Manufacturing Company, Limited.",
+    "amount_oku": 914.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6383"
+   }
+  ],
+  "6384": [
+   {
+    "customer": "Largan Precision Co.Ltd",
+    "amount_oku": 27.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6384"
+   },
+   {
+    "customer": "株式会社大真空",
+    "amount_oku": 15.3,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6384"
+   },
+   {
+    "customer": "三生電子株式会社",
+    "amount_oku": 13.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6384"
+   }
+  ],
+  "6387": [
+   {
+    "customer": "国立研究開発法人 情報通信研究機構",
+    "amount_oku": 7.3,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6387"
    }
   ],
   "6486": [
@@ -249,9 +605,25 @@
     "sec": "6490"
    }
   ],
+  "6521": [
+   {
+    "customer": "区分Skyverse Technology Co., Ltd.",
+    "amount_oku": 31.1,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6521"
+   },
+   {
+    "customer": "Marubeni America Corporation",
+    "amount_oku": 18.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6521"
+   }
+  ],
   "6524": [
    {
-    "customer": "Alcatel Submarine Networks UK Ltd",
+    "customer": "Alcatel Submarine Networks UK Ltd.",
     "amount_oku": 34.8,
     "year": null,
     "ratio_pct": null,
@@ -265,6 +637,45 @@
     "sec": "6524"
    }
   ],
+  "6590": [
+   {
+    "customer": "Taiwan Semiconductor Manufacturing Company,Ltd.",
+    "amount_oku": 344.8,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6590"
+   }
+  ],
+  "6613": [
+   {
+    "customer": "日本電計株式会社",
+    "amount_oku": 2.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6613"
+   },
+   {
+    "customer": "レーザ・オプティカルソリューション事業Beckman Coulter, Inc.",
+    "amount_oku": 1.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6613"
+   },
+   {
+    "customer": "Fabrinet Co., Ltd.",
+    "amount_oku": 1.6,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6613"
+   },
+   {
+    "customer": "レーザ・オプティカルソリューション事業株式会社彩世",
+    "amount_oku": 1.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6613"
+   }
+  ],
   "6622": [
    {
     "customer": "東京エレクトロン宮城㈱",
@@ -274,6 +685,29 @@
     "sec": "6622"
    }
   ],
+  "6668": [
+   {
+    "customer": "Beijing E-Town Semiconductor Technology Co., Ltd.",
+    "amount_oku": 16.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6668"
+   },
+   {
+    "customer": "ASM Front-End Manufacturing Singapore Pte. Ltd.",
+    "amount_oku": 16.1,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6668"
+   },
+   {
+    "customer": "Applied Materials, Inc.",
+    "amount_oku": 11.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6668"
+   }
+  ],
   "6740": [
    {
     "customer": "株式会社デンソー",
@@ -281,20 +715,96 @@
     "year": null,
     "ratio_pct": null,
     "sec": "6740"
+   },
+   {
+    "customer": "Apple Inc.グループ",
+    "amount_oku": 305.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6740"
+   },
+   {
+    "customer": "日本精機株式会社",
+    "amount_oku": 216.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6740"
+   },
+   {
+    "customer": "Forvia SE",
+    "amount_oku": 164.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6740"
    }
   ],
   "6768": [
    {
-    "customer": "牧田（昆山）有限公司",
-    "amount_oku": 58.5,
+    "customer": "株式会社マキタ",
+    "amount_oku": 20.4,
     "year": null,
     "ratio_pct": null,
     "sec": "6768"
    }
   ],
+  "6777": [
+   {
+    "customer": "Alcon, Inc.",
+    "amount_oku": 55.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6777"
+   }
+  ],
+  "6832": [
+   {
+    "customer": "日亜化学工業㈱",
+    "amount_oku": 120.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6832"
+   },
+   {
+    "customer": "ミツミ電機㈱",
+    "amount_oku": 59.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6832"
+   },
+   {
+    "customer": "日清紡マイクロデバイス㈱",
+    "amount_oku": 49.1,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6832"
+   }
+  ],
+  "6834": [
+   {
+    "customer": "株式会社デンソー",
+    "amount_oku": 53.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6834"
+   },
+   {
+    "customer": "精機関連Corning Optical Communications, S.de R.L.de C.V.",
+    "amount_oku": 31.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6834"
+   },
+   {
+    "customer": "株式会社豊田自動織機",
+    "amount_oku": 22.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6834"
+   }
+  ],
   "6837": [
    {
-    "customer": "SIIX EMS MEXICO, S. de R.L de C.V",
+    "customer": "SIIX EMS MEXICO, S. de R.L de C.V.",
     "amount_oku": 26.5,
     "year": null,
     "ratio_pct": null,
@@ -308,12 +818,33 @@
     "year": null,
     "ratio_pct": null,
     "sec": "6855"
+   },
+   {
+    "customer": "MICRON MEMORY TAIWAN Co.,Ltd.",
+    "amount_oku": 45.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6855"
+   },
+   {
+    "customer": "ソニーセミコンダクタマニュファクチャリング㈱",
+    "amount_oku": 24.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6855"
    }
   ],
   "6871": [
    {
-    "customer": "Samsung Electronics Co., Ltd",
+    "customer": "Samsung Electronics Co., Ltd.",
     "amount_oku": 350.1,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6871"
+   },
+   {
+    "customer": "Micron Memory Taiwan Co., Ltd.",
+    "amount_oku": 149.9,
     "year": null,
     "ratio_pct": null,
     "sec": "6871"
@@ -335,6 +866,29 @@
     "year": null,
     "ratio_pct": null,
     "sec": "6920"
+   },
+   {
+    "customer": "Taiwan Semiconductor Manufacturing Company Limited",
+    "amount_oku": 680.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6920"
+   },
+   {
+    "customer": "Samsung Electronics Co., Ltd.",
+    "amount_oku": 499.8,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6920"
+   }
+  ],
+  "6941": [
+   {
+    "customer": "Qualcomm Technologies Inc.",
+    "amount_oku": 109.6,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6941"
    }
   ],
   "6966": [
@@ -344,6 +898,40 @@
     "year": null,
     "ratio_pct": null,
     "sec": "6966"
+   }
+  ],
+  "6969": [
+   {
+    "customer": "㈱デンソー(グループ会社含む)",
+    "amount_oku": 19.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6969"
+   },
+   {
+    "customer": "釜屋電機㈱",
+    "amount_oku": 7.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6969"
+   }
+  ],
+  "6977": [
+   {
+    "customer": "ダイヘン産業機器㈱",
+    "amount_oku": 7.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6977"
+   }
+  ],
+  "6994": [
+   {
+    "customer": "株式会社ＴＭＥＩＣ",
+    "amount_oku": 40.7,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6994"
    }
   ],
   "6998": [
@@ -357,11 +945,50 @@
   ],
   "7717": [
    {
-    "customer": "Xiamen Tianma Optoelectronics Co., Ltd",
+    "customer": "Xiamen Tianma Optoelectronics Co., Ltd.",
     "amount_oku": 81.4,
     "year": null,
     "ratio_pct": null,
     "sec": "7717"
+   },
+   {
+    "customer": "Zhejiang Laibao Display Technology Co., Ltd.",
+    "amount_oku": 57.2,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "7717"
+   },
+   {
+    "customer": "ＦＰＤ装置事業株式会社エイチ・ティー・エル",
+    "amount_oku": 49.8,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "7717"
+   }
+  ],
+  "7735": [
+   {
+    "customer": "Taiwan Semiconductor ManufacturingCompany, Ltd.",
+    "amount_oku": 897.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "7735"
+   }
+  ],
+  "7746": [
+   {
+    "customer": "Epson Precision(Philippines), Inc.",
+    "amount_oku": 11.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "7746"
+   },
+   {
+    "customer": "Signify Industry(China)Co.,Ltd",
+    "amount_oku": 2.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "7746"
    }
   ],
   "7826": [
@@ -371,12 +998,26 @@
     "year": null,
     "ratio_pct": null,
     "sec": "7826"
+   },
+   {
+    "customer": "De Nora Deutschland GmbH",
+    "amount_oku": 91.6,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "7826"
    }
   ],
   "8035": [
    {
-    "customer": "Samsung Electronics Co., Ltd",
+    "customer": "Samsung Electronics Co., Ltd.",
     "amount_oku": 3680.8,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "8035"
+   },
+   {
+    "customer": "Taiwan Semiconductor Manufacturing Company Ltd.",
+    "amount_oku": 3158.1,
     "year": null,
     "ratio_pct": null,
     "sec": "8035"
