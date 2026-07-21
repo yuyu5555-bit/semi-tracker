@@ -245,61 +245,100 @@ _CUST_LABELS = (
 )
 
 
-def _strip_labels(s: str) -> str:
-    for w in _CUST_LABELS:
+def _strip_header_labels(window: str) -> str:
+    """顧客表の先頭にある「(単位:XXX円)」と列見出しを除去し、1社目の社名から始まる本文を返す。"""
+    s = window
+    s = re.sub(r"[（(]\s*単位\s*[:：][^）)]*[）)]", "", s)     # (単位:百万円/千円/円) を丸ごと
+    s = re.sub(r"単位\s*[:：]\s*(?:百万円|千円|円)", "", s)
+    for w in ("顧客の名称又は氏名", "顧客の名称若しくは氏名", "相手先の名称又は氏名",
+              "顧客の名称", "相手先の名称", "名称又は氏名", "関連するセグメント名",
+              "セグメント名", "相手先", "売上高", "氏名", "名称"):
         s = s.replace(w, "")
-    # 先頭の見出し番号・全角/半角スペース・記号を落とす
-    return s.strip("　 　.．・:：0123456789０-９\t\r\n")
+    return s.strip("　 0123456789０１２３４５６７８９.．・:：\t\r\n")
+
+
+# 社名として無効(見出し・注記・セグメント残り等)
+_NAME_NG = ("記載", "省略", "該当", "セグメント", "単位", "注)", "注）", "(注", "（注",
+            "売上高", "合計", "事業年度", "会計年度")
+
+
+def _norm_name(s: str) -> str:
+    """社名の表記ゆれを正規化(全角記号→半角・空白圧縮)。前期/当期の重複寄せを効かせる。
+    末尾のピリオド(Inc. / Ltd. / CORP.)は社名の一部なので残す。"""
+    s = (s.replace("．", ".").replace("，", ",").replace("（", "(").replace("）", ")")
+         .replace("　", " "))
+    return re.sub(r"\s+", " ", s).strip(" 　・、")
+
+
+def _clean_company_name(raw: str, common_seg: str) -> str:
+    """金額と金額の間の文字列から社名を復元する。
+    2社目以降は「前行のセグメント名＋今行の社名」が繋がっているため、末尾で判明した
+    共通セグメント名を前方から剥がす。剥がせない場合の保険で先頭の「…事業」も落とす。"""
+    s = raw.strip("　 \t\r\n")
+    if common_seg and s.startswith(common_seg):
+        s = s[len(common_seg):]
+    elif common_seg:
+        mseg = re.match(r"[^0-9A-Za-zＡ-Ｚａ-ｚ]{2,20}?事業", s)
+        if mseg:
+            s = s[mseg.end():]
+    return _norm_name(s)
 
 
 def _parse_plaintext_customers(plain: str, default_div: int) -> list[dict]:
-    """区切り文字の無いベタ文字列(EDINETの実データはこれが多い)から、
-    「主要な顧客ごとの情報」区画ごとに"先頭1社"を確実に取る。
+    """区切り文字の無いベタ文字列(EDINETの実データはこの形が多い)から、
+    「主要な顧客ごとの情報」区画ごとに"複数社"を取り出す。
 
-    2社目以降はグルー文字列で社名とセグメント名の境界が曖昧になり誤爆するため、
-    ここでは取りにいかない(取り逃しは許容・ゴミは出さない)。表形式の会社は
-    _parse_html_table 側が複数社に対応する。前期/当期など複数区画は個別に処理し、
-    同名は最大額で寄せる(=当期側が残る)。
+    構造: 見出し(単位・列名)の後ろに「社名・金額・セグメント名」が繰り返し連結。
+    金額(カンマ区切り数字)を区切りに社を分割し、末尾で判明する共通セグメント名を
+    前方から剥がして各社名を復元する。前期/当期など複数区画は個別に処理し、
+    呼び出し側で同名は最大額に寄せる。
     """
     out = []
+    amt_re = re.compile(
+        r"(?<![\d,])([1-9]\d{0,2}(?:,\d{3})+|\d{3,})"
+        r"(?!\s*[％%])(?!\s*年)(?!\s*月)(?!\s*日)")
     for m in re.finditer("主要な顧客ごとの情報", plain):
         start = m.end()
-        # 区画の終端: 次の見出し/年度/区画のうち最も手前(無ければ+320字)
         ends = []
         for marker in ("【", "当連結会計年度", "前連結会計年度",
                        "報告セグメント", "主要な顧客ごとの情報", "関連情報"):
             j = plain.find(marker, start + 3)
             if j != -1:
                 ends.append(j)
-        end = min(ends) if ends else start + 320
-        window = plain[start:min(end, start + 320)]
+        end = min(ends) if ends else start + 400
+        window = plain[start:min(end, start + 400)]
 
-        # 省略型はスキップ(=顧客が無い。空が正常)
         if any(w in window for w in _OMIT_MARKERS):
             continue
 
-        clean = _strip_labels(window)
-        # 先頭の金額を探す(3桁以上、％表記や年号は除外)
-        am = re.search(r"(?<![\d,])([1-9]\d{0,2}(?:,\d{3})+|\d{3,})(?!\s*[％%])"
-                       r"(?!\s*年)(?!\s*月)(?!\s*日)", clean)
-        if not am:
-            continue
-        name = _strip_labels(clean[:am.start()])
-        # 社名の妥当性(先頭区画は位置で信頼できるが、最低限のノイズ除去)
-        if len(name) < 2 or len(name) > 40:
-            continue
-        if any(w in name for w in ("記載", "省略", "該当", "情報", "セグメント",
-                                    "単位", "注）", "(注", "百万円")):
-            continue
-        try:
-            amount = int(am.group(1).replace(",", ""))
-        except ValueError:
-            continue
         div = _unit_divisor(window) or default_div
-        oku = round(amount / div, 1)
-        if oku < 1:
+        body = _strip_header_labels(window)
+        ms = list(amt_re.finditer(body))
+        if not ms:
             continue
-        out.append({"customer": name, "amount_oku": oku, "ratio_pct": None})
+        # 末尾の共通セグメント名(最後の金額より後ろ)。見出し記号以降は落とす。
+        common_seg = body[ms[-1].end():].strip("　 \t\r\n・,、")
+        common_seg = re.sub(r"[【（(].*$", "", common_seg).strip()
+
+        prev_end = 0
+        for am in ms:
+            raw = body[prev_end:am.start()]
+            prev_end = am.end()
+            name = _clean_company_name(raw, common_seg)
+            if len(name) < 2 or len(name) > 60:
+                continue
+            if any(w in name for w in _NAME_NG):
+                continue
+            if not _looks_like_company(name):
+                continue
+            try:
+                amount = int(am.group(1).replace(",", ""))
+            except ValueError:
+                continue
+            oku = round(amount / div, 1)
+            if oku < 1:
+                continue
+            out.append({"customer": name, "amount_oku": oku, "ratio_pct": None})
     return out
 
 
