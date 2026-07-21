@@ -579,6 +579,7 @@
   </div>
 
   <div id="homeView" style="display:none"></div>
+  <div id="custView" style="display:none"></div>
 <div id="learnView" style="display:none"></div>
 <div id="newsView" style="display:none"></div>
 <div id="linkView" style="display:none">
@@ -1667,6 +1668,15 @@ function buyerChipsHtml(){
   return out;
 }
 
+function renderCust(){
+  var host=document.getElementById("custView");
+  if(!host) return;
+  var chips=buyerChipsHtml();
+  var head='<div class="gl-head"><div class="gl-k">◉ 主要顧客(有報)</div>'+
+    '<div class="gl-s">有価証券報告書「主要な顧客ごとの情報」から、海外/日本の主役を主要顧客にしている日本株を逆引き。決算・受注ニュースが出た時にどこへ効くかを見る。数字=該当銘柄数。チップをタップで一覧。</div></div>';
+  host.innerHTML = head + (chips || '<div class="mcard"><div class="hm-empty">顧客データがまだありません。update-customers 実行後に反映されます。</div></div>');
+}
+
 function macroSectionHtml(){
   var ser=MACRO.wsts.series.slice(-8);
   var vmax=Math.max.apply(null,ser.map(function(x){return x.value;}));
@@ -2036,7 +2046,7 @@ function renderHome(){
     '<div class="hm-wt">'+glEsc(W.title)+'</div>'+
     '<div class="hm-wb">'+String(W.body).split("\n").map(function(p){return "<p>"+glEsc(p)+"</p>";}).join("")+'</div></div>';
   box.innerHTML='<div class="gl-head"><div class="gl-k">◉ ホーム</div><div class="gl-s">今の相場と、いま出ている材料を一目で。すべて自動更新。</div></div>'+
-    todayFocusHtml()+wk+weeklyHighlightHtml()+eventScheduleHtml(6)+disclosuresHtml(6,"適時開示")+buyerChipsHtml()+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
+    todayFocusHtml()+wk+weeklyHighlightHtml()+eventScheduleHtml(6)+disclosuresHtml(6,"適時開示")+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
   box.querySelectorAll('[data-news]').forEach(function(el){el.addEventListener("click",function(){pushHistory();view="news";render();window.scrollTo(0,0);});});
 }
 
@@ -2105,10 +2115,10 @@ function syncContent(){
 }
 function render(){
   syncContent();
-  chips("#viewChips",[["home","ホーム"],["news","ニュース"],["theme","テーマ"],["rank","銘柄分析"],["ret","騰落率"],["vol","前日比・出来高"],["flow","フロー図"],["link","連動"],["learn","学ぶ"]],view,id=>{pushHistory();view=id;render()});
-  const tv=document.getElementById("themeView"),vv=document.getElementById("volView"),lv=document.getElementById("linkView"),pv=document.getElementById("procView"),rv=document.getElementById("rankView"),fv=document.getElementById("flowView"),etv=document.getElementById("retView"),lrv=document.getElementById("learnView"),nwv=document.getElementById("newsView"),hmv=document.getElementById("homeView");
+  chips("#viewChips",[["home","ホーム"],["news","ニュース"],["theme","テーマ"],["rank","銘柄分析"],["cust","顧客"],["ret","騰落率"],["vol","前日比・出来高"],["flow","フロー図"],["link","連動"],["learn","学ぶ"]],view,id=>{pushHistory();view=id;render()});
+  const tv=document.getElementById("themeView"),vv=document.getElementById("volView"),lv=document.getElementById("linkView"),pv=document.getElementById("procView"),rv=document.getElementById("rankView"),fv=document.getElementById("flowView"),etv=document.getElementById("retView"),lrv=document.getElementById("learnView"),nwv=document.getElementById("newsView"),hmv=document.getElementById("homeView"),cvv=document.getElementById("custView");
   const chartBox=document.getElementById("chartTitle").parentElement;
-  const hideAll=()=>{tv.style.display="none";vv.style.display="none";lv.style.display="none";pv.style.display="none";rv.style.display="none";fv.style.display="none";etv.style.display="none";lrv.style.display="none";nwv.style.display="none";hmv.style.display="none";chartBox.style.display="none";};
+  const hideAll=()=>{tv.style.display="none";vv.style.display="none";lv.style.display="none";pv.style.display="none";rv.style.display="none";fv.style.display="none";etv.style.display="none";lrv.style.display="none";nwv.style.display="none";hmv.style.display="none";cvv.style.display="none";chartBox.style.display="none";};
   if(view==="rank"){
     hideAll();rv.style.display="block";
     renderRank();
@@ -2148,6 +2158,12 @@ function render(){
   if(view==="learn"){
     hideAll();lrv.style.display="block";
     renderLearn();
+    return;
+  }
+  if(view==="cust"){
+    hideAll();cvv.style.display="block";
+    renderCust();
+    if(DATA) document.getElementById("updated").textContent="更新 "+DATA.updated.slice(0,16).replace("T"," ")+"Z";
     return;
   }
   if(view==="flow"){
