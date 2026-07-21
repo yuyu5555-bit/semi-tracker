@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-19T00:44:31+00:00",
+ "updated": "2026-07-21T05:49:31+00:00",
  "customers": {
   "1942": [
    {
@@ -89,6 +89,15 @@
     "sec": "4062"
    }
   ],
+  "4100": [
+   {
+    "customer": "BASF Toda America LLC",
+    "amount_oku": 32.3,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4100"
+   }
+  ],
   "4109": [
    {
     "customer": "または関東化学株式会社",
@@ -114,6 +123,15 @@
     "sec": "4366"
    }
   ],
+  "4369": [
+   {
+    "customer": "（千円）TOPCO Scientific Co., Ltd",
+    "amount_oku": 52.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4369"
+   }
+  ],
   "4626": [
    {
     "customer": "第一三共株式会社",
@@ -121,6 +139,15 @@
     "year": null,
     "ratio_pct": null,
     "sec": "4626"
+   }
+  ],
+  "4980": [
+   {
+    "customer": "日東電工株式会社",
+    "amount_oku": 122.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "4980"
    }
   ],
   "5631": [
@@ -150,6 +177,33 @@
     "sec": "6055"
    }
   ],
+  "6278": [
+   {
+    "customer": "Wus Printed Circuit(Kunshan)Co.,Ltd",
+    "amount_oku": 57.0,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6278"
+   }
+  ],
+  "6323": [
+   {
+    "customer": "Applied Materials,Inc",
+    "amount_oku": 240.2,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6323"
+   }
+  ],
+  "6336": [
+   {
+    "customer": "SHANGHAI SUN-WA TECHNOS CO.,LTD",
+    "amount_oku": 22.9,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6336"
+   }
+  ],
   "6337": [
    {
     "customer": "INFINEON TECHNOLOGIES (MALAYSIA) SDN BHD",
@@ -157,6 +211,15 @@
     "year": null,
     "ratio_pct": null,
     "sec": "6337"
+   }
+  ],
+  "6340": [
+   {
+    "customer": "またはニプロ株式会社",
+    "amount_oku": 218.4,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6340"
    }
   ],
   "6363": [
@@ -220,6 +283,15 @@
     "sec": "6740"
    }
   ],
+  "6768": [
+   {
+    "customer": "牧田（昆山）有限公司",
+    "amount_oku": 58.5,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6768"
+   }
+  ],
   "6837": [
    {
     "customer": "SIIX EMS MEXICO, S. de R.L de C.V",
@@ -263,6 +335,15 @@
     "year": null,
     "ratio_pct": null,
     "sec": "6920"
+   }
+  ],
+  "6966": [
+   {
+    "customer": "トヨタ自動車㈱",
+    "amount_oku": 694.2,
+    "year": null,
+    "ratio_pct": null,
+    "sec": "6966"
    }
   ],
   "6998": [
