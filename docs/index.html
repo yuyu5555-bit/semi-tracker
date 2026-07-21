@@ -1042,7 +1042,7 @@ function showStock(sym){
             var btn=k?('<button type="button" class="bx-chip" style="margin-top:6px" onclick="hideSheet();showBuyerStocks(\''+String(k).replace(/'/g,"")+'\')">'+glEsc(k)+'の関連銘柄を見る</button>'):'';
             var ir='<a class="cx-ir" style="margin-left:0;margin-top:6px;display:inline-block" href="'+irbankUrl(sym,it.edinet)+'" target="_blank" rel="noopener">IRBANKで見る ↗</a>';
             return '<div style="padding:6px 0"><div style="font-size:13px;color:var(--text)">'+glEsc(it.customer)+'</div>'+
-              '<div class="cx-a">'+it.amount_oku.toLocaleString()+'億円 ('+it.year+'年)'+ratio+'</div>'+btn+' '+ir+'</div>';
+              '<div class="cx-a">'+it.amount_oku.toLocaleString()+'億円'+(it.year?' ('+it.year+'年)':'')+ratio+'</div>'+btn+' '+ir+'</div>';
           }).join("")+'</div>';
       })()}
       <div class="techtitle">属するテーマ/タグ(${themes.length+(q.tags||[]).length})</div>
@@ -1631,7 +1631,7 @@ function showBuyerStocks(buyer){
     return '<div class="wh-row">'+
       '<button type="button" class="wh-main" onclick="hideSheet();showStock(\''+r.code+'\')">'+
         '<span class="wh-nm">'+glEsc(r.name)+'</span>'+
-        '<span class="cx-a">'+r.amount_oku.toLocaleString()+'億円 ('+r.year+'年)'+ratio+'</span></button>'+
+        '<span class="cx-a">'+r.amount_oku.toLocaleString()+'億円'+(r.year?' ('+r.year+'年)':'')+ratio+'</span></button>'+
       '<span class="wh-chg">'+chg+'</span>'+
       '<a class="cx-ir" href="'+irbankUrl(r.code,r.edinet)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">IR↗</a>'+
       '</div>';
@@ -1721,6 +1721,30 @@ function macroSectionHtml(){
     ustHtml='<div class="nsec-t" style="margin-top:16px">市況:米10年国債利回り</div><div class="mcard"><div class="hm-empty">まだ取得されていません。update-data 実行後に自動反映されます。</div></div>';
   }
 
+  // Shiller PE / CAPE(S&P500の割高度・自動取得)
+  var SHIL=(typeof DATA!=="undefined"&&DATA&&DATA.shiller)?DATA.shiller:null;
+  var shilHtml="";
+  if(SHIL&&SHIL.last!=null){
+    var sp3=(SHIL.spark||[]);
+    var sparkPts3=sp3.map(function(v,i,arr){var mn=Math.min.apply(null,arr),mx=Math.max.apply(null,arr),r=(mx-mn)||1;
+      return (i/(arr.length-1)*100).toFixed(1)+","+(28-(v-mn)/r*26).toFixed(1);}).join(" ");
+    var vsMean=SHIL.mean?SHIL.last/SHIL.mean:null;
+    var nearMax=(SHIL.max&&SHIL.last>=SHIL.max*0.9);
+    var chgTxt=(SHIL.chg!=null)?('前日'+(SHIL.chg>=0?"+":"")+SHIL.chg.toFixed(2)):"";
+    shilHtml='<div class="nsec-t" style="margin-top:16px">市況:Shiller PE(CAPE・S&P500) <span class="num" style="color:#6EE7F0;font-size:10px">AUTO</span></div>'+
+      '<div class="mcard sox-card"><div class="sox-top"><div class="sox-main"><div class="sox-v">'+SHIL.last.toFixed(2)+'</div>'+
+      '<div class="sox-sub"><span class="num" style="color:var(--faint)">'+chgTxt+'</span>'+
+      (SHIL.mean!=null?'<span class="num" style="color:var(--faint)">平均'+SHIL.mean.toFixed(1)+'</span>':'')+'</div></div>'+
+      '<svg class="sox-spark" viewBox="0 0 100 28" preserveAspectRatio="none"><polyline points="'+sparkPts3+'" fill="none" stroke="var(--down)" stroke-width="2"/></svg></div>'+
+      '<div class="sox-fh'+(nearMax?" sox-fh-warn":"")+'">現在 <b>'+SHIL.last.toFixed(1)+'</b>'+
+      (vsMean?' は過去平均 <b>'+SHIL.mean.toFixed(1)+'</b> の <b>'+vsMean.toFixed(1)+'倍</b>':'')+
+      (SHIL.max!=null?' / 最高 <b>'+SHIL.max.toFixed(1)+'</b>'+(SHIL.max_label?'('+glEsc(SHIL.max_label)+')':''):'')+
+      (nearMax?' <span class="sox-fh-tag">歴史的高値圏</span>':'')+'</div>'+
+      '<div class="sox-note">S&P500全体の割高度(CAPE=株価÷過去10年の平均実質EPS)。高値圏では将来リターンが低くなりやすく、金利上昇局面では高PERの半導体・グロース株の重荷。月次寄りの指標(米市場クローズ時点で更新)。</div></div>';
+  } else {
+    shilHtml='<div class="nsec-t" style="margin-top:16px">市況:Shiller PE(CAPE)</div><div class="mcard"><div class="hm-empty">まだ取得されていません。update-data 実行後に自動反映されます(multpl.comより毎回取得)。</div></div>';
+  }
+
   // TSMC月次売上(自動取得)
   var TM=(typeof DATA!=="undefined"&&DATA&&DATA.tsmc_monthly)?DATA.tsmc_monthly:[];
   var tsmcHtml="";
@@ -1736,7 +1760,7 @@ function macroSectionHtml(){
     tsmcHtml='<div class="nsec-t" style="margin-top:16px">市況:TSMC月次売上</div><div class="mcard"><div class="hm-empty">まだ取得されていません。update-data 実行後に自動反映されます(TSMC公式IRより毎回取得)。</div></div>';
   }
 
-  return soxHtml+ustHtml+tsmcHtml+
+  return soxHtml+ustHtml+shilHtml+tsmcHtml+
     '<div class="nsec-t" style="margin-top:16px">市況:WSTS 世界半導体売上(月次)</div>'+
     '<div class="mcard"><div class="mlab">'+glEsc(MACRO.wsts.label)+'(<span class="num">'+glEsc(MACRO.wsts.unit)+'</span>) 前年比 <span class="'+(yoy>=0?"n-up":"n-down")+'">'+nSign(yoy)+'%</span></div><div class="wsts">'+bars+'</div></div>'+
     '<div class="nsec-t" style="margin-top:16px">市況:主要ファブ CapEx ガイダンス <span class="num" style="color:var(--faint);font-size:11px">'+glEsc(MACRO.capex.as_of)+'</span></div>'+
@@ -2012,7 +2036,7 @@ function renderHome(){
     '<div class="hm-wt">'+glEsc(W.title)+'</div>'+
     '<div class="hm-wb">'+String(W.body).split("\n").map(function(p){return "<p>"+glEsc(p)+"</p>";}).join("")+'</div></div>';
   box.innerHTML='<div class="gl-head"><div class="gl-k">◉ ホーム</div><div class="gl-s">今の相場と、いま出ている材料を一目で。すべて自動更新。</div></div>'+
-    todayFocusHtml()+wk+weeklyHighlightHtml()+eventScheduleHtml(6)+disclosuresHtml(6,"適時開示")+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
+    todayFocusHtml()+wk+weeklyHighlightHtml()+eventScheduleHtml(6)+disclosuresHtml(6,"適時開示")+buyerChipsHtml()+macroSectionHtml()+headlinesHtml(8,"最新ヘッドライン");
   box.querySelectorAll('[data-news]').forEach(function(el){el.addEventListener("click",function(){pushHistory();view="news";render();window.scrollTo(0,0);});});
 }
 
