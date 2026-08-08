@@ -36,35 +36,71 @@ from fetch_customers import (
 # ラテン文字はケース無視で照合、日本語はそのまま照合する。
 # ─────────────────────────────────────────────────────────────
 KEYWORDS: dict[str, list[str]] = {
-    # 国内の建設・投資案件(受注が発生する現場)
+    # ── 国内の新工場・投資案件(固有名詞。ここが逆引きの本命) ──
     "ラピダス": ["ラピダス", "Rapidus"],
-    "JASM(TSMC熊本)": ["JASM", "TSMC熊本", "ＴＳＭＣ熊本", "熊本第一工場", "熊本第二工場"],
-    "キオクシア北上": ["北上", "キオクシア岩手"],
-    "キオクシア四日市": ["四日市", "キオクシア四日市"],
-    "Micron広島": ["マイクロン広島", "Micron広島", "広島工場"],
-    "PSMC宮城": ["PSMC", "力晶", "JSMC"],
+    "JASM(TSMC熊本)": ["JASM", "TSMC熊本", "ＴＳＭＣ熊本", "熊本第一工場", "熊本第二工場", "菊陽町"],
+    "キオクシア北上": ["北上工場", "キオクシア岩手", "K2 工場"],
+    "キオクシア四日市": ["四日市工場", "キオクシア四日市"],
+    "キオクシア": ["キオクシア", "Kioxia"],
+    "マイクロン広島": ["マイクロン広島", "Micron広島", "広島工場"],
+    "PSMC宮城(JSMC)": ["JSMC", "力晶", "PSMC", "SBIセミコンダクター"],
     "ルネサス": ["ルネサス", "Renesas"],
+    "ローム": ["ローム", "ROHM"],
     "ソニーセミコン": ["ソニーセミコンダクタ", "ソニーセミコンダクタソリューションズ"],
-    # 海外主役(供給先)
+    "三菱電機(パワー半導体)": ["三菱電機"],
+    "富士電機": ["富士電機"],
+    "サンケン電気": ["サンケン電気"],
+    "三重富士通セミ": ["三重富士通", "JSファンダリ"],
     "TSMC": ["TSMC", "ＴＳＭＣ", "台湾積体電路", "Taiwan Semiconductor"],
-    "Samsung": ["Samsung", "サムスン", "三星電子"],
-    "SK hynix": ["SK hynix", "SKハイニックス", "エスケーハイニックス", "hynix"],
+    # ── 海外ファウンドリ / IDM / メモリ(供給先の固有名詞) ──
+    "Samsung": ["Samsung", "サムスン", "三星電子", "サムスン電子"],
+    "SK hynix": ["hynix", "ハイニックス", "ハイニクス", "SKハイニックス"],
     "Intel": ["Intel", "インテル"],
-    "NVIDIA": ["NVIDIA", "エヌビディア"],
     "Micron": ["Micron", "マイクロン"],
-    "Applied Materials": ["Applied Materials", "アプライド マテリアルズ", "アプライドマテリアルズ"],
+    "GlobalFoundries": ["GlobalFoundries", "グローバルファウンドリーズ", "グローバルファウンダリーズ"],
+    "UMC(聯華)": ["聯華電子", "ユナイテッド・マイクロエレクトロニクス"],
+    "SMIC(中芯)": ["中芯国際", "SMIC"],
+    "Nanya(南亜)": ["南亜科技", "ナンヤ"],
+    "Winbond(華邦)": ["華邦電子", "Winbond"],
+    "Western Digital": ["ウエスタンデジタル", "Western Digital"],
+    "Infineon": ["インフィニオン", "Infineon"],
+    "STマイクロ": ["STマイクロエレクトロニクス", "STMicroelectronics"],
+    "Texas Instruments": ["テキサス・インスツルメンツ", "Texas Instruments"],
+    "onsemi": ["オンセミ", "onsemi", "ON Semiconductor"],
+    # ── 海外の装置 / 材料の主役(競合・提携先) ──
     "ASML": ["ASML", "エーエスエムエル"],
-    "Lam Research": ["Lam Research", "ラムリサーチ"],
-    # テーマ
+    "Applied Materials": ["Applied Materials", "アプライドマテリアルズ", "アプライド・マテリアルズ"],
+    "Lam Research": ["Lam Research", "ラムリサーチ", "ラム・リサーチ"],
+    "KLA": ["KLA", "ケーエルエー"],
+    "Teradyne": ["Teradyne", "テラダイン"],
+    "Entegris": ["Entegris", "インテグリス"],
+    # ── AI / IT の最終顧客(固有名詞) ──
+    "NVIDIA": ["NVIDIA", "エヌビディア"],
+    "AMD": ["AMD", "エーエムディー"],
+    "Apple": ["Apple", "アップル"],
+    "Broadcom": ["Broadcom", "ブロードコム"],
+    "Qualcomm": ["Qualcomm", "クアルコム"],
+    "Google": ["Google", "グーグル", "Alphabet"],
+    "Amazon(AWS)": ["Amazon", "アマゾン", "AWS"],
+    "Microsoft": ["Microsoft", "マイクロソフト"],
+    "Meta": ["Meta Platforms", "メタ・プラットフォームズ"],
+    "Tesla": ["Tesla", "テスラ"],
+    "OpenAI": ["OpenAI"],
+    # ── 先端テーマ(件数が絞れる=識別力のある語だけ。SiC/GaN等の一般語は除外) ──
     "CoWoS": ["CoWoS", "ＣｏＷｏＳ"],
+    "SoIC": ["SoIC"],
     "HBM": ["HBM", "広帯域メモリ"],
-    "先端パッケージ": ["先端パッケージ", "先端実装", "パネルレベルパッケージ", "PLP"],
-    "EUV": ["EUV", "極端紫外線"],
-    "パワー半導体SiC": ["SiC", "炭化ケイ素", "パワー半導体"],
-    "GaN": ["GaN", "窒化ガリウム"],
+    "ガラス基板": ["ガラス基板", "ガラスコア", "glass substrate"],
+    "GAA(ゲート全周)": ["ゲートオールアラウンド", "GAA", "ナノシート"],
+    "バックサイド給電": ["バックサイド給電", "裏面電源", "BSPDN"],
+    "チップレット": ["チップレット", "chiplet"],
+    "High-NA EUV": ["High-NA", "ハイNA"],
+    "ハイブリッドボンディング": ["ハイブリッドボンディング", "hybrid bonding", "ハイブリッドボンダー"],
+    "パネルレベル(FOPLP)": ["パネルレベル", "FOPLP", "PLP"],
+    "EUV": ["EUV", "極端紫外"],
+    "先端パッケージ": ["先端パッケージ", "先端実装"],
 }
 
-SNIPPET_PAD = 60   # ヒット箇所の前後に取る文字数
 
 
 def _load_target_secs() -> set[str]:
@@ -82,26 +118,101 @@ def _load_target_secs() -> set[str]:
     return codes
 
 
-def _clean_snippet(text: str, idx: int, kwlen: int) -> str:
-    a = max(0, idx - SNIPPET_PAD)
-    b = min(len(text), idx + kwlen + SNIPPET_PAD)
-    s = text[a:b].replace("\r", " ").replace("\n", " ")
-    return re.sub(r"\s+", " ", s).strip()
+_SENT_END = "。．！？!?\n\r"        # 文の区切り
+_SCAN = 110                          # ヒット前後にたどる最大文字数
+# 表を示すマーカー: 見出し語 or 詰まった数字連結(24,01819.3 のような表セルの結合)
+_NUMRUN = re.compile(r"\d[\d,\.]{3,}\d")
+_TABLE_WORD = ("割合(%)", "割合（％）", "(百万円)", "（百万円）", "(千円)", "（千円）",
+               "販売高", "受注高", "生産高", "セグメントの名称",
+               "顧客の名称", "相手先の名称", "主要な顧客ごとの情報")
+
+
+def _clean(s: str) -> str:
+    return re.sub(r"\s+", " ", s.replace("\r", " ").replace("\n", " ")).strip("　 、,・)）(（ ")
+
+
+def _readable_snippet(text: str, idx: int, kwlen: int) -> str:
+    """ヒット位置を含む1文を切り出し、前後の表ノイズ(数字連結・見出し)を削って返す。"""
+    a = idx
+    while a > 0 and text[a - 1] not in _SENT_END and idx - a < _SCAN:
+        a -= 1
+    b = idx + kwlen
+    while b < len(text) and text[b] not in _SENT_END and b - (idx + kwlen) < _SCAN:
+        b += 1
+    span = text[a:b]
+    rel = idx - a
+    # キーワード前: 最後の数字連結の直後で切る(表の値を落とす)
+    cut = 0
+    for m in _NUMRUN.finditer(span[:rel]):
+        cut = m.end()
+    # キーワード後: 最初の数字連結の手前で切る
+    end = len(span)
+    m = _NUMRUN.search(span, rel + kwlen)
+    if m:
+        end = m.start()
+    return _clean(span[cut:end])
+
+
+def _digit_noise_ratio(s: str) -> float:
+    if not s:
+        return 1.0
+    noise = sum(c.isdigit() or c in "().,%％　 、,-−./／:：;" for c in s)
+    return noise / len(s)
+
+
+def _is_readable(s: str) -> bool:
+    """人が読める"文"か。表の数字羅列・見出し行を弾く。"""
+    if len(s) < 12:
+        return False
+    if any(w in s for w in _TABLE_WORD):
+        return False
+    if len(_NUMRUN.findall(s)) >= 2:          # 数字連結が複数=表
+        return False
+    if _digit_noise_ratio(s) > 0.4:
+        return False
+    # 述語/助詞が含まれる(=文らしい)
+    if not any(p in s for p in ("は", "が", "を", "に", "と", "の", "で", "し", "する", "した",
+                                "ている", "供給", "採用", "取引", "納入", "向け", "含ま", "占め")):
+        return False
+    return True
 
 
 def find_mentions(text: str) -> dict[str, str]:
-    """本文テキストから、各案件キーワードの初出スニペットを返す。{案件名: snippet}"""
+    """各案件キーワードについて「読める1文」のスニペットを返す。{案件名: snippet}
+      - ラテン別名は語境界一致('gan'が'organ'に誤爆しない。HBMはHBM3Eに一致)
+      - 表の数字羅列/見出しは弾き、文章での言及を優先
+      - 読める文が無く表内のみの言及なら snippet="" (=表内言及。件数には数える)
+    """
     low = text.lower()
     hits: dict[str, str] = {}
     for canon, aliases in KEYWORDS.items():
+        best_snip = None
+        found = False
         for al in aliases:
-            if al.isascii():                       # ラテン: ケース無視
-                idx = low.find(al.lower())
-            else:                                  # 日本語: そのまま
-                idx = text.find(al)
-            if idx >= 0:
-                hits[canon] = _clean_snippet(text, idx, len(al))
+            positions: list[tuple[int, int]] = []
+            if al.isascii():
+                for m in re.finditer(r"(?<![a-z])" + re.escape(al.lower()) + r"(?![a-z])", low):
+                    positions.append((m.start(), len(al)))
+                    if len(positions) >= 40:
+                        break
+            else:
+                st = 0
+                while len(positions) < 40:
+                    i = text.find(al, st)
+                    if i < 0:
+                        break
+                    positions.append((i, len(al)))
+                    st = i + len(al)
+            for (i, l) in positions:
+                found = True
+                s = _readable_snippet(text, i, l)
+                if _is_readable(s):
+                    best_snip = s
+                    break
+            if best_snip:
                 break
+        if found:
+            hits[canon] = best_snip or ""    # 読める文が無ければ空(表内言及)
     return hits
 
 
