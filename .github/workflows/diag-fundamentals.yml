@@ -1,0 +1,19 @@
+name: diag-fundamentals
+
+# 依存構造(セグメント/地域/設備投資/R&D)が有報CSVでどう入るかを確認する
+# 一時的な診断ジョブ(手動実行のみ・読み取り専用)。確認後は削除してよい。
+on:
+  workflow_dispatch:
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run fundamentals diagnostic (read-only)
+        env:
+          EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
+        run: python diag_fundamentals.py
