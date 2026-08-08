@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-08T16:35:05+00:00",
+ "generated": "2026-08-08T17:31:20+00:00",
  "items": {
   "1802": {
    "sales_oku": 25862.6,
@@ -7,7 +7,8 @@
    "capex_oku": 300.0,
    "capex_ratio": 1.2,
    "rnd_oku": 177.0,
-   "rnd_ratio": 0.7
+   "rnd_ratio": 0.7,
+   "edinet": "E00055"
   },
   "1803": {
    "sales_oku": 20578.0,
@@ -15,7 +16,8 @@
    "capex_oku": 979.0,
    "capex_ratio": 4.8,
    "rnd_oku": 231.0,
-   "rnd_ratio": 1.1
+   "rnd_ratio": 1.1,
+   "edinet": "E00053"
   },
   "1812": {
    "sales_oku": 30672.8,
@@ -23,7 +25,8 @@
    "capex_oku": 610.0,
    "capex_ratio": 2.0,
    "rnd_oku": 242.0,
-   "rnd_ratio": 0.8
+   "rnd_ratio": 0.8,
+   "edinet": "E00058"
   },
   "1942": {
    "sales_oku": 7420.2,
@@ -31,7 +34,8 @@
    "capex_oku": 203.0,
    "capex_ratio": 2.7,
    "rnd_oku": 33.3,
-   "rnd_ratio": 0.4
+   "rnd_ratio": 0.4,
+   "edinet": "E00074"
   },
   "1944": {
    "sales_oku": 7507.4,
@@ -39,7 +43,8 @@
    "capex_oku": 599.1,
    "capex_ratio": 8.0,
    "rnd_oku": 9.1,
-   "rnd_ratio": 0.1
+   "rnd_ratio": 0.1,
+   "edinet": "E00075"
   },
   "1961": {
    "sales_oku": 2546.7,
@@ -47,7 +52,8 @@
    "capex_oku": 23.7,
    "capex_ratio": 0.9,
    "rnd_oku": 19.8,
-   "rnd_ratio": 0.8
+   "rnd_ratio": 0.8,
+   "edinet": "E00107"
   },
   "1969": {
    "sales_oku": 4239.2,
@@ -55,13 +61,15 @@
    "capex_oku": 50.3,
    "capex_ratio": 1.2,
    "rnd_oku": 39.3,
-   "rnd_ratio": 0.9
+   "rnd_ratio": 0.9,
+   "edinet": "E00149"
   },
   "1979": {
    "sales_oku": 2861.3,
    "sales_yoy": 3.6,
    "rnd_oku": 16.0,
-   "rnd_ratio": 0.6
+   "rnd_ratio": 0.6,
+   "edinet": "E00183"
   },
   "1980": {
    "sales_oku": 2562.3,
@@ -69,13 +77,15 @@
    "capex_oku": 17.4,
    "capex_ratio": 0.7,
    "rnd_oku": 15.5,
-   "rnd_ratio": 0.6
+   "rnd_ratio": 0.6,
+   "edinet": "E00194"
   },
   "2737": {
    "sales_oku": 6336.7,
    "sales_yoy": 50.3,
    "capex_oku": 6.7,
-   "capex_ratio": 0.1
+   "capex_ratio": 0.1,
+   "edinet": "E02946"
   },
   "2760": {
    "sales_oku": 2037.5,
@@ -83,7 +93,8 @@
    "capex_oku": 6.2,
    "capex_ratio": 0.3,
    "rnd_oku": 4.8,
-   "rnd_ratio": 0.2
+   "rnd_ratio": 0.2,
+   "edinet": "E02955"
   },
   "2802": {
    "sales_oku": 15837.2,
@@ -92,7 +103,8 @@
    "capex_yoy": 20.0,
    "capex_ratio": 3.7,
    "rnd_oku": 321.1,
-   "rnd_ratio": 2.0
+   "rnd_ratio": 2.0,
+   "edinet": "E00436"
   },
   "2962": {
    "sales_oku": 33.6,
@@ -100,7 +112,8 @@
    "capex_oku": 2.9,
    "capex_ratio": 8.6,
    "rnd_oku": 4.5,
-   "rnd_ratio": 13.4
+   "rnd_ratio": 13.4,
+   "edinet": "E38523"
   },
   "3101": {
    "sales_oku": 4215.6,
@@ -108,7 +121,8 @@
    "capex_oku": 290.0,
    "capex_ratio": 6.9,
    "rnd_oku": 141.0,
-   "rnd_ratio": 3.3
+   "rnd_ratio": 3.3,
+   "edinet": "E00525"
   },
   "3105": {
    "sales_oku": 5023.4,
@@ -116,7 +130,8 @@
    "capex_oku": 199.2,
    "capex_ratio": 4.0,
    "rnd_oku": 232.6,
-   "rnd_ratio": 4.6
+   "rnd_ratio": 4.6,
+   "edinet": "E00544"
   },
   "3110": {
    "sales_oku": 1182.3,
@@ -124,7 +139,8 @@
    "capex_oku": 217.0,
    "capex_ratio": 18.4,
    "rnd_oku": 34.0,
-   "rnd_ratio": 2.9
+   "rnd_ratio": 2.9,
+   "edinet": "E00542"
   },
   "3132": {
    "sales_oku": 12142.0,
@@ -132,7 +148,8 @@
    "capex_oku": 43.3,
    "capex_ratio": 0.4,
    "rnd_oku": 25.1,
-   "rnd_ratio": 0.2
+   "rnd_ratio": 0.2,
+   "edinet": "E31167"
   },
   "3156": {
    "sales_oku": 6309.1,
@@ -140,7 +157,8 @@
    "capex_oku": 65.4,
    "capex_ratio": 1.0,
    "rnd_oku": 3.1,
-   "rnd_ratio": 0.0
+   "rnd_ratio": 0.0,
+   "edinet": "E23245"
   },
   "3407": {
    "sales_oku": 30745.0,
@@ -148,7 +166,8 @@
    "capex_oku": 251.6,
    "capex_ratio": 0.8,
    "rnd_oku": 536.5,
-   "rnd_ratio": 1.7
+   "rnd_ratio": 1.7,
+   "edinet": "E00877"
   },
   "3433": {
    "sales_oku": 584.9,
@@ -156,7 +175,8 @@
    "capex_oku": 90.4,
    "capex_ratio": 15.5,
    "rnd_oku": 17.5,
-   "rnd_ratio": 3.0
+   "rnd_ratio": 3.0,
+   "edinet": "E01443"
   },
   "3436": {
    "sales_oku": 4096.7,
@@ -164,7 +184,8 @@
    "capex_oku": 799.6,
    "capex_ratio": 19.5,
    "rnd_oku": 111.5,
-   "rnd_ratio": 2.7
+   "rnd_ratio": 2.7,
+   "edinet": "E02103"
   },
   "3445": {
    "sales_oku": 767.1,
@@ -172,7 +193,8 @@
    "capex_oku": 84.2,
    "capex_ratio": 11.0,
    "rnd_oku": 20.0,
-   "rnd_ratio": 2.6
+   "rnd_ratio": 2.6,
+   "edinet": "E31042"
   },
   "3774": {
    "sales_oku": 3453.9,
@@ -180,7 +202,8 @@
    "capex_oku": 322.1,
    "capex_ratio": 9.3,
    "rnd_oku": 6.4,
-   "rnd_ratio": 0.2
+   "rnd_ratio": 0.2,
+   "edinet": "E05480"
   },
   "3778": {
    "sales_oku": 353.0,
@@ -188,7 +211,8 @@
    "capex_oku": 225.5,
    "capex_ratio": 63.9,
    "rnd_oku": 2.1,
-   "rnd_ratio": 0.6
+   "rnd_ratio": 0.6,
+   "edinet": "E05518"
   },
   "3891": {
    "sales_oku": 186.2,
@@ -196,7 +220,8 @@
    "capex_oku": 11.5,
    "capex_ratio": 6.2,
    "rnd_oku": 4.2,
-   "rnd_ratio": 2.3
+   "rnd_ratio": 2.3,
+   "edinet": "E00685"
   },
   "3905": {
    "sales_oku": 336.1,
@@ -204,7 +229,8 @@
    "capex_oku": 51.1,
    "capex_ratio": 15.2,
    "rnd_oku": 0.0,
-   "rnd_ratio": 0.0
+   "rnd_ratio": 0.0,
+   "edinet": "E31131"
   },
   "4004": {
    "sales_oku": 13471.2,
@@ -213,7 +239,8 @@
    "capex_yoy": 119.4,
    "capex_ratio": 8.4,
    "rnd_oku": 464.6,
-   "rnd_ratio": 3.4
+   "rnd_ratio": 3.4,
+   "edinet": "E00751"
   },
   "4005": {
    "sales_oku": 23285.2,
@@ -222,7 +249,8 @@
    "capex_yoy": -21.2,
    "capex_ratio": 0.7,
    "rnd_oku": 1447.0,
-   "rnd_ratio": 6.2
+   "rnd_ratio": 6.2,
+   "edinet": "E00752"
   },
   "4021": {
    "sales_oku": 2795.9,
@@ -230,7 +258,8 @@
    "capex_oku": 185.7,
    "capex_ratio": 6.6,
    "rnd_oku": 213.8,
-   "rnd_ratio": 7.6
+   "rnd_ratio": 7.6,
+   "edinet": "E00759"
   },
   "4022": {
    "sales_oku": 477.3,
@@ -238,7 +267,8 @@
    "capex_oku": 39.0,
    "capex_ratio": 8.2,
    "rnd_oku": 0.9,
-   "rnd_ratio": 0.2
+   "rnd_ratio": 0.2,
+   "edinet": "E00760"
   },
   "4028": {
    "sales_oku": 1549.0,
@@ -246,7 +276,8 @@
    "capex_oku": 116.2,
    "capex_ratio": 7.5,
    "rnd_oku": 112.5,
-   "rnd_ratio": 7.3
+   "rnd_ratio": 7.3,
+   "edinet": "E00765"
   },
   "4043": {
    "sales_oku": 3494.8,
@@ -254,7 +285,8 @@
    "capex_oku": 327.6,
    "capex_ratio": 9.4,
    "rnd_oku": 177.1,
-   "rnd_ratio": 5.1
+   "rnd_ratio": 5.1,
+   "edinet": "E00768"
   },
   "4044": {
    "sales_oku": 1444.8,
@@ -263,7 +295,8 @@
    "capex_yoy": 217.9,
    "capex_ratio": 6.5,
    "rnd_oku": 76.6,
-   "rnd_ratio": 5.3
+   "rnd_ratio": 5.3,
+   "edinet": "E00769"
   },
   "4047": {
    "sales_oku": 654.0,
@@ -271,7 +304,8 @@
    "capex_oku": 68.9,
    "capex_ratio": 10.5,
    "rnd_oku": 23.0,
-   "rnd_ratio": 3.5
+   "rnd_ratio": 3.5,
+   "edinet": "E00772"
   },
   "4061": {
    "sales_oku": 3842.5,
@@ -279,7 +313,8 @@
    "capex_oku": 561.0,
    "capex_ratio": 14.6,
    "rnd_oku": 147.7,
-   "rnd_ratio": 3.8
+   "rnd_ratio": 3.8,
+   "edinet": "E00774"
   },
   "4062": {
    "sales_oku": 4162.0,
@@ -287,7 +322,8 @@
    "capex_oku": 642.8,
    "capex_ratio": 15.4,
    "rnd_oku": 299.2,
-   "rnd_ratio": 7.2
+   "rnd_ratio": 7.2,
+   "edinet": "E00775"
   },
   "4063": {
    "sales_oku": 25739.7,
@@ -295,7 +331,8 @@
    "capex_oku": 3397.1,
    "capex_ratio": 13.2,
    "rnd_oku": 778.2,
-   "rnd_ratio": 3.0
+   "rnd_ratio": 3.0,
+   "edinet": "E00776"
   },
   "4078": {
    "sales_oku": 814.5,
@@ -304,7 +341,8 @@
    "capex_yoy": 2014.8,
    "capex_ratio": 7.0,
    "rnd_oku": 28.4,
-   "rnd_ratio": 3.5
+   "rnd_ratio": 3.5,
+   "edinet": "E00780"
   },
   "4091": {
    "sales_oku": 13596.1,
@@ -312,7 +350,8 @@
    "capex_oku": 1331.7,
    "capex_ratio": 9.8,
    "rnd_oku": 57.4,
-   "rnd_ratio": 0.4
+   "rnd_ratio": 0.4,
+   "edinet": "E00783"
   },
   "4100": {
    "sales_oku": 280.4,
@@ -320,7 +359,8 @@
    "capex_oku": 9.3,
    "capex_ratio": 3.3,
    "rnd_oku": 13.8,
-   "rnd_ratio": 4.9
+   "rnd_ratio": 4.9,
+   "edinet": "E00842"
   },
   "4109": {
    "sales_oku": 368.0,
@@ -328,7 +368,8 @@
    "capex_oku": 42.4,
    "capex_ratio": 11.5,
    "rnd_oku": 6.3,
-   "rnd_ratio": 1.7
+   "rnd_ratio": 1.7,
+   "edinet": "E00805"
   },
   "4182": {
    "sales_oku": 7382.4,
@@ -336,7 +377,8 @@
    "capex_oku": 246.4,
    "capex_ratio": 3.3,
    "rnd_oku": 266.4,
-   "rnd_ratio": 3.6
+   "rnd_ratio": 3.6,
+   "edinet": "E00815"
   },
   "4183": {
    "sales_oku": 16687.5,
@@ -345,7 +387,8 @@
    "capex_yoy": 515.1,
    "capex_ratio": 9.7,
    "rnd_oku": 464.0,
-   "rnd_ratio": 2.8
+   "rnd_ratio": 2.8,
+   "edinet": "E00840"
   },
   "4186": {
    "sales_oku": 2370.3,
@@ -353,7 +396,8 @@
    "capex_oku": 287.2,
    "capex_ratio": 12.1,
    "rnd_oku": 156.7,
-   "rnd_ratio": 6.6
+   "rnd_ratio": 6.6,
+   "edinet": "E00854"
   },
   "4187": {
    "sales_oku": 362.7,
@@ -361,7 +405,8 @@
    "capex_oku": 14.1,
    "capex_ratio": 3.9,
    "rnd_oku": 19.0,
-   "rnd_ratio": 5.2
+   "rnd_ratio": 5.2,
+   "edinet": "E00855"
   },
   "4203": {
    "sales_oku": 3198.7,
@@ -370,7 +415,8 @@
    "capex_yoy": 263.1,
    "capex_ratio": 6.0,
    "rnd_oku": 133.0,
-   "rnd_ratio": 4.2
+   "rnd_ratio": 4.2,
+   "edinet": "E00819"
   },
   "4205": {
    "sales_oku": 4119.7,
@@ -378,7 +424,8 @@
    "capex_oku": 195.5,
    "capex_ratio": 4.7,
    "rnd_oku": 31.9,
-   "rnd_ratio": 0.8
+   "rnd_ratio": 0.8,
+   "edinet": "E00821"
   },
   "4366": {
    "sales_oku": 194.8,
@@ -386,7 +433,8 @@
    "capex_oku": 19.8,
    "capex_ratio": 10.2,
    "rnd_oku": 12.1,
-   "rnd_ratio": 6.2
+   "rnd_ratio": 6.2,
+   "edinet": "E01014"
   },
   "4368": {
    "sales_oku": 769.3,
@@ -394,7 +442,8 @@
    "capex_oku": 27.3,
    "capex_ratio": 3.6,
    "rnd_oku": 10.9,
-   "rnd_ratio": 1.4
+   "rnd_ratio": 1.4,
+   "edinet": "E01056"
   },
   "4369": {
    "sales_oku": 238.8,
@@ -402,7 +451,8 @@
    "capex_oku": 81.6,
    "capex_ratio": 34.1,
    "rnd_oku": 6.1,
-   "rnd_ratio": 2.5
+   "rnd_ratio": 2.5,
+   "edinet": "E02490"
   },
   "4401": {
    "sales_oku": 4165.6,
@@ -410,7 +460,8 @@
    "capex_oku": 216.7,
    "capex_ratio": 5.2,
    "rnd_oku": 193.0,
-   "rnd_ratio": 4.6
+   "rnd_ratio": 4.6,
+   "edinet": "E00878"
   },
   "4410": {
    "sales_oku": 1037.6,
@@ -418,7 +469,8 @@
    "capex_oku": 46.7,
    "capex_ratio": 4.5,
    "rnd_oku": 28.7,
-   "rnd_ratio": 2.8
+   "rnd_ratio": 2.8,
+   "edinet": "E01020"
   },
   "4462": {
    "sales_oku": 234.5,
@@ -426,7 +478,8 @@
    "capex_oku": 6.7,
    "capex_ratio": 2.8,
    "rnd_oku": 12.7,
-   "rnd_ratio": 5.4
+   "rnd_ratio": 5.4,
+   "edinet": "E00804"
   },
   "4626": {
    "sales_oku": 1378.5,
@@ -434,7 +487,8 @@
    "capex_oku": 59.6,
    "capex_ratio": 4.3,
    "rnd_oku": 76.4,
-   "rnd_ratio": 5.5
+   "rnd_ratio": 5.5,
+   "edinet": "E00913"
   },
   "4901": {
    "sales_oku": 33569.7,
@@ -442,7 +496,8 @@
    "capex_oku": 4262.9,
    "capex_ratio": 12.7,
    "rnd_oku": 1577.9,
-   "rnd_ratio": 4.7
+   "rnd_ratio": 4.7,
+   "edinet": "E00988"
   },
   "4966": {
    "sales_oku": 917.8,
@@ -450,7 +505,8 @@
    "capex_oku": 27.3,
    "capex_ratio": 3.0,
    "rnd_oku": 26.9,
-   "rnd_ratio": 2.9
+   "rnd_ratio": 2.9,
+   "edinet": "E01045"
   },
   "4968": {
    "sales_oku": 821.4,
@@ -458,7 +514,8 @@
    "capex_oku": 33.0,
    "capex_ratio": 4.0,
    "rnd_oku": 30.4,
-   "rnd_ratio": 3.7
+   "rnd_ratio": 3.7,
+   "edinet": "E01048"
   },
   "4970": {
    "sales_oku": 419.6,
@@ -466,7 +523,8 @@
    "capex_oku": 43.4,
    "capex_ratio": 10.3,
    "rnd_oku": 17.9,
-   "rnd_ratio": 4.3
+   "rnd_ratio": 4.3,
+   "edinet": "E01051"
   },
   "4971": {
    "sales_oku": 209.5,
@@ -474,7 +532,8 @@
    "capex_oku": 28.5,
    "capex_ratio": 13.6,
    "rnd_oku": 13.8,
-   "rnd_ratio": 6.6
+   "rnd_ratio": 6.6,
+   "edinet": "E01054"
   },
   "4975": {
    "sales_oku": 296.7,
@@ -482,7 +541,8 @@
    "capex_oku": 89.7,
    "capex_ratio": 30.2,
    "rnd_oku": 12.4,
-   "rnd_ratio": 4.2
+   "rnd_ratio": 4.2,
+   "edinet": "E01065"
   },
   "4980": {
    "sales_oku": 1138.3,
@@ -490,7 +550,8 @@
    "capex_oku": 167.7,
    "capex_ratio": 14.7,
    "rnd_oku": 67.4,
-   "rnd_ratio": 5.9
+   "rnd_ratio": 5.9,
+   "edinet": "E31633"
   },
   "5016": {
    "sales_oku": 4618.4,
@@ -499,7 +560,8 @@
    "capex_yoy": 5.4,
    "capex_ratio": 5.3,
    "rnd_oku": 199.8,
-   "rnd_ratio": 4.3
+   "rnd_ratio": 4.3,
+   "edinet": "E01081"
   },
   "5201": {
    "sales_oku": 20588.3,
@@ -508,7 +570,8 @@
    "capex_yoy": 643.2,
    "capex_ratio": 12.2,
    "rnd_oku": 603.2,
-   "rnd_ratio": 2.9
+   "rnd_ratio": 2.9,
+   "edinet": "E01122"
   },
   "5208": {
    "sales_oku": 564.7,
@@ -516,7 +579,8 @@
    "capex_oku": 70.3,
    "capex_ratio": 12.4,
    "rnd_oku": 27.8,
-   "rnd_ratio": 4.9
+   "rnd_ratio": 4.9,
+   "edinet": "E01152"
   },
   "5214": {
    "sales_oku": 3114.0,
@@ -524,7 +588,8 @@
    "capex_oku": 343.1,
    "capex_ratio": 11.0,
    "rnd_oku": 88.1,
-   "rnd_ratio": 2.8
+   "rnd_ratio": 2.8,
+   "edinet": "E01190"
   },
   "5232": {
    "sales_oku": 2236.9,
@@ -532,7 +597,8 @@
    "capex_oku": 161.6,
    "capex_ratio": 7.2,
    "rnd_oku": 35.6,
-   "rnd_ratio": 1.6
+   "rnd_ratio": 1.6,
+   "edinet": "E01127"
   },
   "5233": {
    "sales_oku": 8984.4,
@@ -540,7 +606,8 @@
    "capex_oku": 810.9,
    "capex_ratio": 9.0,
    "rnd_oku": 64.7,
-   "rnd_ratio": 0.7
+   "rnd_ratio": 0.7,
+   "edinet": "E01130"
   },
   "5331": {
    "sales_oku": 1429.1,
@@ -548,7 +615,8 @@
    "capex_oku": 150.4,
    "capex_ratio": 10.5,
    "rnd_oku": 23.7,
-   "rnd_ratio": 1.7
+   "rnd_ratio": 1.7,
+   "edinet": "E01139"
   },
   "5332": {
    "sales_oku": 7374.4,
@@ -556,7 +624,8 @@
    "capex_oku": 431.6,
    "capex_ratio": 5.9,
    "rnd_oku": 263.0,
-   "rnd_ratio": 3.6
+   "rnd_ratio": 3.6,
+   "edinet": "E01138"
   },
   "5333": {
    "sales_oku": 6701.2,
@@ -564,7 +633,8 @@
    "capex_oku": 558.5,
    "capex_ratio": 8.3,
    "rnd_oku": 317.9,
-   "rnd_ratio": 4.7
+   "rnd_ratio": 4.7,
+   "edinet": "E01137"
   },
   "5334": {
    "sales_oku": 7312.1,
@@ -572,7 +642,8 @@
    "capex_oku": 490.0,
    "capex_ratio": 6.7,
    "rnd_oku": 267.8,
-   "rnd_ratio": 3.7
+   "rnd_ratio": 3.7,
+   "edinet": "E01136"
   },
   "5384": {
    "sales_oku": 694.0,
@@ -580,7 +651,8 @@
    "capex_oku": 227.5,
    "capex_ratio": 32.8,
    "rnd_oku": 58.4,
-   "rnd_ratio": 8.4
+   "rnd_ratio": 8.4,
+   "edinet": "E01207"
   },
   "5631": {
    "sales_oku": 2748.5,
@@ -588,7 +660,8 @@
    "capex_oku": 242.8,
    "capex_ratio": 8.8,
    "rnd_oku": 62.0,
-   "rnd_ratio": 2.3
+   "rnd_ratio": 2.3,
+   "edinet": "E01232"
   },
   "5703": {
    "sales_oku": 5854.7,
@@ -596,7 +669,8 @@
    "capex_oku": 241.0,
    "capex_ratio": 4.1,
    "rnd_oku": 67.9,
-   "rnd_ratio": 1.2
+   "rnd_ratio": 1.2,
+   "edinet": "E26707"
   },
   "5706": {
    "sales_oku": 7585.3,
@@ -604,7 +678,8 @@
    "capex_oku": 364.0,
    "capex_ratio": 4.8,
    "rnd_oku": 150.5,
-   "rnd_ratio": 2.0
+   "rnd_ratio": 2.0,
+   "edinet": "E00024"
   },
   "5713": {
    "sales_oku": 17415.9,
@@ -613,7 +688,8 @@
    "capex_yoy": 47.5,
    "capex_ratio": 3.6,
    "rnd_oku": 90.5,
-   "rnd_ratio": 0.5
+   "rnd_ratio": 0.5,
+   "edinet": "E00023"
   },
   "5741": {
    "sales_oku": 11817.2,
@@ -621,7 +697,8 @@
    "capex_oku": 527.1,
    "capex_ratio": 4.5,
    "rnd_oku": 52.5,
-   "rnd_ratio": 0.4
+   "rnd_ratio": 0.4,
+   "edinet": "E01330"
   },
   "5801": {
    "sales_oku": 13075.6,
@@ -629,7 +706,8 @@
    "capex_oku": 566.6,
    "capex_ratio": 4.3,
    "rnd_oku": 284.2,
-   "rnd_ratio": 2.2
+   "rnd_ratio": 2.2,
+   "edinet": "E01332"
   },
   "5802": {
    "sales_oku": 51101.7,
@@ -637,7 +715,8 @@
    "capex_oku": 2431.8,
    "capex_ratio": 4.8,
    "rnd_oku": 1628.6,
-   "rnd_ratio": 3.2
+   "rnd_ratio": 3.2,
+   "edinet": "E01333"
   },
   "5803": {
    "sales_oku": 11823.6,
@@ -645,7 +724,8 @@
    "capex_oku": 403.0,
    "capex_ratio": 3.4,
    "rnd_oku": 168.0,
-   "rnd_ratio": 1.4
+   "rnd_ratio": 1.4,
+   "edinet": "E01334"
   },
   "5805": {
    "sales_oku": 2777.4,
@@ -653,7 +733,8 @@
    "capex_oku": 70.8,
    "capex_ratio": 2.5,
    "rnd_oku": 22.8,
-   "rnd_ratio": 0.8
+   "rnd_ratio": 0.8,
+   "edinet": "E01336"
   },
   "5985": {
    "sales_oku": 522.2,
@@ -661,13 +742,15 @@
    "capex_oku": 17.3,
    "capex_ratio": 3.3,
    "rnd_oku": 8.6,
-   "rnd_ratio": 1.6
+   "rnd_ratio": 1.6,
+   "edinet": "E01402"
   },
   "6055": {
    "sales_oku": 579.8,
    "sales_yoy": 10.1,
    "capex_oku": 7.2,
-   "capex_ratio": 1.2
+   "capex_ratio": 1.2,
+   "edinet": "E26124"
   },
   "6134": {
    "sales_oku": 1806.4,
@@ -675,7 +758,8 @@
    "capex_oku": 115.8,
    "capex_ratio": 6.4,
    "rnd_oku": 85.1,
-   "rnd_ratio": 4.7
+   "rnd_ratio": 4.7,
+   "edinet": "E01495"
   },
   "6146": {
    "sales_oku": 4368.9,
@@ -683,7 +767,8 @@
    "capex_oku": 327.1,
    "capex_ratio": 7.5,
    "rnd_oku": 341.6,
-   "rnd_ratio": 7.8
+   "rnd_ratio": 7.8,
+   "edinet": "E01506"
   },
   "6227": {
    "sales_oku": 210.1,
@@ -691,7 +776,8 @@
    "capex_oku": 10.8,
    "capex_ratio": 5.2,
    "rnd_oku": 4.3,
-   "rnd_ratio": 2.1
+   "rnd_ratio": 2.1,
+   "edinet": "E36750"
   },
   "6235": {
    "sales_oku": 338.6,
@@ -699,7 +785,8 @@
    "capex_oku": 7.0,
    "capex_ratio": 2.1,
    "rnd_oku": 38.0,
-   "rnd_ratio": 11.2
+   "rnd_ratio": 11.2,
+   "edinet": "E33594"
   },
   "6237": {
    "sales_oku": 476.9,
@@ -707,7 +794,8 @@
    "capex_oku": 8.9,
    "capex_ratio": 1.9,
    "rnd_oku": 9.2,
-   "rnd_ratio": 1.9
+   "rnd_ratio": 1.9,
+   "edinet": "E32189"
   },
   "6254": {
    "sales_oku": 562.5,
@@ -715,7 +803,8 @@
    "capex_oku": 14.2,
    "capex_ratio": 2.5,
    "rnd_oku": 4.9,
-   "rnd_ratio": 0.9
+   "rnd_ratio": 0.9,
+   "edinet": "E01735"
   },
   "6258": {
    "sales_oku": 949.1,
@@ -723,7 +812,8 @@
    "capex_oku": 38.5,
    "capex_ratio": 4.1,
    "rnd_oku": 15.6,
-   "rnd_ratio": 1.6
+   "rnd_ratio": 1.6,
+   "edinet": "E01733"
   },
   "6264": {
    "sales_oku": 114.0,
@@ -731,7 +821,8 @@
    "capex_oku": 18.8,
    "capex_ratio": 16.5,
    "rnd_oku": 1.0,
-   "rnd_ratio": 0.9
+   "rnd_ratio": 0.9,
+   "edinet": "E01465"
   },
   "6266": {
    "sales_oku": 354.3,
@@ -739,7 +830,8 @@
    "capex_oku": 15.2,
    "capex_ratio": 4.3,
    "rnd_oku": 7.3,
-   "rnd_ratio": 2.1
+   "rnd_ratio": 2.1,
+   "edinet": "E02350"
   },
   "6273": {
    "sales_oku": 8425.4,
@@ -747,7 +839,8 @@
    "capex_oku": 1502.5,
    "capex_ratio": 17.8,
    "rnd_oku": 399.9,
-   "rnd_ratio": 4.7
+   "rnd_ratio": 4.7,
+   "edinet": "E01673"
   },
   "6278": {
    "sales_oku": 401.6,
@@ -755,7 +848,8 @@
    "capex_oku": 57.2,
    "capex_ratio": 14.2,
    "rnd_oku": 23.4,
-   "rnd_ratio": 5.8
+   "rnd_ratio": 5.8,
+   "edinet": "E01505"
   },
   "6315": {
    "sales_oku": 543.7,
@@ -763,7 +857,8 @@
    "capex_oku": 42.0,
    "capex_ratio": 7.7,
    "rnd_oku": 8.2,
-   "rnd_ratio": 1.5
+   "rnd_ratio": 1.5,
+   "edinet": "E01708"
   },
   "6323": {
    "sales_oku": 1287.9,
@@ -771,7 +866,8 @@
    "capex_oku": 45.3,
    "capex_ratio": 3.5,
    "rnd_oku": 19.3,
-   "rnd_ratio": 1.5
+   "rnd_ratio": 1.5,
+   "edinet": "E02328"
   },
   "6324": {
    "sales_oku": 595.6,
@@ -779,7 +875,8 @@
    "capex_oku": 48.0,
    "capex_ratio": 8.1,
    "rnd_oku": 39.5,
-   "rnd_ratio": 6.6
+   "rnd_ratio": 6.6,
+   "edinet": "E01712"
   },
   "6327": {
    "sales_oku": 62.3,
@@ -787,7 +884,8 @@
    "capex_oku": 0.9,
    "capex_ratio": 1.5,
    "rnd_oku": 0.4,
-   "rnd_ratio": 0.6
+   "rnd_ratio": 0.6,
+   "edinet": "E01713"
   },
   "6336": {
    "sales_oku": 156.5,
@@ -795,7 +893,8 @@
    "capex_oku": 4.5,
    "capex_ratio": 2.9,
    "rnd_oku": 1.6,
-   "rnd_ratio": 1.0
+   "rnd_ratio": 1.0,
+   "edinet": "E02047"
   },
   "6337": {
    "sales_oku": 55.7,
@@ -803,7 +902,8 @@
    "capex_oku": 1.1,
    "capex_ratio": 2.0,
    "rnd_oku": 3.5,
-   "rnd_ratio": 6.3
+   "rnd_ratio": 6.3,
+   "edinet": "E02049"
   },
   "6338": {
    "sales_oku": 73.3,
@@ -811,7 +911,8 @@
    "capex_oku": 0.2,
    "capex_ratio": 0.3,
    "rnd_oku": 2.6,
-   "rnd_ratio": 3.5
+   "rnd_ratio": 3.5,
+   "edinet": "E01715"
   },
   "6339": {
    "sales_oku": 1761.8,
@@ -819,7 +920,8 @@
    "capex_oku": 88.1,
    "capex_ratio": 5.0,
    "rnd_oku": 28.7,
-   "rnd_ratio": 1.6
+   "rnd_ratio": 1.6,
+   "edinet": "E01541"
   },
   "6340": {
    "sales_oku": 1290.2,
@@ -827,7 +929,8 @@
    "capex_oku": 22.8,
    "capex_ratio": 1.8,
    "rnd_oku": 20.4,
-   "rnd_ratio": 1.6
+   "rnd_ratio": 1.6,
+   "edinet": "E01666"
   },
   "6361": {
    "sales_oku": 9582.9,
@@ -836,7 +939,8 @@
    "capex_yoy": 1034.0,
    "capex_ratio": 10.5,
    "rnd_oku": 232.3,
-   "rnd_ratio": 2.4
+   "rnd_ratio": 2.4,
+   "edinet": "E01542"
   },
   "6363": {
    "sales_oku": 929.3,
@@ -844,7 +948,8 @@
    "capex_oku": 19.8,
    "capex_ratio": 2.1,
    "rnd_oku": 6.3,
-   "rnd_ratio": 0.7
+   "rnd_ratio": 0.7,
+   "edinet": "E01636"
   },
   "6367": {
    "sales_oku": 50150.4,
@@ -852,7 +957,8 @@
    "capex_oku": 3000.3,
    "capex_ratio": 6.0,
    "rnd_oku": 1507.6,
-   "rnd_ratio": 3.0
+   "rnd_ratio": 3.0,
+   "edinet": "E01570"
   },
   "6368": {
    "sales_oku": 1776.5,
@@ -860,7 +966,8 @@
    "capex_oku": 35.2,
    "capex_ratio": 2.0,
    "rnd_oku": 33.7,
-   "rnd_ratio": 1.9
+   "rnd_ratio": 1.9,
+   "edinet": "E01571"
   },
   "6370": {
    "sales_oku": 4028.9,
@@ -869,7 +976,8 @@
    "capex_yoy": -28.9,
    "capex_ratio": 5.4,
    "rnd_oku": 81.1,
-   "rnd_ratio": 2.0
+   "rnd_ratio": 2.0,
+   "edinet": "E01573"
   },
   "6383": {
    "sales_oku": 6607.2,
@@ -877,7 +985,8 @@
    "capex_oku": 333.2,
    "capex_ratio": 5.0,
    "rnd_oku": 131.9,
-   "rnd_ratio": 2.0
+   "rnd_ratio": 2.0,
+   "edinet": "E01551"
   },
   "6384": {
    "sales_oku": 93.2,
@@ -885,7 +994,8 @@
    "capex_oku": 3.4,
    "capex_ratio": 3.7,
    "rnd_oku": 4.4,
-   "rnd_ratio": 4.7
+   "rnd_ratio": 4.7,
+   "edinet": "E01719"
   },
   "6387": {
    "sales_oku": 93.4,
@@ -893,7 +1003,8 @@
    "capex_oku": 4.3,
    "capex_ratio": 4.6,
    "rnd_oku": 3.0,
-   "rnd_ratio": 3.2
+   "rnd_ratio": 3.2,
+   "edinet": "E02060"
   },
   "6407": {
    "sales_oku": 1578.9,
@@ -901,7 +1012,8 @@
    "capex_oku": 28.3,
    "capex_ratio": 1.8,
    "rnd_oku": 34.2,
-   "rnd_ratio": 2.2
+   "rnd_ratio": 2.2,
+   "edinet": "E01909"
   },
   "6458": {
    "sales_oku": 593.4,
@@ -909,7 +1021,8 @@
    "capex_oku": 59.6,
    "capex_ratio": 10.0,
    "rnd_oku": 11.5,
-   "rnd_ratio": 1.9
+   "rnd_ratio": 1.9,
+   "edinet": "E01669"
   },
   "6479": {
    "sales_oku": 16643.9,
@@ -918,7 +1031,8 @@
    "capex_yoy": -14.2,
    "capex_ratio": 0.6,
    "rnd_oku": 497.6,
-   "rnd_ratio": 3.0
+   "rnd_ratio": 3.0,
+   "edinet": "E01607"
   },
   "6486": {
    "sales_oku": 1774.9,
@@ -926,7 +1040,8 @@
    "capex_oku": 30.6,
    "capex_ratio": 1.7,
    "rnd_oku": 37.5,
-   "rnd_ratio": 2.1
+   "rnd_ratio": 2.1,
+   "edinet": "E01414"
   },
   "6490": {
    "sales_oku": 594.8,
@@ -934,7 +1049,8 @@
    "capex_oku": 59.6,
    "capex_ratio": 10.0,
    "rnd_oku": 14.6,
-   "rnd_ratio": 2.5
+   "rnd_ratio": 2.5,
+   "edinet": "E01645"
   },
   "6501": {
    "sales_oku": 105867.8,
@@ -943,7 +1059,8 @@
    "capex_yoy": -40.6,
    "capex_ratio": 0.7,
    "rnd_oku": 496.0,
-   "rnd_ratio": 0.5
+   "rnd_ratio": 0.5,
+   "edinet": "E01737"
   },
   "6503": {
    "sales_oku": 58947.5,
@@ -952,7 +1069,8 @@
    "capex_yoy": 79.9,
    "capex_ratio": 1.0,
    "rnd_oku": 2359.0,
-   "rnd_ratio": 4.0
+   "rnd_ratio": 4.0,
+   "edinet": "E01739"
   },
   "6504": {
    "sales_oku": 12276.0,
@@ -960,7 +1078,8 @@
    "capex_oku": 79.7,
    "capex_ratio": 0.6,
    "rnd_oku": 389.1,
-   "rnd_ratio": 3.2
+   "rnd_ratio": 3.2,
+   "edinet": "E01740"
   },
   "6516": {
    "sales_oku": 1073.5,
@@ -969,7 +1088,8 @@
    "capex_yoy": 77.1,
    "capex_ratio": 2.0,
    "rnd_oku": 33.7,
-   "rnd_ratio": 3.1
+   "rnd_ratio": 3.1,
+   "edinet": "E01806"
   },
   "6521": {
    "sales_oku": 100.4,
@@ -977,7 +1097,8 @@
    "capex_oku": 4.7,
    "capex_ratio": 4.7,
    "rnd_oku": 12.0,
-   "rnd_ratio": 12.0
+   "rnd_ratio": 12.0,
+   "edinet": "E36433"
   },
   "6524": {
    "sales_oku": 174.5,
@@ -985,7 +1106,8 @@
    "capex_oku": 9.8,
    "capex_ratio": 5.6,
    "rnd_oku": 6.4,
-   "rnd_ratio": 3.7
+   "rnd_ratio": 3.7,
+   "edinet": "E37156"
   },
   "6525": {
    "sales_oku": 2350.8,
@@ -993,7 +1115,8 @@
    "capex_oku": 168.6,
    "capex_ratio": 7.2,
    "rnd_oku": 182.6,
-   "rnd_ratio": 7.8
+   "rnd_ratio": 7.8,
+   "edinet": "E37488"
   },
   "6526": {
    "sales_oku": 2008.3,
@@ -1001,7 +1124,8 @@
    "capex_oku": 222.4,
    "capex_ratio": 11.1,
    "rnd_oku": 585.1,
-   "rnd_ratio": 29.1
+   "rnd_ratio": 29.1,
+   "edinet": "E37978"
   },
   "6584": {
    "sales_oku": 1593.9,
@@ -1009,7 +1133,8 @@
    "capex_oku": 37.2,
    "capex_ratio": 2.3,
    "rnd_oku": 27.1,
-   "rnd_ratio": 1.7
+   "rnd_ratio": 1.7,
+   "edinet": "E01753"
   },
   "6590": {
    "sales_oku": 880.4,
@@ -1017,7 +1142,8 @@
    "capex_oku": 109.6,
    "capex_ratio": 12.5,
    "rnd_oku": 39.5,
-   "rnd_ratio": 4.5
+   "rnd_ratio": 4.5,
+   "edinet": "E01757"
   },
   "6594": {
    "sales_oku": 26078.1,
@@ -1025,7 +1151,8 @@
    "capex_oku": 125.9,
    "capex_ratio": 0.5,
    "rnd_oku": 806.0,
-   "rnd_ratio": 3.1
+   "rnd_ratio": 3.1,
+   "edinet": "E01975"
   },
   "6613": {
    "sales_oku": 13.7,
@@ -1033,7 +1160,8 @@
    "capex_oku": 7.5,
    "capex_ratio": 54.7,
    "rnd_oku": 1.9,
-   "rnd_ratio": 13.7
+   "rnd_ratio": 13.7,
+   "edinet": "E35542"
   },
   "6622": {
    "sales_oku": 2377.3,
@@ -1041,13 +1169,15 @@
    "capex_oku": 134.0,
    "capex_ratio": 5.6,
    "rnd_oku": 75.3,
-   "rnd_ratio": 3.2
+   "rnd_ratio": 3.2,
+   "edinet": "E01750"
   },
   "6627": {
    "sales_oku": 417.5,
    "sales_yoy": 12.5,
    "capex_oku": 305.5,
-   "capex_ratio": 73.2
+   "capex_ratio": 73.2,
+   "edinet": "E24994"
   },
   "6656": {
    "sales_oku": 24.8,
@@ -1055,7 +1185,8 @@
    "capex_oku": 2.3,
    "capex_ratio": 9.3,
    "rnd_oku": 2.6,
-   "rnd_ratio": 10.3
+   "rnd_ratio": 10.3,
+   "edinet": "E02356"
   },
   "6668": {
    "sales_oku": 126.8,
@@ -1063,7 +1194,8 @@
    "capex_oku": 2.9,
    "capex_ratio": 2.3,
    "rnd_oku": 7.7,
-   "rnd_ratio": 6.1
+   "rnd_ratio": 6.1,
+   "edinet": "E02092"
   },
   "6674": {
    "sales_oku": 6089.9,
@@ -1071,7 +1203,8 @@
    "capex_oku": 37.9,
    "capex_ratio": 0.6,
    "rnd_oku": 118.1,
-   "rnd_ratio": 1.9
+   "rnd_ratio": 1.9,
+   "edinet": "E02089"
   },
   "6701": {
    "sales_oku": 35827.3,
@@ -1080,7 +1213,8 @@
    "capex_yoy": -70.3,
    "capex_ratio": 0.6,
    "rnd_oku": 1052.4,
-   "rnd_ratio": 2.9
+   "rnd_ratio": 2.9,
+   "edinet": "E01765"
   },
   "6702": {
    "sales_oku": 35029.7,
@@ -1089,7 +1223,8 @@
    "capex_yoy": -27.7,
    "capex_ratio": 1.4,
    "rnd_oku": 1373.0,
-   "rnd_ratio": 3.9
+   "rnd_ratio": 3.9,
+   "edinet": "E01766"
   },
   "6703": {
    "sales_oku": 4216.4,
@@ -1097,7 +1232,8 @@
    "capex_oku": 32.7,
    "capex_ratio": 0.8,
    "rnd_oku": 79.5,
-   "rnd_ratio": 1.9
+   "rnd_ratio": 1.9,
+   "edinet": "E01767"
   },
   "6707": {
    "sales_oku": 801.8,
@@ -1105,7 +1241,8 @@
    "capex_oku": 62.9,
    "capex_ratio": 7.8,
    "rnd_oku": 54.0,
-   "rnd_ratio": 6.7
+   "rnd_ratio": 6.7,
+   "edinet": "E01790"
   },
   "6723": {
    "sales_oku": 13212.1,
@@ -1113,7 +1250,8 @@
    "capex_oku": 576.0,
    "capex_ratio": 4.4,
    "rnd_oku": 2403.0,
-   "rnd_ratio": 18.2
+   "rnd_ratio": 18.2,
+   "edinet": "E02081"
   },
   "6728": {
    "sales_oku": 2511.8,
@@ -1121,7 +1259,8 @@
    "capex_oku": 157.2,
    "capex_ratio": 6.3,
    "rnd_oku": 139.9,
-   "rnd_ratio": 5.6
+   "rnd_ratio": 5.6,
+   "edinet": "E01589"
   },
   "6740": {
    "sales_oku": 1323.3,
@@ -1129,7 +1268,8 @@
    "capex_oku": 14.2,
    "capex_ratio": 1.1,
    "rnd_oku": 70.4,
-   "rnd_ratio": 5.3
+   "rnd_ratio": 5.3,
+   "edinet": "E30481"
   },
   "6754": {
    "sales_oku": 1174.6,
@@ -1138,7 +1278,8 @@
    "capex_yoy": 2.3,
    "capex_ratio": 2.7,
    "rnd_oku": 77.4,
-   "rnd_ratio": 6.6
+   "rnd_ratio": 6.6,
+   "edinet": "E01774"
   },
   "6758": {
    "sales_oku": 124796.2,
@@ -1146,7 +1287,8 @@
    "capex_oku": 5356.7,
    "capex_ratio": 4.3,
    "rnd_oku": 7620.0,
-   "rnd_ratio": 6.1
+   "rnd_ratio": 6.1,
+   "edinet": "E01777"
   },
   "6762": {
    "sales_oku": 25048.2,
@@ -1155,7 +1297,8 @@
    "capex_yoy": 535.9,
    "capex_ratio": 11.9,
    "rnd_oku": 2896.7,
-   "rnd_ratio": 11.6
+   "rnd_ratio": 11.6,
+   "edinet": "E01780"
   },
   "6768": {
    "sales_oku": 1235.6,
@@ -1163,7 +1306,8 @@
    "capex_oku": 30.5,
    "capex_ratio": 2.5,
    "rnd_oku": 0.5,
-   "rnd_ratio": 0.0
+   "rnd_ratio": 0.0,
+   "edinet": "E01786"
   },
   "6777": {
    "sales_oku": 315.1,
@@ -1171,7 +1315,8 @@
    "capex_oku": 12.4,
    "capex_ratio": 3.9,
    "rnd_oku": 25.3,
-   "rnd_ratio": 8.0
+   "rnd_ratio": 8.0,
+   "edinet": "E01870"
   },
   "6779": {
    "sales_oku": 442.6,
@@ -1179,7 +1324,8 @@
    "capex_oku": 76.7,
    "capex_ratio": 17.3,
    "rnd_oku": 28.3,
-   "rnd_ratio": 6.4
+   "rnd_ratio": 6.4,
+   "edinet": "E01807"
   },
   "6787": {
    "sales_oku": 2405.7,
@@ -1187,7 +1333,8 @@
    "capex_oku": 496.7,
    "capex_ratio": 20.6,
    "rnd_oku": 84.2,
-   "rnd_ratio": 3.5
+   "rnd_ratio": 3.5,
+   "edinet": "E02056"
   },
   "6794": {
    "sales_oku": 1349.1,
@@ -1195,7 +1342,8 @@
    "capex_oku": 68.0,
    "capex_ratio": 5.0,
    "rnd_oku": 37.6,
-   "rnd_ratio": 2.8
+   "rnd_ratio": 2.8,
+   "edinet": "E01797"
   },
   "6832": {
    "sales_oku": 383.2,
@@ -1203,7 +1351,8 @@
    "capex_oku": 118.0,
    "capex_ratio": 30.8,
    "rnd_oku": 28.9,
-   "rnd_ratio": 7.5
+   "rnd_ratio": 7.5,
+   "edinet": "E02051"
   },
   "6834": {
    "sales_oku": 300.9,
@@ -1211,7 +1360,8 @@
    "capex_oku": 10.7,
    "capex_ratio": 3.6,
    "rnd_oku": 0.1,
-   "rnd_ratio": 0.0
+   "rnd_ratio": 0.0,
+   "edinet": "E01717"
   },
   "6837": {
    "sales_oku": 247.0,
@@ -1219,7 +1369,8 @@
    "capex_oku": 7.5,
    "capex_ratio": 3.1,
    "rnd_oku": 0.6,
-   "rnd_ratio": 0.3
+   "rnd_ratio": 0.3,
+   "edinet": "E02048"
   },
   "6841": {
    "sales_oku": 6048.3,
@@ -1227,7 +1378,8 @@
    "capex_oku": 306.9,
    "capex_ratio": 5.1,
    "rnd_oku": 296.3,
-   "rnd_ratio": 4.9
+   "rnd_ratio": 4.9,
+   "edinet": "E01878"
   },
   "6855": {
    "sales_oku": 293.7,
@@ -1235,7 +1387,8 @@
    "capex_oku": 38.7,
    "capex_ratio": 13.2,
    "rnd_oku": 16.8,
-   "rnd_ratio": 5.7
+   "rnd_ratio": 5.7,
+   "edinet": "E02043"
   },
   "6856": {
    "sales_oku": 3330.8,
@@ -1243,7 +1396,8 @@
    "capex_oku": 274.5,
    "capex_ratio": 8.2,
    "rnd_oku": 246.9,
-   "rnd_ratio": 7.4
+   "rnd_ratio": 7.4,
+   "edinet": "E01901"
   },
   "6857": {
    "sales_oku": 11286.1,
@@ -1251,7 +1405,8 @@
    "capex_oku": 343.0,
    "capex_ratio": 3.0,
    "rnd_oku": 781.0,
-   "rnd_ratio": 6.9
+   "rnd_ratio": 6.9,
+   "edinet": "E01950"
   },
   "6861": {
    "sales_oku": 11692.9,
@@ -1259,7 +1414,8 @@
    "capex_oku": 283.7,
    "capex_ratio": 2.4,
    "rnd_oku": 328.4,
-   "rnd_ratio": 2.8
+   "rnd_ratio": 2.8,
+   "edinet": "E01967"
   },
   "6871": {
    "sales_oku": 701.7,
@@ -1267,7 +1423,8 @@
    "capex_oku": 152.5,
    "capex_ratio": 21.7,
    "rnd_oku": 66.2,
-   "rnd_ratio": 9.4
+   "rnd_ratio": 9.4,
+   "edinet": "E02030"
   },
   "6877": {
    "sales_oku": 616.8,
@@ -1275,7 +1432,8 @@
    "capex_oku": 36.3,
    "capex_ratio": 5.9,
    "rnd_oku": 4.8,
-   "rnd_ratio": 0.8
+   "rnd_ratio": 0.8,
+   "edinet": "E02040"
   },
   "6890": {
    "sales_oku": 2889.3,
@@ -1283,7 +1441,8 @@
    "capex_oku": 546.0,
    "capex_ratio": 18.9,
    "rnd_oku": 124.3,
-   "rnd_ratio": 4.3
+   "rnd_ratio": 4.3,
+   "edinet": "E02024"
   },
   "6920": {
    "sales_oku": 2514.8,
@@ -1291,7 +1450,8 @@
    "capex_oku": 50.4,
    "capex_ratio": 2.0,
    "rnd_oku": 116.8,
-   "rnd_ratio": 4.6
+   "rnd_ratio": 4.6,
+   "edinet": "E01991"
   },
   "6925": {
    "sales_oku": 1792.1,
@@ -1299,7 +1459,8 @@
    "capex_oku": 109.9,
    "capex_ratio": 6.1,
    "rnd_oku": 135.5,
-   "rnd_ratio": 7.6
+   "rnd_ratio": 7.6,
+   "edinet": "E01929"
   },
   "6941": {
    "sales_oku": 527.0,
@@ -1307,7 +1468,8 @@
    "capex_oku": 11.5,
    "capex_ratio": 2.2,
    "rnd_oku": 12.5,
-   "rnd_ratio": 2.4
+   "rnd_ratio": 2.4,
+   "edinet": "E01979"
   },
   "6958": {
    "sales_oku": 1002.0,
@@ -1315,7 +1477,8 @@
    "capex_oku": 92.1,
    "capex_ratio": 9.2,
    "rnd_oku": 5.5,
-   "rnd_ratio": 0.6
+   "rnd_ratio": 0.6,
+   "edinet": "E01959"
   },
   "6961": {
    "sales_oku": 425.4,
@@ -1323,7 +1486,8 @@
    "capex_oku": 54.9,
    "capex_ratio": 12.9,
    "rnd_oku": 17.0,
-   "rnd_ratio": 4.0
+   "rnd_ratio": 4.0,
+   "edinet": "E02390"
   },
   "6963": {
    "sales_oku": 4811.5,
@@ -1331,7 +1495,8 @@
    "capex_oku": 83.5,
    "capex_ratio": 1.7,
    "rnd_oku": 213.1,
-   "rnd_ratio": 4.4
+   "rnd_ratio": 4.4,
+   "edinet": "E01953"
   },
   "6965": {
    "sales_oku": 2120.5,
@@ -1339,7 +1504,8 @@
    "capex_oku": 348.2,
    "capex_ratio": 16.4,
    "rnd_oku": 184.4,
-   "rnd_ratio": 8.7
+   "rnd_ratio": 8.7,
+   "edinet": "E01955"
   },
   "6966": {
    "sales_oku": 2183.3,
@@ -1347,7 +1513,8 @@
    "capex_oku": 301.2,
    "capex_ratio": 13.8,
    "rnd_oku": 4.7,
-   "rnd_ratio": 0.2
+   "rnd_ratio": 0.2,
+   "edinet": "E02293"
   },
   "6969": {
    "sales_oku": 51.4,
@@ -1355,7 +1522,8 @@
    "capex_oku": 4.5,
    "capex_ratio": 8.7,
    "rnd_oku": 1.4,
-   "rnd_ratio": 2.7
+   "rnd_ratio": 2.7,
+   "edinet": "E01933"
   },
   "6971": {
    "sales_oku": 20702.0,
@@ -1364,7 +1532,8 @@
    "capex_yoy": 64.3,
    "capex_ratio": 3.8,
    "rnd_oku": 261.2,
-   "rnd_ratio": 1.3
+   "rnd_ratio": 1.3,
+   "edinet": "E01182"
   },
   "6976": {
    "sales_oku": 3553.4,
@@ -1372,7 +1541,8 @@
    "capex_oku": 410.6,
    "capex_ratio": 11.6,
    "rnd_oku": 144.7,
-   "rnd_ratio": 4.1
+   "rnd_ratio": 4.1,
+   "edinet": "E01824"
   },
   "6977": {
    "sales_oku": 59.1,
@@ -1380,7 +1550,8 @@
    "capex_oku": 1.3,
    "capex_ratio": 2.1,
    "rnd_oku": 3.4,
-   "rnd_ratio": 5.7
+   "rnd_ratio": 5.7,
+   "edinet": "E01906"
   },
   "6981": {
    "sales_oku": 18308.6,
@@ -1389,7 +1560,8 @@
    "capex_yoy": 60.5,
    "capex_ratio": 10.3,
    "rnd_oku": 570.8,
-   "rnd_ratio": 3.1
+   "rnd_ratio": 3.1,
+   "edinet": "E01914"
   },
   "6988": {
    "sales_oku": 10281.7,
@@ -1398,7 +1570,8 @@
    "capex_yoy": 362.0,
    "capex_ratio": 8.4,
    "rnd_oku": 480.2,
-   "rnd_ratio": 4.7
+   "rnd_ratio": 4.7,
+   "edinet": "E01888"
   },
   "6994": {
    "sales_oku": 279.9,
@@ -1406,7 +1579,8 @@
    "capex_oku": 19.0,
    "capex_ratio": 6.8,
    "rnd_oku": 7.3,
-   "rnd_ratio": 2.6
+   "rnd_ratio": 2.6,
+   "edinet": "E01899"
   },
   "6996": {
    "sales_oku": 1697.2,
@@ -1414,7 +1588,8 @@
    "capex_oku": 60.0,
    "capex_ratio": 3.5,
    "rnd_oku": 72.8,
-   "rnd_ratio": 4.3
+   "rnd_ratio": 4.3,
+   "edinet": "E01904"
   },
   "6997": {
    "sales_oku": 1368.2,
@@ -1422,7 +1597,8 @@
    "capex_oku": 59.1,
    "capex_ratio": 4.3,
    "rnd_oku": 38.9,
-   "rnd_ratio": 2.8
+   "rnd_ratio": 2.8,
+   "edinet": "E01926"
   },
   "6998": {
    "sales_oku": 127.8,
@@ -1430,7 +1606,8 @@
    "capex_oku": 8.2,
    "capex_ratio": 6.5,
    "rnd_oku": 4.5,
-   "rnd_ratio": 3.6
+   "rnd_ratio": 3.6,
+   "edinet": "E01907"
   },
   "6999": {
    "sales_oku": 722.9,
@@ -1438,7 +1615,8 @@
    "capex_oku": 11.5,
    "capex_ratio": 1.6,
    "rnd_oku": 36.3,
-   "rnd_ratio": 5.0
+   "rnd_ratio": 5.0,
+   "edinet": "E01902"
   },
   "7011": {
    "sales_oku": 49741.7,
@@ -1446,7 +1624,8 @@
    "capex_oku": 540.9,
    "capex_ratio": 1.1,
    "rnd_oku": 2890.8,
-   "rnd_ratio": 5.8
+   "rnd_ratio": 5.8,
+   "edinet": "E02126"
   },
   "7220": {
    "sales_oku": 3472.0,
@@ -1454,7 +1633,8 @@
    "capex_oku": 277.0,
    "capex_ratio": 8.0,
    "rnd_oku": 57.0,
-   "rnd_ratio": 1.6
+   "rnd_ratio": 1.6,
+   "edinet": "E02237"
   },
   "7713": {
    "sales_oku": 115.8,
@@ -1462,7 +1642,8 @@
    "capex_oku": 3.8,
    "capex_ratio": 3.3,
    "rnd_oku": 2.1,
-   "rnd_ratio": 1.8
+   "rnd_ratio": 1.8,
+   "edinet": "E02323"
   },
   "7717": {
    "sales_oku": 529.9,
@@ -1470,7 +1651,8 @@
    "capex_oku": 11.1,
    "capex_ratio": 2.1,
    "rnd_oku": 22.6,
-   "rnd_ratio": 4.3
+   "rnd_ratio": 4.3,
+   "edinet": "E02334"
   },
   "7729": {
    "sales_oku": 1668.4,
@@ -1478,7 +1660,8 @@
    "capex_oku": 110.7,
    "capex_ratio": 6.6,
    "rnd_oku": 120.4,
-   "rnd_ratio": 7.2
+   "rnd_ratio": 7.2,
+   "edinet": "E02289"
   },
   "7731": {
    "sales_oku": 6771.6,
@@ -1486,7 +1669,8 @@
    "capex_oku": 598.0,
    "capex_ratio": 8.8,
    "rnd_oku": 772.0,
-   "rnd_ratio": 11.4
+   "rnd_ratio": 11.4,
+   "edinet": "E02271"
   },
   "7735": {
    "sales_oku": 6057.5,
@@ -1494,7 +1678,8 @@
    "capex_oku": 277.1,
    "capex_ratio": 4.6,
    "rnd_oku": 231.6,
-   "rnd_ratio": 3.8
+   "rnd_ratio": 3.8,
+   "edinet": "E02288"
   },
   "7741": {
    "sales_oku": 9477.5,
@@ -1503,7 +1688,8 @@
    "capex_yoy": 81.5,
    "capex_ratio": 6.9,
    "rnd_oku": 362.9,
-   "rnd_ratio": 3.8
+   "rnd_ratio": 3.8,
+   "edinet": "E01124"
   },
   "7746": {
    "sales_oku": 47.3,
@@ -1511,7 +1697,8 @@
    "capex_oku": 7.4,
    "capex_ratio": 15.6,
    "rnd_oku": 1.3,
-   "rnd_ratio": 2.8
+   "rnd_ratio": 2.8,
+   "edinet": "E01221"
   },
   "7751": {
    "sales_oku": 18376.1,
@@ -1519,7 +1706,8 @@
    "capex_oku": 666.7,
    "capex_ratio": 3.6,
    "rnd_oku": 3392.9,
-   "rnd_ratio": 18.5
+   "rnd_ratio": 18.5,
+   "edinet": "E02274"
   },
   "7826": {
    "sales_oku": 573.8,
@@ -1527,7 +1715,8 @@
    "capex_oku": 49.1,
    "capex_ratio": 8.6,
    "rnd_oku": 14.5,
-   "rnd_ratio": 2.5
+   "rnd_ratio": 2.5,
+   "edinet": "E02485"
   },
   "7911": {
    "sales_oku": 18050.3,
@@ -1535,7 +1724,8 @@
    "capex_oku": 1197.0,
    "capex_ratio": 6.6,
    "rnd_oku": 267.9,
-   "rnd_ratio": 1.5
+   "rnd_ratio": 1.5,
+   "edinet": "E00692"
   },
   "7912": {
    "sales_oku": 15125.7,
@@ -1543,7 +1733,8 @@
    "capex_oku": 877.0,
    "capex_ratio": 5.8,
    "rnd_oku": 422.8,
-   "rnd_ratio": 2.8
+   "rnd_ratio": 2.8,
+   "edinet": "E00693"
   },
   "7966": {
    "sales_oku": 3193.8,
@@ -1551,7 +1742,8 @@
    "capex_oku": 152.8,
    "capex_ratio": 4.8,
    "rnd_oku": 112.9,
-   "rnd_ratio": 3.5
+   "rnd_ratio": 3.5,
+   "edinet": "E02394"
   },
   "8035": {
    "sales_oku": 24435.3,
@@ -1559,7 +1751,8 @@
    "capex_oku": 2160.0,
    "capex_ratio": 8.8,
    "rnd_oku": 2778.7,
-   "rnd_ratio": 11.4
+   "rnd_ratio": 11.4,
+   "edinet": "E02652"
   },
   "8154": {
    "sales_oku": 6589.4,
@@ -1567,7 +1760,8 @@
    "capex_oku": 37.9,
    "capex_ratio": 0.6,
    "rnd_oku": 7.8,
-   "rnd_ratio": 0.1
+   "rnd_ratio": 0.1,
+   "edinet": "E02676"
   },
   "9432": {
    "sales_oku": 144091.2,
@@ -1576,7 +1770,8 @@
    "capex_yoy": 20.0,
    "capex_ratio": 6.0,
    "rnd_oku": 1237.8,
-   "rnd_ratio": 0.9
+   "rnd_ratio": 0.9,
+   "edinet": "E04430"
   },
   "9503": {
    "sales_oku": 40566.4,
@@ -1584,7 +1779,8 @@
    "capex_oku": 2747.5,
    "capex_ratio": 6.8,
    "rnd_oku": 132.3,
-   "rnd_ratio": 0.3
+   "rnd_ratio": 0.3,
+   "edinet": "E04499"
   },
   "9504": {
    "sales_oku": 14423.0,
@@ -1592,7 +1788,8 @@
    "capex_oku": 1727.4,
    "capex_ratio": 12.0,
    "rnd_oku": 55.0,
-   "rnd_ratio": 0.4
+   "rnd_ratio": 0.4,
+   "edinet": "E04504"
   },
   "9508": {
    "sales_oku": 22472.1,
@@ -1600,7 +1797,8 @@
    "capex_oku": 1677.9,
    "capex_ratio": 7.5,
    "rnd_oku": 53.8,
-   "rnd_ratio": 0.2
+   "rnd_ratio": 0.2,
+   "edinet": "E04506"
   },
   "9509": {
    "sales_oku": 8559.8,
@@ -1608,7 +1806,8 @@
    "capex_oku": 1510.8,
    "capex_ratio": 17.7,
    "rnd_oku": 24.4,
-   "rnd_ratio": 0.3
+   "rnd_ratio": 0.3,
+   "edinet": "E04500"
   },
   "9984": {
    "sales_oku": 77986.5,
@@ -1616,7 +1815,8 @@
    "capex_oku": 6.0,
    "capex_ratio": 0.0,
    "rnd_oku": 9754.7,
-   "rnd_ratio": 12.5
+   "rnd_ratio": 12.5,
+   "edinet": "E02778"
   }
  }
 }
