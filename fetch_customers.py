@@ -42,6 +42,10 @@ UA = {"User-Agent": "semi-tracker/1.0 (personal research)"}
 # ここを重点的に探すことで、少ないリクエストで大半をカバーする。
 DOC_TYPE_YUHO = "120"
 
+# collect_yuho_docids 実行時に sec(4桁) -> EDINETコード(E始まり) を記録する。
+# IRBANKのセグメント等は証券コードでなくEDINETコードでリンクするため利用。
+EDINET_CODE_OF: dict[str, str] = {}
+
 
 def _get(url: str) -> bytes:
     req = urllib.request.Request(url, headers=UA)
@@ -112,6 +116,9 @@ def collect_yuho_docids(key: str, target_secs: set[str],
             if not doc:
                 continue
             sub = r.get("submitDateTime") or ""
+            ec = r.get("edinetCode") or ""
+            if ec:
+                EDINET_CODE_OF[sec4] = ec
             lst = found.setdefault(sec4, [])
             if doc not in [x[1] for x in lst]:
                 lst.append((sub, doc))
