@@ -24,6 +24,7 @@ from fetch_customers import (
     API_BASE, _get, _api_key, collect_yuho_docids,
     _read_csv_from_zip, _rows_from_csv,
 )
+import fetch_customers as _fc
 
 # 各指標の候補(優先順)。(要素ID部分文字列(小文字), 項目名部分文字列)
 METRICS = {
@@ -183,6 +184,9 @@ def main() -> None:
             continue
         d = extract(rows)
         if d:
+            ec = _fc.EDINET_CODE_OF.get(sec, "")
+            if ec:
+                d["edinet"] = ec
             items[sec] = d
             ok += 1
             if ok <= 12:
