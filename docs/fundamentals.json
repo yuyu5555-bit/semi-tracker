@@ -1,0 +1,1622 @@
+{
+ "generated": "2026-08-08T16:35:05+00:00",
+ "items": {
+  "1802": {
+   "sales_oku": 25862.6,
+   "sales_yoy": -0.2,
+   "capex_oku": 300.0,
+   "capex_ratio": 1.2,
+   "rnd_oku": 177.0,
+   "rnd_ratio": 0.7
+  },
+  "1803": {
+   "sales_oku": 20578.0,
+   "sales_yoy": 5.8,
+   "capex_oku": 979.0,
+   "capex_ratio": 4.8,
+   "rnd_oku": 231.0,
+   "rnd_ratio": 1.1
+  },
+  "1812": {
+   "sales_oku": 30672.8,
+   "sales_yoy": 5.3,
+   "capex_oku": 610.0,
+   "capex_ratio": 2.0,
+   "rnd_oku": 242.0,
+   "rnd_ratio": 0.8
+  },
+  "1942": {
+   "sales_oku": 7420.2,
+   "sales_yoy": 10.4,
+   "capex_oku": 203.0,
+   "capex_ratio": 2.7,
+   "rnd_oku": 33.3,
+   "rnd_ratio": 0.4
+  },
+  "1944": {
+   "sales_oku": 7507.4,
+   "sales_yoy": 6.5,
+   "capex_oku": 599.1,
+   "capex_ratio": 8.0,
+   "rnd_oku": 9.1,
+   "rnd_ratio": 0.1
+  },
+  "1961": {
+   "sales_oku": 2546.7,
+   "sales_yoy": 0.6,
+   "capex_oku": 23.7,
+   "capex_ratio": 0.9,
+   "rnd_oku": 19.8,
+   "rnd_ratio": 0.8
+  },
+  "1969": {
+   "sales_oku": 4239.2,
+   "sales_yoy": 11.1,
+   "capex_oku": 50.3,
+   "capex_ratio": 1.2,
+   "rnd_oku": 39.3,
+   "rnd_ratio": 0.9
+  },
+  "1979": {
+   "sales_oku": 2861.3,
+   "sales_yoy": 3.6,
+   "rnd_oku": 16.0,
+   "rnd_ratio": 0.6
+  },
+  "1980": {
+   "sales_oku": 2562.3,
+   "sales_yoy": -2.5,
+   "capex_oku": 17.4,
+   "capex_ratio": 0.7,
+   "rnd_oku": 15.5,
+   "rnd_ratio": 0.6
+  },
+  "2737": {
+   "sales_oku": 6336.7,
+   "sales_yoy": 50.3,
+   "capex_oku": 6.7,
+   "capex_ratio": 0.1
+  },
+  "2760": {
+   "sales_oku": 2037.5,
+   "sales_yoy": -5.8,
+   "capex_oku": 6.2,
+   "capex_ratio": 0.3,
+   "rnd_oku": 4.8,
+   "rnd_ratio": 0.2
+  },
+  "2802": {
+   "sales_oku": 15837.2,
+   "sales_yoy": 3.5,
+   "capex_oku": 585.4,
+   "capex_yoy": 20.0,
+   "capex_ratio": 3.7,
+   "rnd_oku": 321.1,
+   "rnd_ratio": 2.0
+  },
+  "2962": {
+   "sales_oku": 33.6,
+   "sales_yoy": -28.2,
+   "capex_oku": 2.9,
+   "capex_ratio": 8.6,
+   "rnd_oku": 4.5,
+   "rnd_ratio": 13.4
+  },
+  "3101": {
+   "sales_oku": 4215.6,
+   "sales_yoy": -0.1,
+   "capex_oku": 290.0,
+   "capex_ratio": 6.9,
+   "rnd_oku": 141.0,
+   "rnd_ratio": 3.3
+  },
+  "3105": {
+   "sales_oku": 5023.4,
+   "sales_yoy": 1.5,
+   "capex_oku": 199.2,
+   "capex_ratio": 4.0,
+   "rnd_oku": 232.6,
+   "rnd_ratio": 4.6
+  },
+  "3110": {
+   "sales_oku": 1182.3,
+   "sales_yoy": 8.4,
+   "capex_oku": 217.0,
+   "capex_ratio": 18.4,
+   "rnd_oku": 34.0,
+   "rnd_ratio": 2.9
+  },
+  "3132": {
+   "sales_oku": 12142.0,
+   "sales_yoy": 17.4,
+   "capex_oku": 43.3,
+   "capex_ratio": 0.4,
+   "rnd_oku": 25.1,
+   "rnd_ratio": 0.2
+  },
+  "3156": {
+   "sales_oku": 6309.1,
+   "sales_yoy": 12.5,
+   "capex_oku": 65.4,
+   "capex_ratio": 1.0,
+   "rnd_oku": 3.1,
+   "rnd_ratio": 0.0
+  },
+  "3407": {
+   "sales_oku": 30745.0,
+   "sales_yoy": 1.2,
+   "capex_oku": 251.6,
+   "capex_ratio": 0.8,
+   "rnd_oku": 536.5,
+   "rnd_ratio": 1.7
+  },
+  "3433": {
+   "sales_oku": 584.9,
+   "sales_yoy": 7.9,
+   "capex_oku": 90.4,
+   "capex_ratio": 15.5,
+   "rnd_oku": 17.5,
+   "rnd_ratio": 3.0
+  },
+  "3436": {
+   "sales_oku": 4096.7,
+   "sales_yoy": 3.3,
+   "capex_oku": 799.6,
+   "capex_ratio": 19.5,
+   "rnd_oku": 111.5,
+   "rnd_ratio": 2.7
+  },
+  "3445": {
+   "sales_oku": 767.1,
+   "sales_yoy": 29.6,
+   "capex_oku": 84.2,
+   "capex_ratio": 11.0,
+   "rnd_oku": 20.0,
+   "rnd_ratio": 2.6
+  },
+  "3774": {
+   "sales_oku": 3453.9,
+   "sales_yoy": 9.0,
+   "capex_oku": 322.1,
+   "capex_ratio": 9.3,
+   "rnd_oku": 6.4,
+   "rnd_ratio": 0.2
+  },
+  "3778": {
+   "sales_oku": 353.0,
+   "sales_yoy": 12.4,
+   "capex_oku": 225.5,
+   "capex_ratio": 63.9,
+   "rnd_oku": 2.1,
+   "rnd_ratio": 0.6
+  },
+  "3891": {
+   "sales_oku": 186.2,
+   "sales_yoy": 16.2,
+   "capex_oku": 11.5,
+   "capex_ratio": 6.2,
+   "rnd_oku": 4.2,
+   "rnd_ratio": 2.3
+  },
+  "3905": {
+   "sales_oku": 336.1,
+   "sales_yoy": 1042.0,
+   "capex_oku": 51.1,
+   "capex_ratio": 15.2,
+   "rnd_oku": 0.0,
+   "rnd_ratio": 0.0
+  },
+  "4004": {
+   "sales_oku": 13471.2,
+   "sales_yoy": -3.2,
+   "capex_oku": 1128.5,
+   "capex_yoy": 119.4,
+   "capex_ratio": 8.4,
+   "rnd_oku": 464.6,
+   "rnd_ratio": 3.4
+  },
+  "4005": {
+   "sales_oku": 23285.2,
+   "sales_yoy": -10.7,
+   "capex_oku": 158.5,
+   "capex_yoy": -21.2,
+   "capex_ratio": 0.7,
+   "rnd_oku": 1447.0,
+   "rnd_ratio": 6.2
+  },
+  "4021": {
+   "sales_oku": 2795.9,
+   "sales_yoy": 11.2,
+   "capex_oku": 185.7,
+   "capex_ratio": 6.6,
+   "rnd_oku": 213.8,
+   "rnd_ratio": 7.6
+  },
+  "4022": {
+   "sales_oku": 477.3,
+   "sales_yoy": 5.1,
+   "capex_oku": 39.0,
+   "capex_ratio": 8.2,
+   "rnd_oku": 0.9,
+   "rnd_ratio": 0.2
+  },
+  "4028": {
+   "sales_oku": 1549.0,
+   "sales_yoy": 6.7,
+   "capex_oku": 116.2,
+   "capex_ratio": 7.5,
+   "rnd_oku": 112.5,
+   "rnd_ratio": 7.3
+  },
+  "4043": {
+   "sales_oku": 3494.8,
+   "sales_yoy": 1.9,
+   "capex_oku": 327.6,
+   "capex_ratio": 9.4,
+   "rnd_oku": 177.1,
+   "rnd_ratio": 5.1
+  },
+  "4044": {
+   "sales_oku": 1444.8,
+   "sales_yoy": 0.2,
+   "capex_oku": 93.4,
+   "capex_yoy": 217.9,
+   "capex_ratio": 6.5,
+   "rnd_oku": 76.6,
+   "rnd_ratio": 5.3
+  },
+  "4047": {
+   "sales_oku": 654.0,
+   "sales_yoy": 4.9,
+   "capex_oku": 68.9,
+   "capex_ratio": 10.5,
+   "rnd_oku": 23.0,
+   "rnd_ratio": 3.5
+  },
+  "4061": {
+   "sales_oku": 3842.5,
+   "sales_yoy": -4.0,
+   "capex_oku": 561.0,
+   "capex_ratio": 14.6,
+   "rnd_oku": 147.7,
+   "rnd_ratio": 3.8
+  },
+  "4062": {
+   "sales_oku": 4162.0,
+   "sales_yoy": 12.7,
+   "capex_oku": 642.8,
+   "capex_ratio": 15.4,
+   "rnd_oku": 299.2,
+   "rnd_ratio": 7.2
+  },
+  "4063": {
+   "sales_oku": 25739.7,
+   "sales_yoy": 0.5,
+   "capex_oku": 3397.1,
+   "capex_ratio": 13.2,
+   "rnd_oku": 778.2,
+   "rnd_ratio": 3.0
+  },
+  "4078": {
+   "sales_oku": 814.5,
+   "sales_yoy": -3.5,
+   "capex_oku": 57.3,
+   "capex_yoy": 2014.8,
+   "capex_ratio": 7.0,
+   "rnd_oku": 28.4,
+   "rnd_ratio": 3.5
+  },
+  "4091": {
+   "sales_oku": 13596.1,
+   "sales_yoy": 3.9,
+   "capex_oku": 1331.7,
+   "capex_ratio": 9.8,
+   "rnd_oku": 57.4,
+   "rnd_ratio": 0.4
+  },
+  "4100": {
+   "sales_oku": 280.4,
+   "sales_yoy": -11.5,
+   "capex_oku": 9.3,
+   "capex_ratio": 3.3,
+   "rnd_oku": 13.8,
+   "rnd_ratio": 4.9
+  },
+  "4109": {
+   "sales_oku": 368.0,
+   "sales_yoy": 1.4,
+   "capex_oku": 42.4,
+   "capex_ratio": 11.5,
+   "rnd_oku": 6.3,
+   "rnd_ratio": 1.7
+  },
+  "4182": {
+   "sales_oku": 7382.4,
+   "sales_yoy": -4.6,
+   "capex_oku": 246.4,
+   "capex_ratio": 3.3,
+   "rnd_oku": 266.4,
+   "rnd_ratio": 3.6
+  },
+  "4183": {
+   "sales_oku": 16687.5,
+   "sales_yoy": -7.8,
+   "capex_oku": 1622.1,
+   "capex_yoy": 515.1,
+   "capex_ratio": 9.7,
+   "rnd_oku": 464.0,
+   "rnd_ratio": 2.8
+  },
+  "4186": {
+   "sales_oku": 2370.3,
+   "sales_yoy": 17.9,
+   "capex_oku": 287.2,
+   "capex_ratio": 12.1,
+   "rnd_oku": 156.7,
+   "rnd_ratio": 6.6
+  },
+  "4187": {
+   "sales_oku": 362.7,
+   "sales_yoy": 10.9,
+   "capex_oku": 14.1,
+   "capex_ratio": 3.9,
+   "rnd_oku": 19.0,
+   "rnd_ratio": 5.2
+  },
+  "4203": {
+   "sales_oku": 3198.7,
+   "sales_yoy": 5.0,
+   "capex_oku": 192.8,
+   "capex_yoy": 263.1,
+   "capex_ratio": 6.0,
+   "rnd_oku": 133.0,
+   "rnd_ratio": 4.2
+  },
+  "4205": {
+   "sales_oku": 4119.7,
+   "sales_yoy": -2.1,
+   "capex_oku": 195.5,
+   "capex_ratio": 4.7,
+   "rnd_oku": 31.9,
+   "rnd_ratio": 0.8
+  },
+  "4366": {
+   "sales_oku": 194.8,
+   "sales_yoy": 4.5,
+   "capex_oku": 19.8,
+   "capex_ratio": 10.2,
+   "rnd_oku": 12.1,
+   "rnd_ratio": 6.2
+  },
+  "4368": {
+   "sales_oku": 769.3,
+   "sales_yoy": 10.7,
+   "capex_oku": 27.3,
+   "capex_ratio": 3.6,
+   "rnd_oku": 10.9,
+   "rnd_ratio": 1.4
+  },
+  "4369": {
+   "sales_oku": 238.8,
+   "sales_yoy": 26.3,
+   "capex_oku": 81.6,
+   "capex_ratio": 34.1,
+   "rnd_oku": 6.1,
+   "rnd_ratio": 2.5
+  },
+  "4401": {
+   "sales_oku": 4165.6,
+   "sales_yoy": 2.3,
+   "capex_oku": 216.7,
+   "capex_ratio": 5.2,
+   "rnd_oku": 193.0,
+   "rnd_ratio": 4.6
+  },
+  "4410": {
+   "sales_oku": 1037.6,
+   "sales_yoy": 2.7,
+   "capex_oku": 46.7,
+   "capex_ratio": 4.5,
+   "rnd_oku": 28.7,
+   "rnd_ratio": 2.8
+  },
+  "4462": {
+   "sales_oku": 234.5,
+   "sales_yoy": -0.8,
+   "capex_oku": 6.7,
+   "capex_ratio": 2.8,
+   "rnd_oku": 12.7,
+   "rnd_ratio": 5.4
+  },
+  "4626": {
+   "sales_oku": 1378.5,
+   "sales_yoy": 15.8,
+   "capex_oku": 59.6,
+   "capex_ratio": 4.3,
+   "rnd_oku": 76.4,
+   "rnd_ratio": 5.5
+  },
+  "4901": {
+   "sales_oku": 33569.7,
+   "sales_yoy": 5.0,
+   "capex_oku": 4262.9,
+   "capex_ratio": 12.7,
+   "rnd_oku": 1577.9,
+   "rnd_ratio": 4.7
+  },
+  "4966": {
+   "sales_oku": 917.8,
+   "sales_yoy": 9.5,
+   "capex_oku": 27.3,
+   "capex_ratio": 3.0,
+   "rnd_oku": 26.9,
+   "rnd_ratio": 2.9
+  },
+  "4968": {
+   "sales_oku": 821.4,
+   "sales_yoy": 2.4,
+   "capex_oku": 33.0,
+   "capex_ratio": 4.0,
+   "rnd_oku": 30.4,
+   "rnd_ratio": 3.7
+  },
+  "4970": {
+   "sales_oku": 419.6,
+   "sales_yoy": 8.5,
+   "capex_oku": 43.4,
+   "capex_ratio": 10.3,
+   "rnd_oku": 17.9,
+   "rnd_ratio": 4.3
+  },
+  "4971": {
+   "sales_oku": 209.5,
+   "sales_yoy": 14.9,
+   "capex_oku": 28.5,
+   "capex_ratio": 13.6,
+   "rnd_oku": 13.8,
+   "rnd_ratio": 6.6
+  },
+  "4975": {
+   "sales_oku": 296.7,
+   "sales_yoy": 4.6,
+   "capex_oku": 89.7,
+   "capex_ratio": 30.2,
+   "rnd_oku": 12.4,
+   "rnd_ratio": 4.2
+  },
+  "4980": {
+   "sales_oku": 1138.3,
+   "sales_yoy": 3.1,
+   "capex_oku": 167.7,
+   "capex_ratio": 14.7,
+   "rnd_oku": 67.4,
+   "rnd_ratio": 5.9
+  },
+  "5016": {
+   "sales_oku": 4618.4,
+   "sales_yoy": 21.7,
+   "capex_oku": 243.1,
+   "capex_yoy": 5.4,
+   "capex_ratio": 5.3,
+   "rnd_oku": 199.8,
+   "rnd_ratio": 4.3
+  },
+  "5201": {
+   "sales_oku": 20588.3,
+   "sales_yoy": -0.4,
+   "capex_oku": 2512.8,
+   "capex_yoy": 643.2,
+   "capex_ratio": 12.2,
+   "rnd_oku": 603.2,
+   "rnd_ratio": 2.9
+  },
+  "5208": {
+   "sales_oku": 564.7,
+   "sales_yoy": 13.4,
+   "capex_oku": 70.3,
+   "capex_ratio": 12.4,
+   "rnd_oku": 27.8,
+   "rnd_ratio": 4.9
+  },
+  "5214": {
+   "sales_oku": 3114.0,
+   "sales_yoy": 4.1,
+   "capex_oku": 343.1,
+   "capex_ratio": 11.0,
+   "rnd_oku": 88.1,
+   "rnd_ratio": 2.8
+  },
+  "5232": {
+   "sales_oku": 2236.9,
+   "sales_yoy": 1.9,
+   "capex_oku": 161.6,
+   "capex_ratio": 7.2,
+   "rnd_oku": 35.6,
+   "rnd_ratio": 1.6
+  },
+  "5233": {
+   "sales_oku": 8984.4,
+   "sales_yoy": 0.2,
+   "capex_oku": 810.9,
+   "capex_ratio": 9.0,
+   "rnd_oku": 64.7,
+   "rnd_ratio": 0.7
+  },
+  "5331": {
+   "sales_oku": 1429.1,
+   "sales_yoy": 3.4,
+   "capex_oku": 150.4,
+   "capex_ratio": 10.5,
+   "rnd_oku": 23.7,
+   "rnd_ratio": 1.7
+  },
+  "5332": {
+   "sales_oku": 7374.4,
+   "sales_yoy": 1.8,
+   "capex_oku": 431.6,
+   "capex_ratio": 5.9,
+   "rnd_oku": 263.0,
+   "rnd_ratio": 3.6
+  },
+  "5333": {
+   "sales_oku": 6701.2,
+   "sales_yoy": 8.2,
+   "capex_oku": 558.5,
+   "capex_ratio": 8.3,
+   "rnd_oku": 317.9,
+   "rnd_ratio": 4.7
+  },
+  "5334": {
+   "sales_oku": 7312.1,
+   "sales_yoy": 12.0,
+   "capex_oku": 490.0,
+   "capex_ratio": 6.7,
+   "rnd_oku": 267.8,
+   "rnd_ratio": 3.7
+  },
+  "5384": {
+   "sales_oku": 694.0,
+   "sales_yoy": 11.0,
+   "capex_oku": 227.5,
+   "capex_ratio": 32.8,
+   "rnd_oku": 58.4,
+   "rnd_ratio": 8.4
+  },
+  "5631": {
+   "sales_oku": 2748.5,
+   "sales_yoy": 10.6,
+   "capex_oku": 242.8,
+   "capex_ratio": 8.8,
+   "rnd_oku": 62.0,
+   "rnd_ratio": 2.3
+  },
+  "5703": {
+   "sales_oku": 5854.7,
+   "sales_yoy": 6.4,
+   "capex_oku": 241.0,
+   "capex_ratio": 4.1,
+   "rnd_oku": 67.9,
+   "rnd_ratio": 1.2
+  },
+  "5706": {
+   "sales_oku": 7585.3,
+   "sales_yoy": 6.5,
+   "capex_oku": 364.0,
+   "capex_ratio": 4.8,
+   "rnd_oku": 150.5,
+   "rnd_ratio": 2.0
+  },
+  "5713": {
+   "sales_oku": 17415.9,
+   "sales_yoy": 9.3,
+   "capex_oku": 628.3,
+   "capex_yoy": 47.5,
+   "capex_ratio": 3.6,
+   "rnd_oku": 90.5,
+   "rnd_ratio": 0.5
+  },
+  "5741": {
+   "sales_oku": 11817.2,
+   "sales_yoy": 18.3,
+   "capex_oku": 527.1,
+   "capex_ratio": 4.5,
+   "rnd_oku": 52.5,
+   "rnd_ratio": 0.4
+  },
+  "5801": {
+   "sales_oku": 13075.6,
+   "sales_yoy": 8.8,
+   "capex_oku": 566.6,
+   "capex_ratio": 4.3,
+   "rnd_oku": 284.2,
+   "rnd_ratio": 2.2
+  },
+  "5802": {
+   "sales_oku": 51101.7,
+   "sales_yoy": 9.2,
+   "capex_oku": 2431.8,
+   "capex_ratio": 4.8,
+   "rnd_oku": 1628.6,
+   "rnd_ratio": 3.2
+  },
+  "5803": {
+   "sales_oku": 11823.6,
+   "sales_yoy": 20.7,
+   "capex_oku": 403.0,
+   "capex_ratio": 3.4,
+   "rnd_oku": 168.0,
+   "rnd_ratio": 1.4
+  },
+  "5805": {
+   "sales_oku": 2777.4,
+   "sales_yoy": 16.8,
+   "capex_oku": 70.8,
+   "capex_ratio": 2.5,
+   "rnd_oku": 22.8,
+   "rnd_ratio": 0.8
+  },
+  "5985": {
+   "sales_oku": 522.2,
+   "sales_yoy": -18.3,
+   "capex_oku": 17.3,
+   "capex_ratio": 3.3,
+   "rnd_oku": 8.6,
+   "rnd_ratio": 1.6
+  },
+  "6055": {
+   "sales_oku": 579.8,
+   "sales_yoy": 10.1,
+   "capex_oku": 7.2,
+   "capex_ratio": 1.2
+  },
+  "6134": {
+   "sales_oku": 1806.4,
+   "sales_yoy": 41.8,
+   "capex_oku": 115.8,
+   "capex_ratio": 6.4,
+   "rnd_oku": 85.1,
+   "rnd_ratio": 4.7
+  },
+  "6146": {
+   "sales_oku": 4368.9,
+   "sales_yoy": 11.1,
+   "capex_oku": 327.1,
+   "capex_ratio": 7.5,
+   "rnd_oku": 341.6,
+   "rnd_ratio": 7.8
+  },
+  "6227": {
+   "sales_oku": 210.1,
+   "sales_yoy": 36.2,
+   "capex_oku": 10.8,
+   "capex_ratio": 5.2,
+   "rnd_oku": 4.3,
+   "rnd_ratio": 2.1
+  },
+  "6235": {
+   "sales_oku": 338.6,
+   "sales_yoy": 4.5,
+   "capex_oku": 7.0,
+   "capex_ratio": 2.1,
+   "rnd_oku": 38.0,
+   "rnd_ratio": 11.2
+  },
+  "6237": {
+   "sales_oku": 476.9,
+   "sales_yoy": 4.2,
+   "capex_oku": 8.9,
+   "capex_ratio": 1.9,
+   "rnd_oku": 9.2,
+   "rnd_ratio": 1.9
+  },
+  "6254": {
+   "sales_oku": 562.5,
+   "sales_yoy": -41.6,
+   "capex_oku": 14.2,
+   "capex_ratio": 2.5,
+   "rnd_oku": 4.9,
+   "rnd_ratio": 0.9
+  },
+  "6258": {
+   "sales_oku": 949.1,
+   "sales_yoy": 7.3,
+   "capex_oku": 38.5,
+   "capex_ratio": 4.1,
+   "rnd_oku": 15.6,
+   "rnd_ratio": 1.6
+  },
+  "6264": {
+   "sales_oku": 114.0,
+   "sales_yoy": 140.1,
+   "capex_oku": 18.8,
+   "capex_ratio": 16.5,
+   "rnd_oku": 1.0,
+   "rnd_ratio": 0.9
+  },
+  "6266": {
+   "sales_oku": 354.3,
+   "sales_yoy": -1.2,
+   "capex_oku": 15.2,
+   "capex_ratio": 4.3,
+   "rnd_oku": 7.3,
+   "rnd_ratio": 2.1
+  },
+  "6273": {
+   "sales_oku": 8425.4,
+   "sales_yoy": 6.4,
+   "capex_oku": 1502.5,
+   "capex_ratio": 17.8,
+   "rnd_oku": 399.9,
+   "rnd_ratio": 4.7
+  },
+  "6278": {
+   "sales_oku": 401.6,
+   "sales_yoy": 23.2,
+   "capex_oku": 57.2,
+   "capex_ratio": 14.2,
+   "rnd_oku": 23.4,
+   "rnd_ratio": 5.8
+  },
+  "6315": {
+   "sales_oku": 543.7,
+   "sales_yoy": 1.7,
+   "capex_oku": 42.0,
+   "capex_ratio": 7.7,
+   "rnd_oku": 8.2,
+   "rnd_ratio": 1.5
+  },
+  "6323": {
+   "sales_oku": 1287.9,
+   "sales_yoy": 3.5,
+   "capex_oku": 45.3,
+   "capex_ratio": 3.5,
+   "rnd_oku": 19.3,
+   "rnd_ratio": 1.5
+  },
+  "6324": {
+   "sales_oku": 595.6,
+   "sales_yoy": 7.0,
+   "capex_oku": 48.0,
+   "capex_ratio": 8.1,
+   "rnd_oku": 39.5,
+   "rnd_ratio": 6.6
+  },
+  "6327": {
+   "sales_oku": 62.3,
+   "sales_yoy": 4.9,
+   "capex_oku": 0.9,
+   "capex_ratio": 1.5,
+   "rnd_oku": 0.4,
+   "rnd_ratio": 0.6
+  },
+  "6336": {
+   "sales_oku": 156.5,
+   "sales_yoy": 5.6,
+   "capex_oku": 4.5,
+   "capex_ratio": 2.9,
+   "rnd_oku": 1.6,
+   "rnd_ratio": 1.0
+  },
+  "6337": {
+   "sales_oku": 55.7,
+   "sales_yoy": -5.5,
+   "capex_oku": 1.1,
+   "capex_ratio": 2.0,
+   "rnd_oku": 3.5,
+   "rnd_ratio": 6.3
+  },
+  "6338": {
+   "sales_oku": 73.3,
+   "sales_yoy": -54.4,
+   "capex_oku": 0.2,
+   "capex_ratio": 0.3,
+   "rnd_oku": 2.6,
+   "rnd_ratio": 3.5
+  },
+  "6339": {
+   "sales_oku": 1761.8,
+   "sales_yoy": 17.3,
+   "capex_oku": 88.1,
+   "capex_ratio": 5.0,
+   "rnd_oku": 28.7,
+   "rnd_ratio": 1.6
+  },
+  "6340": {
+   "sales_oku": 1290.2,
+   "sales_yoy": 11.8,
+   "capex_oku": 22.8,
+   "capex_ratio": 1.8,
+   "rnd_oku": 20.4,
+   "rnd_ratio": 1.6
+  },
+  "6361": {
+   "sales_oku": 9582.9,
+   "sales_yoy": 10.6,
+   "capex_oku": 1007.4,
+   "capex_yoy": 1034.0,
+   "capex_ratio": 10.5,
+   "rnd_oku": 232.3,
+   "rnd_ratio": 2.4
+  },
+  "6363": {
+   "sales_oku": 929.3,
+   "sales_yoy": 7.4,
+   "capex_oku": 19.8,
+   "capex_ratio": 2.1,
+   "rnd_oku": 6.3,
+   "rnd_ratio": 0.7
+  },
+  "6367": {
+   "sales_oku": 50150.4,
+   "sales_yoy": 5.5,
+   "capex_oku": 3000.3,
+   "capex_ratio": 6.0,
+   "rnd_oku": 1507.6,
+   "rnd_ratio": 3.0
+  },
+  "6368": {
+   "sales_oku": 1776.5,
+   "sales_yoy": 8.8,
+   "capex_oku": 35.2,
+   "capex_ratio": 2.0,
+   "rnd_oku": 33.7,
+   "rnd_ratio": 1.9
+  },
+  "6370": {
+   "sales_oku": 4028.9,
+   "sales_yoy": 3.6,
+   "capex_oku": 218.6,
+   "capex_yoy": -28.9,
+   "capex_ratio": 5.4,
+   "rnd_oku": 81.1,
+   "rnd_ratio": 2.0
+  },
+  "6383": {
+   "sales_oku": 6607.2,
+   "sales_yoy": 17.3,
+   "capex_oku": 333.2,
+   "capex_ratio": 5.0,
+   "rnd_oku": 131.9,
+   "rnd_ratio": 2.0
+  },
+  "6384": {
+   "sales_oku": 93.2,
+   "sales_yoy": 10.0,
+   "capex_oku": 3.4,
+   "capex_ratio": 3.7,
+   "rnd_oku": 4.4,
+   "rnd_ratio": 4.7
+  },
+  "6387": {
+   "sales_oku": 93.4,
+   "sales_yoy": 13.9,
+   "capex_oku": 4.3,
+   "capex_ratio": 4.6,
+   "rnd_oku": 3.0,
+   "rnd_ratio": 3.2
+  },
+  "6407": {
+   "sales_oku": 1578.9,
+   "sales_yoy": 1.4,
+   "capex_oku": 28.3,
+   "capex_ratio": 1.8,
+   "rnd_oku": 34.2,
+   "rnd_ratio": 2.2
+  },
+  "6458": {
+   "sales_oku": 593.4,
+   "sales_yoy": 4.1,
+   "capex_oku": 59.6,
+   "capex_ratio": 10.0,
+   "rnd_oku": 11.5,
+   "rnd_ratio": 1.9
+  },
+  "6479": {
+   "sales_oku": 16643.9,
+   "sales_yoy": 9.3,
+   "capex_oku": 102.8,
+   "capex_yoy": -14.2,
+   "capex_ratio": 0.6,
+   "rnd_oku": 497.6,
+   "rnd_ratio": 3.0
+  },
+  "6486": {
+   "sales_oku": 1774.9,
+   "sales_yoy": 5.5,
+   "capex_oku": 30.6,
+   "capex_ratio": 1.7,
+   "rnd_oku": 37.5,
+   "rnd_ratio": 2.1
+  },
+  "6490": {
+   "sales_oku": 594.8,
+   "sales_yoy": 2.6,
+   "capex_oku": 59.6,
+   "capex_ratio": 10.0,
+   "rnd_oku": 14.6,
+   "rnd_ratio": 2.5
+  },
+  "6501": {
+   "sales_oku": 105867.8,
+   "sales_yoy": 8.2,
+   "capex_oku": 699.0,
+   "capex_yoy": -40.6,
+   "capex_ratio": 0.7,
+   "rnd_oku": 496.0,
+   "rnd_ratio": 0.5
+  },
+  "6503": {
+   "sales_oku": 58947.5,
+   "sales_yoy": 6.8,
+   "capex_oku": 607.8,
+   "capex_yoy": 79.9,
+   "capex_ratio": 1.0,
+   "rnd_oku": 2359.0,
+   "rnd_ratio": 4.0
+  },
+  "6504": {
+   "sales_oku": 12276.0,
+   "sales_yoy": 9.3,
+   "capex_oku": 79.7,
+   "capex_ratio": 0.6,
+   "rnd_oku": 389.1,
+   "rnd_ratio": 3.2
+  },
+  "6516": {
+   "sales_oku": 1073.5,
+   "sales_yoy": 9.7,
+   "capex_oku": 21.9,
+   "capex_yoy": 77.1,
+   "capex_ratio": 2.0,
+   "rnd_oku": 33.7,
+   "rnd_ratio": 3.1
+  },
+  "6521": {
+   "sales_oku": 100.4,
+   "sales_yoy": 19.6,
+   "capex_oku": 4.7,
+   "capex_ratio": 4.7,
+   "rnd_oku": 12.0,
+   "rnd_ratio": 12.0
+  },
+  "6524": {
+   "sales_oku": 174.5,
+   "sales_yoy": 9.6,
+   "capex_oku": 9.8,
+   "capex_ratio": 5.6,
+   "rnd_oku": 6.4,
+   "rnd_ratio": 3.7
+  },
+  "6525": {
+   "sales_oku": 2350.8,
+   "sales_yoy": -1.6,
+   "capex_oku": 168.6,
+   "capex_ratio": 7.2,
+   "rnd_oku": 182.6,
+   "rnd_ratio": 7.8
+  },
+  "6526": {
+   "sales_oku": 2008.3,
+   "sales_yoy": 6.5,
+   "capex_oku": 222.4,
+   "capex_ratio": 11.1,
+   "rnd_oku": 585.1,
+   "rnd_ratio": 29.1
+  },
+  "6584": {
+   "sales_oku": 1593.9,
+   "sales_yoy": -0.1,
+   "capex_oku": 37.2,
+   "capex_ratio": 2.3,
+   "rnd_oku": 27.1,
+   "rnd_ratio": 1.7
+  },
+  "6590": {
+   "sales_oku": 880.4,
+   "sales_yoy": 8.8,
+   "capex_oku": 109.6,
+   "capex_ratio": 12.5,
+   "rnd_oku": 39.5,
+   "rnd_ratio": 4.5
+  },
+  "6594": {
+   "sales_oku": 26078.1,
+   "sales_yoy": 11.1,
+   "capex_oku": 125.9,
+   "capex_ratio": 0.5,
+   "rnd_oku": 806.0,
+   "rnd_ratio": 3.1
+  },
+  "6613": {
+   "sales_oku": 13.7,
+   "sales_yoy": 4.9,
+   "capex_oku": 7.5,
+   "capex_ratio": 54.7,
+   "rnd_oku": 1.9,
+   "rnd_ratio": 13.7
+  },
+  "6622": {
+   "sales_oku": 2377.3,
+   "sales_yoy": 5.0,
+   "capex_oku": 134.0,
+   "capex_ratio": 5.6,
+   "rnd_oku": 75.3,
+   "rnd_ratio": 3.2
+  },
+  "6627": {
+   "sales_oku": 417.5,
+   "sales_yoy": 12.5,
+   "capex_oku": 305.5,
+   "capex_ratio": 73.2
+  },
+  "6656": {
+   "sales_oku": 24.8,
+   "sales_yoy": 10.8,
+   "capex_oku": 2.3,
+   "capex_ratio": 9.3,
+   "rnd_oku": 2.6,
+   "rnd_ratio": 10.3
+  },
+  "6668": {
+   "sales_oku": 126.8,
+   "sales_yoy": 12.2,
+   "capex_oku": 2.9,
+   "capex_ratio": 2.3,
+   "rnd_oku": 7.7,
+   "rnd_ratio": 6.1
+  },
+  "6674": {
+   "sales_oku": 6089.9,
+   "sales_yoy": 4.9,
+   "capex_oku": 37.9,
+   "capex_ratio": 0.6,
+   "rnd_oku": 118.1,
+   "rnd_ratio": 1.9
+  },
+  "6701": {
+   "sales_oku": 35827.3,
+   "sales_yoy": 4.7,
+   "capex_oku": 225.1,
+   "capex_yoy": -70.3,
+   "capex_ratio": 0.6,
+   "rnd_oku": 1052.4,
+   "rnd_ratio": 2.9
+  },
+  "6702": {
+   "sales_oku": 35029.7,
+   "sales_yoy": -1.3,
+   "capex_oku": 503.0,
+   "capex_yoy": -27.7,
+   "capex_ratio": 1.4,
+   "rnd_oku": 1373.0,
+   "rnd_ratio": 3.9
+  },
+  "6703": {
+   "sales_oku": 4216.4,
+   "sales_yoy": -6.8,
+   "capex_oku": 32.7,
+   "capex_ratio": 0.8,
+   "rnd_oku": 79.5,
+   "rnd_ratio": 1.9
+  },
+  "6707": {
+   "sales_oku": 801.8,
+   "sales_yoy": -34.1,
+   "capex_oku": 62.9,
+   "capex_ratio": 7.8,
+   "rnd_oku": 54.0,
+   "rnd_ratio": 6.7
+  },
+  "6723": {
+   "sales_oku": 13212.1,
+   "sales_yoy": -2.0,
+   "capex_oku": 576.0,
+   "capex_ratio": 4.4,
+   "rnd_oku": 2403.0,
+   "rnd_ratio": 18.2
+  },
+  "6728": {
+   "sales_oku": 2511.8,
+   "sales_yoy": -3.8,
+   "capex_oku": 157.2,
+   "capex_ratio": 6.3,
+   "rnd_oku": 139.9,
+   "rnd_ratio": 5.6
+  },
+  "6740": {
+   "sales_oku": 1323.3,
+   "sales_yoy": -29.6,
+   "capex_oku": 14.2,
+   "capex_ratio": 1.1,
+   "rnd_oku": 70.4,
+   "rnd_ratio": 5.3
+  },
+  "6754": {
+   "sales_oku": 1174.6,
+   "sales_yoy": 4.0,
+   "capex_oku": 31.4,
+   "capex_yoy": 2.3,
+   "capex_ratio": 2.7,
+   "rnd_oku": 77.4,
+   "rnd_ratio": 6.6
+  },
+  "6758": {
+   "sales_oku": 124796.2,
+   "sales_yoy": 3.7,
+   "capex_oku": 5356.7,
+   "capex_ratio": 4.3,
+   "rnd_oku": 7620.0,
+   "rnd_ratio": 6.1
+  },
+  "6762": {
+   "sales_oku": 25048.2,
+   "sales_yoy": 13.6,
+   "capex_oku": 2985.9,
+   "capex_yoy": 535.9,
+   "capex_ratio": 11.9,
+   "rnd_oku": 2896.7,
+   "rnd_ratio": 11.6
+  },
+  "6768": {
+   "sales_oku": 1235.6,
+   "sales_yoy": 8.3,
+   "capex_oku": 30.5,
+   "capex_ratio": 2.5,
+   "rnd_oku": 0.5,
+   "rnd_ratio": 0.0
+  },
+  "6777": {
+   "sales_oku": 315.1,
+   "sales_yoy": 31.1,
+   "capex_oku": 12.4,
+   "capex_ratio": 3.9,
+   "rnd_oku": 25.3,
+   "rnd_ratio": 8.0
+  },
+  "6779": {
+   "sales_oku": 442.6,
+   "sales_yoy": -0.4,
+   "capex_oku": 76.7,
+   "capex_ratio": 17.3,
+   "rnd_oku": 28.3,
+   "rnd_ratio": 6.4
+  },
+  "6787": {
+   "sales_oku": 2405.7,
+   "sales_yoy": 16.3,
+   "capex_oku": 496.7,
+   "capex_ratio": 20.6,
+   "rnd_oku": 84.2,
+   "rnd_ratio": 3.5
+  },
+  "6794": {
+   "sales_oku": 1349.1,
+   "sales_yoy": -2.0,
+   "capex_oku": 68.0,
+   "capex_ratio": 5.0,
+   "rnd_oku": 37.6,
+   "rnd_ratio": 2.8
+  },
+  "6832": {
+   "sales_oku": 383.2,
+   "sales_yoy": 9.6,
+   "capex_oku": 118.0,
+   "capex_ratio": 30.8,
+   "rnd_oku": 28.9,
+   "rnd_ratio": 7.5
+  },
+  "6834": {
+   "sales_oku": 300.9,
+   "sales_yoy": 50.6,
+   "capex_oku": 10.7,
+   "capex_ratio": 3.6,
+   "rnd_oku": 0.1,
+   "rnd_ratio": 0.0
+  },
+  "6837": {
+   "sales_oku": 247.0,
+   "sales_yoy": -5.8,
+   "capex_oku": 7.5,
+   "capex_ratio": 3.1,
+   "rnd_oku": 0.6,
+   "rnd_ratio": 0.3
+  },
+  "6841": {
+   "sales_oku": 6048.3,
+   "sales_yoy": 7.5,
+   "capex_oku": 306.9,
+   "capex_ratio": 5.1,
+   "rnd_oku": 296.3,
+   "rnd_ratio": 4.9
+  },
+  "6855": {
+   "sales_oku": 293.7,
+   "sales_yoy": 23.2,
+   "capex_oku": 38.7,
+   "capex_ratio": 13.2,
+   "rnd_oku": 16.8,
+   "rnd_ratio": 5.7
+  },
+  "6856": {
+   "sales_oku": 3330.8,
+   "sales_yoy": 5.0,
+   "capex_oku": 274.5,
+   "capex_ratio": 8.2,
+   "rnd_oku": 246.9,
+   "rnd_ratio": 7.4
+  },
+  "6857": {
+   "sales_oku": 11286.1,
+   "sales_yoy": 44.7,
+   "capex_oku": 343.0,
+   "capex_ratio": 3.0,
+   "rnd_oku": 781.0,
+   "rnd_ratio": 6.9
+  },
+  "6861": {
+   "sales_oku": 11692.9,
+   "sales_yoy": 10.4,
+   "capex_oku": 283.7,
+   "capex_ratio": 2.4,
+   "rnd_oku": 328.4,
+   "rnd_ratio": 2.8
+  },
+  "6871": {
+   "sales_oku": 701.7,
+   "sales_yoy": 26.1,
+   "capex_oku": 152.5,
+   "capex_ratio": 21.7,
+   "rnd_oku": 66.2,
+   "rnd_ratio": 9.4
+  },
+  "6877": {
+   "sales_oku": 616.8,
+   "sales_yoy": 9.4,
+   "capex_oku": 36.3,
+   "capex_ratio": 5.9,
+   "rnd_oku": 4.8,
+   "rnd_ratio": 0.8
+  },
+  "6890": {
+   "sales_oku": 2889.3,
+   "sales_yoy": 5.3,
+   "capex_oku": 546.0,
+   "capex_ratio": 18.9,
+   "rnd_oku": 124.3,
+   "rnd_ratio": 4.3
+  },
+  "6920": {
+   "sales_oku": 2514.8,
+   "sales_yoy": 17.8,
+   "capex_oku": 50.4,
+   "capex_ratio": 2.0,
+   "rnd_oku": 116.8,
+   "rnd_ratio": 4.6
+  },
+  "6925": {
+   "sales_oku": 1792.1,
+   "sales_yoy": 0.9,
+   "capex_oku": 109.9,
+   "capex_ratio": 6.1,
+   "rnd_oku": 135.5,
+   "rnd_ratio": 7.6
+  },
+  "6941": {
+   "sales_oku": 527.0,
+   "sales_yoy": 16.3,
+   "capex_oku": 11.5,
+   "capex_ratio": 2.2,
+   "rnd_oku": 12.5,
+   "rnd_ratio": 2.4
+  },
+  "6958": {
+   "sales_oku": 1002.0,
+   "sales_yoy": 4.9,
+   "capex_oku": 92.1,
+   "capex_ratio": 9.2,
+   "rnd_oku": 5.5,
+   "rnd_ratio": 0.6
+  },
+  "6961": {
+   "sales_oku": 425.4,
+   "sales_yoy": 11.7,
+   "capex_oku": 54.9,
+   "capex_ratio": 12.9,
+   "rnd_oku": 17.0,
+   "rnd_ratio": 4.0
+  },
+  "6963": {
+   "sales_oku": 4811.5,
+   "sales_yoy": 7.3,
+   "capex_oku": 83.5,
+   "capex_ratio": 1.7,
+   "rnd_oku": 213.1,
+   "rnd_ratio": 4.4
+  },
+  "6965": {
+   "sales_oku": 2120.5,
+   "sales_yoy": 4.0,
+   "capex_oku": 348.2,
+   "capex_ratio": 16.4,
+   "rnd_oku": 184.4,
+   "rnd_ratio": 8.7
+  },
+  "6966": {
+   "sales_oku": 2183.3,
+   "sales_yoy": 1.6,
+   "capex_oku": 301.2,
+   "capex_ratio": 13.8,
+   "rnd_oku": 4.7,
+   "rnd_ratio": 0.2
+  },
+  "6969": {
+   "sales_oku": 51.4,
+   "sales_yoy": 13.1,
+   "capex_oku": 4.5,
+   "capex_ratio": 8.7,
+   "rnd_oku": 1.4,
+   "rnd_ratio": 2.7
+  },
+  "6971": {
+   "sales_oku": 20702.0,
+   "sales_yoy": 2.8,
+   "capex_oku": 787.6,
+   "capex_yoy": 64.3,
+   "capex_ratio": 3.8,
+   "rnd_oku": 261.2,
+   "rnd_ratio": 1.3
+  },
+  "6976": {
+   "sales_oku": 3553.4,
+   "sales_yoy": 4.1,
+   "capex_oku": 410.6,
+   "capex_ratio": 11.6,
+   "rnd_oku": 144.7,
+   "rnd_ratio": 4.1
+  },
+  "6977": {
+   "sales_oku": 59.1,
+   "sales_yoy": -8.5,
+   "capex_oku": 1.3,
+   "capex_ratio": 2.1,
+   "rnd_oku": 3.4,
+   "rnd_ratio": 5.7
+  },
+  "6981": {
+   "sales_oku": 18308.6,
+   "sales_yoy": 5.0,
+   "capex_oku": 1877.5,
+   "capex_yoy": 60.5,
+   "capex_ratio": 10.3,
+   "rnd_oku": 570.8,
+   "rnd_ratio": 3.1
+  },
+  "6988": {
+   "sales_oku": 10281.7,
+   "sales_yoy": 1.4,
+   "capex_oku": 868.4,
+   "capex_yoy": 362.0,
+   "capex_ratio": 8.4,
+   "rnd_oku": 480.2,
+   "rnd_ratio": 4.7
+  },
+  "6994": {
+   "sales_oku": 279.9,
+   "sales_yoy": 2.4,
+   "capex_oku": 19.0,
+   "capex_ratio": 6.8,
+   "rnd_oku": 7.3,
+   "rnd_ratio": 2.6
+  },
+  "6996": {
+   "sales_oku": 1697.2,
+   "sales_yoy": -3.4,
+   "capex_oku": 60.0,
+   "capex_ratio": 3.5,
+   "rnd_oku": 72.8,
+   "rnd_ratio": 4.3
+  },
+  "6997": {
+   "sales_oku": 1368.2,
+   "sales_yoy": 11.5,
+   "capex_oku": 59.1,
+   "capex_ratio": 4.3,
+   "rnd_oku": 38.9,
+   "rnd_ratio": 2.8
+  },
+  "6998": {
+   "sales_oku": 127.8,
+   "sales_yoy": 3.1,
+   "capex_oku": 8.2,
+   "capex_ratio": 6.5,
+   "rnd_oku": 4.5,
+   "rnd_ratio": 3.6
+  },
+  "6999": {
+   "sales_oku": 722.9,
+   "sales_yoy": 12.7,
+   "capex_oku": 11.5,
+   "capex_ratio": 1.6,
+   "rnd_oku": 36.3,
+   "rnd_ratio": 5.0
+  },
+  "7011": {
+   "sales_oku": 49741.7,
+   "sales_yoy": 14.1,
+   "capex_oku": 540.9,
+   "capex_ratio": 1.1,
+   "rnd_oku": 2890.8,
+   "rnd_ratio": 5.8
+  },
+  "7220": {
+   "sales_oku": 3472.0,
+   "sales_yoy": 0.0,
+   "capex_oku": 277.0,
+   "capex_ratio": 8.0,
+   "rnd_oku": 57.0,
+   "rnd_ratio": 1.6
+  },
+  "7713": {
+   "sales_oku": 115.8,
+   "sales_yoy": 3.3,
+   "capex_oku": 3.8,
+   "capex_ratio": 3.3,
+   "rnd_oku": 2.1,
+   "rnd_ratio": 1.8
+  },
+  "7717": {
+   "sales_oku": 529.9,
+   "sales_yoy": 14.7,
+   "capex_oku": 11.1,
+   "capex_ratio": 2.1,
+   "rnd_oku": 22.6,
+   "rnd_ratio": 4.3
+  },
+  "7729": {
+   "sales_oku": 1668.4,
+   "sales_yoy": 10.8,
+   "capex_oku": 110.7,
+   "capex_ratio": 6.6,
+   "rnd_oku": 120.4,
+   "rnd_ratio": 7.2
+  },
+  "7731": {
+   "sales_oku": 6771.6,
+   "sales_yoy": -5.3,
+   "capex_oku": 598.0,
+   "capex_ratio": 8.8,
+   "rnd_oku": 772.0,
+   "rnd_ratio": 11.4
+  },
+  "7735": {
+   "sales_oku": 6057.5,
+   "sales_yoy": -3.1,
+   "capex_oku": 277.1,
+   "capex_ratio": 4.6,
+   "rnd_oku": 231.6,
+   "rnd_ratio": 3.8
+  },
+  "7741": {
+   "sales_oku": 9477.5,
+   "sales_yoy": 9.4,
+   "capex_oku": 657.1,
+   "capex_yoy": 81.5,
+   "capex_ratio": 6.9,
+   "rnd_oku": 362.9,
+   "rnd_ratio": 3.8
+  },
+  "7746": {
+   "sales_oku": 47.3,
+   "sales_yoy": 1.0,
+   "capex_oku": 7.4,
+   "capex_ratio": 15.6,
+   "rnd_oku": 1.3,
+   "rnd_ratio": 2.8
+  },
+  "7751": {
+   "sales_oku": 18376.1,
+   "sales_yoy": -2.6,
+   "capex_oku": 666.7,
+   "capex_ratio": 3.6,
+   "rnd_oku": 3392.9,
+   "rnd_ratio": 18.5
+  },
+  "7826": {
+   "sales_oku": 573.8,
+   "sales_yoy": 20.7,
+   "capex_oku": 49.1,
+   "capex_ratio": 8.6,
+   "rnd_oku": 14.5,
+   "rnd_ratio": 2.5
+  },
+  "7911": {
+   "sales_oku": 18050.3,
+   "sales_yoy": 5.0,
+   "capex_oku": 1197.0,
+   "capex_ratio": 6.6,
+   "rnd_oku": 267.9,
+   "rnd_ratio": 1.5
+  },
+  "7912": {
+   "sales_oku": 15125.7,
+   "sales_yoy": 3.8,
+   "capex_oku": 877.0,
+   "capex_ratio": 5.8,
+   "rnd_oku": 422.8,
+   "rnd_ratio": 2.8
+  },
+  "7966": {
+   "sales_oku": 3193.8,
+   "sales_yoy": 1.1,
+   "capex_oku": 152.8,
+   "capex_ratio": 4.8,
+   "rnd_oku": 112.9,
+   "rnd_ratio": 3.5
+  },
+  "8035": {
+   "sales_oku": 24435.3,
+   "sales_yoy": 0.5,
+   "capex_oku": 2160.0,
+   "capex_ratio": 8.8,
+   "rnd_oku": 2778.7,
+   "rnd_ratio": 11.4
+  },
+  "8154": {
+   "sales_oku": 6589.4,
+   "sales_yoy": 20.3,
+   "capex_oku": 37.9,
+   "capex_ratio": 0.6,
+   "rnd_oku": 7.8,
+   "rnd_ratio": 0.1
+  },
+  "9432": {
+   "sales_oku": 144091.2,
+   "sales_yoy": 5.1,
+   "capex_oku": 8575.0,
+   "capex_yoy": 20.0,
+   "capex_ratio": 6.0,
+   "rnd_oku": 1237.8,
+   "rnd_ratio": 0.9
+  },
+  "9503": {
+   "sales_oku": 40566.4,
+   "sales_yoy": -6.5,
+   "capex_oku": 2747.5,
+   "capex_ratio": 6.8,
+   "rnd_oku": 132.3,
+   "rnd_ratio": 0.3
+  },
+  "9504": {
+   "sales_oku": 14423.0,
+   "sales_yoy": -5.7,
+   "capex_oku": 1727.4,
+   "capex_ratio": 12.0,
+   "rnd_oku": 55.0,
+   "rnd_ratio": 0.4
+  },
+  "9508": {
+   "sales_oku": 22472.1,
+   "sales_yoy": -4.7,
+   "capex_oku": 1677.9,
+   "capex_ratio": 7.5,
+   "rnd_oku": 53.8,
+   "rnd_ratio": 0.2
+  },
+  "9509": {
+   "sales_oku": 8559.8,
+   "sales_yoy": -5.1,
+   "capex_oku": 1510.8,
+   "capex_ratio": 17.7,
+   "rnd_oku": 24.4,
+   "rnd_ratio": 0.3
+  },
+  "9984": {
+   "sales_oku": 77986.5,
+   "sales_yoy": 7.7,
+   "capex_oku": 6.0,
+   "capex_ratio": 0.0,
+   "rnd_oku": 9754.7,
+   "rnd_ratio": 12.5
+  }
+ }
+}
