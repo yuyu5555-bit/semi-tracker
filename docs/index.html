@@ -974,7 +974,8 @@ function fundHtml(sym){
   if(F.rnd_oku!=null) rows+='<div style="display:flex;justify-content:space-between;align-items:baseline;padding:6px 0"><span style="color:var(--dim);font-size:12px">研究開発費</span><span style="font-size:14px;font-weight:600;font-family:var(--dot)">'+F.rnd_oku.toLocaleString()+'億円'+ratio(F.rnd_ratio)+'</span></div>';
   return '<div class="techtitle">依存構造(有報) <span class="num" style="color:#5B8DEF;font-size:10px">数値タグ</span></div>'+
     '<div class="mcard" style="margin-bottom:10px">'+rows+
-    '<div class="gl-s" style="margin-top:6px">設備投資の伸び=増産姿勢。R&D比率=先端投資の厚み。()内は前年同期比。</div></div>';
+    '<div class="gl-s" style="margin-top:6px">設備投資の伸び=増産姿勢。R&D比率=先端投資の厚み。()内は前年同期比。</div>'+
+    '<a class="cx-ir" style="margin-left:0;margin-top:8px;display:inline-block" href="https://irbank.net/'+sym+'/segment" target="_blank" rel="noopener">事業別売上をIRBANKで見る ↗</a></div>';
 }
 
 function showStock(sym){
