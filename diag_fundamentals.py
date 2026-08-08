@@ -42,6 +42,8 @@ CATS = {
             ("oversea", "geographic", "bylocation", "areainformation")),
     "設備投資": (("設備投資", "有形固定資産の取得"), ("capitalexpenditure", "capitalexpenditures")),
     "R&D": (("研究開発費",), ("researchanddevelopment",)),
+    "受注": (("受注残高", "受注高", "受注実績", "受注状況", "生産、受注及び販売"),
+            ("orderbacklog", "ordersreceived", "ordersreceipt", "backlog")),
 }
 
 NUM_RE = re.compile(r"^-?[\d,]+(\.\d+)?$")
