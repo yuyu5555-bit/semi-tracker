@@ -73,10 +73,14 @@ def _match(eid_l: str, item: str, eids: list[str], items: list[str]) -> bool:
     return any(e in eid_l for e in eids) or any(i in item for i in items)
 
 
+_CUR_KEYS = ("当期", "当年度", "当連結", "当事業", "CurrentYear")
+_PRI_KEYS = ("前期", "前年度", "前連結", "前事業", "Prior1Year")
+
+
 def _pick(rows: list[list[str]], cfg: dict):
-    """当期・前期の値(円換算)を返す。標準サマリタグを優先。"""
+    """当期・前期の値(円換算)を返す。日本語項目名で拾い、年度不明でも値があれば採用。"""
     def scan(eids, items):
-        cur = prior = None
+        cur = prior = fallback = None
         for r in rows:
             if len(r) < 9:
                 continue
@@ -94,16 +98,22 @@ def _pick(rows: list[list[str]], cfg: dict):
             v = _num(val)
             if v is None:
                 continue
-            mult = _unit_mult(unit)
-            is_cur = ("当期" in rel) or ("CurrentYear" in ctx)
-            is_prior = (("前期" in rel) and ("前々" not in rel)) or ("Prior1Year" in ctx)
-            if is_cur and cur is None:
-                cur = v * mult
-            elif is_prior and prior is None:
-                prior = v * mult
+            m = v * _unit_mult(unit)
+            yr = (rel or "") + " " + (ctx or "")
+            if any(k in yr for k in _PRI_KEYS) and "前々" not in yr:
+                if prior is None:
+                    prior = m
+            elif any(k in yr for k in _CUR_KEYS):
+                if cur is None:
+                    cur = m
+            else:
+                if fallback is None:      # 年度の手掛かりが無い行=とりあえず候補
+                    fallback = m
+        if cur is None:                   # 当期が特定できなくても、拾えた値を使う
+            cur = fallback
         return cur, prior
 
-    # まず標準サマリタグ、無ければ通常候補
+    # まず標準サマリタグ(当期/前期がきれい)、無ければ日本語項目名で拾う
     if cfg["primary_eid"]:
         c, p = scan(cfg["primary_eid"], [])
         if c is not None:
