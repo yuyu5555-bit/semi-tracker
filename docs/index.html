@@ -1716,7 +1716,9 @@ function showMentionStocks(kw){
     var q=(DATA&&DATA.quotes)?DATA.quotes[r.sec]:null;
     var nm=(q&&q.name)||r.name||r.sec;
     var chg=(q&&q.chg!=null)?('<span class="'+(q.chg>0?"n-up":(q.chg<0?"n-down":""))+'">'+(q.chg>0?"+":"")+q.chg.toFixed(2)+'%</span>'):'<span class="wh-na">—</span>';
-    var snip=r.snippet?('<span class="cx-a" style="display:block;margin-top:3px;color:var(--dim);font-size:11px;line-height:1.55">…'+glEsc(r.snippet)+'…</span>'):'';
+    var snip=r.snippet
+      ?('<span class="cx-a" style="display:block;margin-top:3px;color:var(--dim);font-size:11px;line-height:1.55">…'+glEsc(r.snippet)+'…</span>')
+      :('<span class="cx-a" style="display:block;margin-top:3px;color:var(--faint);font-size:11px">（有報の表・数値内で言及。本文の説明なし）</span>');
     return '<div class="wh-row" style="align-items:flex-start">'+
       '<button type="button" class="wh-main" onclick="hideSheet();showStock(\''+r.sec+'\')">'+
         '<span class="wh-nm">'+glEsc(nm)+' <span class="num" style="color:var(--faint);font-size:11px">'+r.sec+'</span></span>'+snip+'</button>'+
