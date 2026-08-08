@@ -1,0 +1,36 @@
+name: update-mentions
+
+# ホット案件キーワード(ラピダス/JASM/TSMC等)への言及銘柄を逆引きして
+# docs/mentions.json を生成する。月1回＋手動実行。EDINET_API_KEY を使用。
+on:
+  schedule:
+    - cron: "40 20 5 * *"   # 毎月5日 05:40 JST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-mentions
+  cancel-in-progress: false
+
+jobs:
+  mentions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fetch keyword mentions (EDINET full-text)
+        env:
+          EDINET_API_KEY: ${{ secrets.EDINET_API_KEY }}
+        run: python fetch_mentions.py
+      - name: Commit mentions
+        run: |
+          git config user.name "data-bot"
+          git config user.email "data-bot@users.noreply.github.com"
+          git add docs/mentions.json
+          git diff --staged --quiet || git commit -m "mentions: monthly update"
+          git pull --rebase --autostash || true
+          git push || true
