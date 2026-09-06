@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-08T17:31:20+00:00",
+ "generated": "2026-09-06T23:08:16+00:00",
  "items": {
   "1802": {
    "sales_oku": 25862.6,
@@ -1637,12 +1637,12 @@
    "edinet": "E02237"
   },
   "7713": {
-   "sales_oku": 115.8,
-   "sales_yoy": 3.3,
-   "capex_oku": 3.8,
-   "capex_ratio": 3.3,
-   "rnd_oku": 2.1,
-   "rnd_ratio": 1.8,
+   "sales_oku": 114.4,
+   "sales_yoy": -1.2,
+   "capex_oku": 2.7,
+   "capex_ratio": 2.4,
+   "rnd_oku": 2.2,
+   "rnd_ratio": 1.9,
    "edinet": "E02323"
   },
   "7717": {
