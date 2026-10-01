@@ -47,12 +47,14 @@ def _time_up(budget_sec):
     return _elapsed() > budget_sec
 
 
-# 株価本体の取得(main()の銘柄ループ)に使う予算。これを超えたら
-# 残りの銘柄取得は打ち切り、取れた分だけでdata.jsonを作る。
-STOCK_FETCH_BUDGET_SEC = 480     # 8分
+# 株価本体の取得(main()の銘柄ループ)に使う予算。270銘柄 × 通信時間を
+# 考慮し、Actions側のジョブタイムアウト(30分)より十分短く、かつ全銘柄を
+# 取り切れる余裕を持たせる。これを超えたら残りの銘柄取得は打ち切り、
+# 取れた分だけでdata.jsonを作る(ゼロ件で終わるよりは安全)。
+STOCK_FETCH_BUDGET_SEC = 1500    # 25分
 # 見出し/開示/AI分析/市況指標など「オマケ機能」全体に使う予算。
 # 株価取得が終わった時点でこれを超えてたら、オマケは全部スキップ。
-EXTRA_FEATURES_BUDGET_SEC = 600  # 10分
+EXTRA_FEATURES_BUDGET_SEC = 1680  # 28分
 
 
 def stooq_symbol(sym, market):
