@@ -47,14 +47,13 @@ def _time_up(budget_sec):
     return _elapsed() > budget_sec
 
 
-# 株価本体の取得(main()の銘柄ループ)に使う予算。270銘柄 × 通信時間を
-# 考慮し、Actions側のジョブタイムアウト(30分)より十分短く、かつ全銘柄を
-# 取り切れる余裕を持たせる。これを超えたら残りの銘柄取得は打ち切り、
-# 取れた分だけでdata.jsonを作る(ゼロ件で終わるよりは安全)。
-STOCK_FETCH_BUDGET_SEC = 1500    # 25分
+# 株価本体の取得(main()の銘柄ループ)に使う予算。実測で300銘柄×sleep込み
+# 約20分かかっていたため、sleepを短縮したうえで予算も余裕を持たせる。
+# Actions側のジョブタイムアウト(45分)より十分短くしてある。
+STOCK_FETCH_BUDGET_SEC = 2400     # 40分
 # 見出し/開示/AI分析/市況指標など「オマケ機能」全体に使う予算。
 # 株価取得が終わった時点でこれを超えてたら、オマケは全部スキップ。
-EXTRA_FEATURES_BUDGET_SEC = 1680  # 28分
+EXTRA_FEATURES_BUDGET_SEC = 2550  # 42.5分
 
 
 def stooq_symbol(sym, market):
@@ -66,7 +65,7 @@ def yahoo_symbol(sym, market):
     return f"{sym}.T" if market == "jp" else sym
 
 
-def _http_get(url, timeout=12):
+def _http_get(url, timeout=8):
     headers = {
         "User-Agent": UA,
         "Accept": "text/csv,application/json,text/plain,*/*",
@@ -81,14 +80,14 @@ def fetch_stooq(sym, market):
     ssym = stooq_symbol(sym, market)
     for host in ["stooq.com", "stooq.pl"]:
         url = f"https://{host}/q/d/l/?s={ssym}&i=d"
-        for _ in range(2):
+        for _ in range(1):
             try:
                 text = _http_get(url)
             except Exception:
-                time.sleep(0.8); continue
+                time.sleep(0.3); continue
             rows = list(csv.reader(io.StringIO(text)))
             if len(rows) < 2 or "Date" not in rows[0][0]:
-                time.sleep(0.8); continue
+                time.sleep(0.3); continue
             out = []
             for row in rows[1:]:
                 if len(row) < 6:
@@ -328,7 +327,7 @@ def main():
             break
         print(f"[{i+1}/{len(symbols)}] {sym} {name}")
         daily = fetch_daily(sym, market)
-        time.sleep(1.1)
+        time.sleep(0.3)
         if not daily:
             failed.append(sym); continue
         # トリム前の全取得履歴の高値(参考値hiAllとして保持)
