@@ -32,6 +32,28 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
 KEEP_DAYS = 460   # 保持する日足本数(約22ヶ月。1Y表示+200日MAのウォームアップ分)
 
+# ── 時間予算ガード(2026-10 追加) ──────────────────────────────
+# GitHub Actions側のジョブ/ステップにも timeout-minutes を設定済みだが、
+# Python側でも「時間切れなら残りはスキップして data.json を確定させる」
+# 二重のガードを入れる。ネットが遅いだけで無限待ちにならないようにする。
+_SCRIPT_START_TS = time.monotonic()
+
+
+def _elapsed():
+    return time.monotonic() - _SCRIPT_START_TS
+
+
+def _time_up(budget_sec):
+    return _elapsed() > budget_sec
+
+
+# 株価本体の取得(main()の銘柄ループ)に使う予算。これを超えたら
+# 残りの銘柄取得は打ち切り、取れた分だけでdata.jsonを作る。
+STOCK_FETCH_BUDGET_SEC = 480     # 8分
+# 見出し/開示/AI分析/市況指標など「オマケ機能」全体に使う予算。
+# 株価取得が終わった時点でこれを超えてたら、オマケは全部スキップ。
+EXTRA_FEATURES_BUDGET_SEC = 600  # 10分
+
 
 def stooq_symbol(sym, market):
     return f"{sym.lower()}.jp" if market == "jp" else f"{sym.lower()}.us"
@@ -42,7 +64,7 @@ def yahoo_symbol(sym, market):
     return f"{sym}.T" if market == "jp" else sym
 
 
-def _http_get(url, timeout=30):
+def _http_get(url, timeout=12):
     headers = {
         "User-Agent": UA,
         "Accept": "text/csv,application/json,text/plain,*/*",
@@ -296,6 +318,12 @@ def main():
     symbols = all_symbols()
     quotes, failed = {}, []
     for i, (sym, (name, market)) in enumerate(symbols.items()):
+        if _time_up(STOCK_FETCH_BUDGET_SEC):
+            remaining = list(symbols.keys())[i:]
+            print(f"!! 時間切れ({STOCK_FETCH_BUDGET_SEC}秒超過)のため株価取得を打ち切り。"
+                  f"残り{len(remaining)}銘柄はスキップ: {remaining}", file=sys.stderr)
+            failed.extend(remaining)
+            break
         print(f"[{i+1}/{len(symbols)}] {sym} {name}")
         daily = fetch_daily(sym, market)
         time.sleep(1.1)
@@ -808,15 +836,27 @@ def main():
             item["material"] = resolve(step.get("material", []))
         proc.append(item)
 
+    def _load_prev(key, default):
+        """時間切れでスキップする際、前回のdata.jsonから該当キーを引き継ぐ"""
+        try:
+            with open("docs/data.json", encoding="utf-8") as _f:
+                return json.load(_f).get(key, default)
+        except Exception:
+            return default
+
     try:
+        if _time_up(EXTRA_FEATURES_BUDGET_SEC):
+            raise TimeoutError(f"time budget ({EXTRA_FEATURES_BUDGET_SEC}s) exceeded, skip fetch_headlines")
         from fetch_headlines import fetch_headlines as _fetch_hl
         _headlines = _fetch_hl()
         print(f"headlines: {len(_headlines)}件取得")
     except Exception as _e:
         print(f"headlines skip: {_e}")
-        _headlines = []
+        _headlines = _load_prev("headlines", [])
 
     try:
+        if _time_up(EXTRA_FEATURES_BUDGET_SEC):
+            raise TimeoutError(f"time budget ({EXTRA_FEATURES_BUDGET_SEC}s) exceeded, skip site_content")
         import site_content as _sc
         _content = {
             "weekly": getattr(_sc, "WEEKLY", {}),
@@ -827,17 +867,21 @@ def main():
         print("content: site_content.py 反映")
     except Exception as _e:
         print(f"content skip: {_e}")
-        _content = {}
+        _content = _load_prev("content", {})
 
     try:
+        if _time_up(EXTRA_FEATURES_BUDGET_SEC):
+            raise TimeoutError(f"time budget ({EXTRA_FEATURES_BUDGET_SEC}s) exceeded, skip fetch_disclosures")
         from fetch_disclosures import fetch_disclosures as _fetch_ds
         _disclosures = _fetch_ds()
         print(f"disclosures: {len(_disclosures)}件取得(適時開示)")
     except Exception as _e:
         print(f"disclosures skip: {_e}")
-        _disclosures = []
+        _disclosures = _load_prev("disclosures", [])
 
     try:
+        if _time_up(EXTRA_FEATURES_BUDGET_SEC):
+            raise TimeoutError(f"time budget ({EXTRA_FEATURES_BUDGET_SEC}s) exceeded, skip generate_ai_analysis")
         from generate_ai_analysis import generate_daily_analysis as _gen_ai
         _target_hour = os.environ.get("AI_ANALYSIS_HOUR_JST")
         _jst_hour = datetime.now(timezone.utc).astimezone(
@@ -847,18 +891,15 @@ def main():
             _ai_analysis = _gen_ai(quotes, datetime.now(timezone.utc).isoformat(timespec="seconds"))
             print("AI分析:", "生成OK" if _ai_analysis else "スキップ")
         else:
-            _ai_analysis = {}
-            try:
-                with open("docs/data.json", encoding="utf-8") as _f:
-                    _ai_analysis = json.load(_f).get("ai_analysis", {}) or {}
-            except Exception:
-                pass
+            _ai_analysis = _load_prev("ai_analysis", {})
             print(f"AI分析: 対象時間外(JST {_jst_hour}時、対象は{_target_hour}時)のためスキップ — 前回の分析を維持")
     except Exception as _e:
         print(f"AI分析 skip: {_e}")
-        _ai_analysis = {}
+        _ai_analysis = _load_prev("ai_analysis", {})
 
     try:
+        if _time_up(EXTRA_FEATURES_BUDGET_SEC):
+            raise TimeoutError(f"time budget ({EXTRA_FEATURES_BUDGET_SEC}s) exceeded, skip fetch_market_indicators")
         from fetch_market_indicators import (
             fetch_tsmc_monthly_revenue, fetch_sox_index, fetch_us10y_yield,
         )
@@ -868,7 +909,11 @@ def main():
         print(f"市況指標: TSMC月次{len(_tsmc_monthly)}件 / SOX {'取得OK' if _sox else '取得失敗'} / 米10年金利 {'取得OK' if _us10y else '取得失敗'}")
     except Exception as _e:
         print(f"市況指標 skip: {_e}")
-        _tsmc_monthly, _sox, _us10y = [], {}, {}
+        _tsmc_monthly = _load_prev("tsmc_monthly", [])
+        _sox = _load_prev("sox", {})
+        _us10y = _load_prev("us10y", {})
+
+    print(f"ここまでの経過時間: {_elapsed():.0f}秒")
 
     out = {
         "updated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
