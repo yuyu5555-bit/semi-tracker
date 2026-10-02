@@ -8,7 +8,7 @@ Stooq の無料CSVから日足を取得し、直近約1年分の日足(date,clos
 銘柄・テーマの編集は themes.py の MACRO を触るだけ。
 実行: python update_data.py
 """
-import csv, io, json, os, sys, time, urllib.request
+import concurrent.futures, csv, io, json, os, sys, time, urllib.request
 from datetime import datetime, timedelta, timezone
 from themes import MACRO, all_symbols
 try:
@@ -47,13 +47,56 @@ def _time_up(budget_sec):
     return _elapsed() > budget_sec
 
 
-# 株価本体の取得(main()の銘柄ループ)に使う予算。実測で300銘柄×sleep込み
-# 約20分かかっていたため、sleepを短縮したうえで予算も余裕を持たせる。
-# Actions側のジョブタイムアウト(45分)より十分短くしてある。
-STOCK_FETCH_BUDGET_SEC = 2400     # 40分
+# ── 株価取得の並列化(2026-10 根本修正) ──────────────────────────
+# 以前は300銘柄を1件ずつ順番に取得しており(sleep+リトライ込みで1件数秒)、
+# 全銘柄を取り切るのに20〜40分かかって時間切れで打ち切られていた。
+# → ThreadPoolExecutorで複数銘柄を同時に取得することで、全体の所要時間を
+#    「銘柄数×1件あたりの時間」から「(銘柄数÷並列数)×1件あたりの時間」に
+#    短縮する。Stooq/Yahooへの同時アクセスが過多にならない程度の並列数に
+#    留める。
+FETCH_WORKERS = 12
+# 並列取得フェーズ全体に使う上限(保険)。_http_get のtimeout(8秒)×最大
+# リトライ経路(Stooq2ホスト+Yahoo=3回)=24秒が1銘柄の理論上の最悪値なので、
+# 300銘柄÷12並列×24秒 ≈ 10分が理論上の最悪ケース。余裕を見て15分とする。
+FETCH_TOTAL_BUDGET_SEC = 900      # 15分
 # 見出し/開示/AI分析/市況指標など「オマケ機能」全体に使う予算。
 # 株価取得が終わった時点でこれを超えてたら、オマケは全部スキップ。
-EXTRA_FEATURES_BUDGET_SEC = 2550  # 42.5分
+EXTRA_FEATURES_BUDGET_SEC = 1800  # 30分(並列化で株価取得が速くなった分、ここは余裕を持たせても安全)
+
+
+def _fetch_all_daily(items):
+    """全銘柄のdaily株価データをFETCH_WORKERS並列で取得する。
+    items: [(sym, (name, market)), ...]
+    戻り値: {sym: daily_or_None}"""
+    results = {}
+    n = len(items)
+    start = time.monotonic()
+    print(f"株価取得開始: {n}銘柄を{FETCH_WORKERS}並列で取得")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=FETCH_WORKERS) as ex:
+        future_to_sym = {ex.submit(fetch_daily, sym, market): sym
+                          for sym, (name, market) in items}
+        done_count = 0
+        for fut in concurrent.futures.as_completed(future_to_sym):
+            sym = future_to_sym[fut]
+            done_count += 1
+            try:
+                results[sym] = fut.result()
+            except Exception as e:
+                print(f"  !! {sym}: 取得例外 {e}", file=sys.stderr)
+                results[sym] = None
+            if done_count % 25 == 0 or done_count == n:
+                print(f"  [{done_count}/{n}] 取得完了 (経過 {time.monotonic()-start:.0f}秒)")
+            if time.monotonic() - start > FETCH_TOTAL_BUDGET_SEC:
+                remaining = set(future_to_sym.values()) - set(results.keys())
+                print(f"!! 並列取得が全体予算({FETCH_TOTAL_BUDGET_SEC}秒)超過。"
+                      f"残り{len(remaining)}銘柄は打ち切り: {sorted(remaining)}", file=sys.stderr)
+                for s in remaining:
+                    results.setdefault(s, None)
+                ex.shutdown(wait=False, cancel_futures=True)
+                break
+    print(f"株価取得完了: {sum(1 for v in results.values() if v)}/{n}銘柄 "
+          f"(経過 {time.monotonic()-start:.0f}秒)")
+    return results
 
 
 def stooq_symbol(sym, market):
@@ -317,19 +360,18 @@ def _build_flow(symbols):
 
 def main():
     symbols = all_symbols()
+    items = list(symbols.items())
     quotes, failed = {}, []
-    for i, (sym, (name, market)) in enumerate(symbols.items()):
-        if _time_up(STOCK_FETCH_BUDGET_SEC):
-            remaining = list(symbols.keys())[i:]
-            print(f"!! 時間切れ({STOCK_FETCH_BUDGET_SEC}秒超過)のため株価取得を打ち切り。"
-                  f"残り{len(remaining)}銘柄はスキップ: {remaining}", file=sys.stderr)
-            failed.extend(remaining)
-            break
-        print(f"[{i+1}/{len(symbols)}] {sym} {name}")
-        daily = fetch_daily(sym, market)
-        time.sleep(0.3)
+
+    # 1) 全銘柄の株価データを並列取得(ここが一番時間のかかる部分)
+    daily_data = _fetch_all_daily(items)
+
+    # 2) 取得できたデータでテクニカル指標・パターン判定を計算(CPU処理のみで高速)
+    for i, (sym, (name, market)) in enumerate(items):
+        daily = daily_data.get(sym)
         if not daily:
             failed.append(sym); continue
+        print(f"[{i+1}/{len(items)}] {sym} {name} 計算中")
         # トリム前の全取得履歴の高値(参考値hiAllとして保持)
         hi_all = max((r[1] for r in daily), default=None)
         hist_days = len(daily)
