@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-06T23:08:16+00:00",
+ "generated": "2026-10-07T00:59:21+00:00",
  "items": {
   "1802": {
    "sales_oku": 25862.6,
@@ -107,12 +107,12 @@
    "edinet": "E00436"
   },
   "2962": {
-   "sales_oku": 33.6,
-   "sales_yoy": -28.2,
-   "capex_oku": 2.9,
-   "capex_ratio": 8.6,
-   "rnd_oku": 4.5,
-   "rnd_ratio": 13.4,
+   "sales_oku": 37.5,
+   "sales_yoy": 11.4,
+   "capex_oku": 2.2,
+   "capex_ratio": 5.8,
+   "rnd_oku": 4.9,
+   "rnd_ratio": 13.2,
    "edinet": "E38523"
   },
   "3101": {
@@ -771,12 +771,12 @@
    "edinet": "E01506"
   },
   "6227": {
-   "sales_oku": 210.1,
-   "sales_yoy": 36.2,
-   "capex_oku": 10.8,
-   "capex_ratio": 5.2,
-   "rnd_oku": 4.3,
-   "rnd_ratio": 2.1,
+   "sales_oku": 352.4,
+   "sales_yoy": 67.8,
+   "capex_oku": 18.6,
+   "capex_ratio": 5.3,
+   "rnd_oku": 5.2,
+   "rnd_ratio": 1.5,
    "edinet": "E36750"
   },
   "6235": {
@@ -879,12 +879,12 @@
    "edinet": "E01712"
   },
   "6327": {
-   "sales_oku": 62.3,
-   "sales_yoy": 4.9,
-   "capex_oku": 0.9,
-   "capex_ratio": 1.5,
-   "rnd_oku": 0.4,
-   "rnd_ratio": 0.6,
+   "sales_oku": 66.1,
+   "sales_yoy": 6.1,
+   "capex_oku": 1.5,
+   "capex_ratio": 2.2,
+   "rnd_oku": 0.3,
+   "rnd_ratio": 0.5,
    "edinet": "E01713"
   },
   "6336": {
@@ -924,12 +924,12 @@
    "edinet": "E01541"
   },
   "6340": {
-   "sales_oku": 1290.2,
-   "sales_yoy": 11.8,
-   "capex_oku": 22.8,
-   "capex_ratio": 1.8,
-   "rnd_oku": 20.4,
-   "rnd_ratio": 1.6,
+   "sales_oku": 1356.1,
+   "sales_yoy": 5.1,
+   "capex_oku": 50.7,
+   "capex_ratio": 3.7,
+   "rnd_oku": 20.1,
+   "rnd_ratio": 1.5,
    "edinet": "E01666"
   },
   "6361": {
@@ -1146,12 +1146,12 @@
    "edinet": "E01757"
   },
   "6594": {
-   "sales_oku": 26078.1,
-   "sales_yoy": 11.1,
-   "capex_oku": 125.9,
+   "sales_oku": 27087.0,
+   "sales_yoy": 3.9,
+   "capex_oku": 137.8,
    "capex_ratio": 0.5,
-   "rnd_oku": 806.0,
-   "rnd_ratio": 3.1,
+   "rnd_oku": 1169.0,
+   "rnd_ratio": 4.3,
    "edinet": "E01975"
   },
   "6613": {
@@ -1254,12 +1254,12 @@
    "edinet": "E02081"
   },
   "6728": {
-   "sales_oku": 2511.8,
-   "sales_yoy": -3.8,
-   "capex_oku": 157.2,
-   "capex_ratio": 6.3,
-   "rnd_oku": 139.9,
-   "rnd_ratio": 5.6,
+   "sales_oku": 2691.3,
+   "sales_yoy": 7.1,
+   "capex_oku": 179.9,
+   "capex_ratio": 6.7,
+   "rnd_oku": 146.1,
+   "rnd_ratio": 5.4,
    "edinet": "E01589"
   },
   "6740": {
@@ -1445,12 +1445,12 @@
    "edinet": "E02024"
   },
   "6920": {
-   "sales_oku": 2514.8,
-   "sales_yoy": 17.8,
-   "capex_oku": 50.4,
-   "capex_ratio": 2.0,
-   "rnd_oku": 116.8,
-   "rnd_ratio": 4.6,
+   "sales_oku": 2304.8,
+   "sales_yoy": -8.3,
+   "capex_oku": 23.6,
+   "capex_ratio": 1.0,
+   "rnd_oku": 162.9,
+   "rnd_ratio": 7.1,
    "edinet": "E01991"
   },
   "6925": {
@@ -1710,12 +1710,10 @@
    "edinet": "E02274"
   },
   "7826": {
-   "sales_oku": 573.8,
-   "sales_yoy": 20.7,
-   "capex_oku": 49.1,
-   "capex_ratio": 8.6,
-   "rnd_oku": 14.5,
-   "rnd_ratio": 2.5,
+   "sales_oku": 1001.4,
+   "sales_yoy": 74.5,
+   "rnd_oku": 12.9,
+   "rnd_ratio": 1.3,
    "edinet": "E02485"
   },
   "7911": {
